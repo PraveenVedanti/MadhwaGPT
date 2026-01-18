@@ -1,0 +1,563 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		37FF17052F1CAFAE00309340 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37FF16ED2F1CAFAC00309340 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 37FF16F42F1CAFAC00309340;
+			remoteInfo = MadhwaGPT;
+		};
+		37FF170F2F1CAFAE00309340 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37FF16ED2F1CAFAC00309340 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 37FF16F42F1CAFAC00309340;
+			remoteInfo = MadhwaGPT;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		37FF16F52F1CAFAC00309340 /* MadhwaGPT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MadhwaGPT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FF17042F1CAFAE00309340 /* MadhwaGPTTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MadhwaGPTTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FF170E2F1CAFAE00309340 /* MadhwaGPTUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MadhwaGPTUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		37FF16F72F1CAFAC00309340 /* MadhwaGPT */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MadhwaGPT;
+			sourceTree = "<group>";
+		};
+		37FF17072F1CAFAE00309340 /* MadhwaGPTTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MadhwaGPTTests;
+			sourceTree = "<group>";
+		};
+		37FF17112F1CAFAE00309340 /* MadhwaGPTUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MadhwaGPTUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		37FF16F22F1CAFAC00309340 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37FF17012F1CAFAE00309340 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37FF170B2F1CAFAE00309340 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		37FF16EC2F1CAFAC00309340 = {
+			isa = PBXGroup;
+			children = (
+				37FF16F72F1CAFAC00309340 /* MadhwaGPT */,
+				37FF17072F1CAFAE00309340 /* MadhwaGPTTests */,
+				37FF17112F1CAFAE00309340 /* MadhwaGPTUITests */,
+				37FF16F62F1CAFAC00309340 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		37FF16F62F1CAFAC00309340 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				37FF16F52F1CAFAC00309340 /* MadhwaGPT.app */,
+				37FF17042F1CAFAE00309340 /* MadhwaGPTTests.xctest */,
+				37FF170E2F1CAFAE00309340 /* MadhwaGPTUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		37FF16F42F1CAFAC00309340 /* MadhwaGPT */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 37FF17182F1CAFAE00309340 /* Build configuration list for PBXNativeTarget "MadhwaGPT" */;
+			buildPhases = (
+				37FF16F12F1CAFAC00309340 /* Sources */,
+				37FF16F22F1CAFAC00309340 /* Frameworks */,
+				37FF16F32F1CAFAC00309340 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				37FF16F72F1CAFAC00309340 /* MadhwaGPT */,
+			);
+			name = MadhwaGPT;
+			packageProductDependencies = (
+			);
+			productName = MadhwaGPT;
+			productReference = 37FF16F52F1CAFAC00309340 /* MadhwaGPT.app */;
+			productType = "com.apple.product-type.application";
+		};
+		37FF17032F1CAFAE00309340 /* MadhwaGPTTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 37FF171B2F1CAFAE00309340 /* Build configuration list for PBXNativeTarget "MadhwaGPTTests" */;
+			buildPhases = (
+				37FF17002F1CAFAE00309340 /* Sources */,
+				37FF17012F1CAFAE00309340 /* Frameworks */,
+				37FF17022F1CAFAE00309340 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				37FF17062F1CAFAE00309340 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				37FF17072F1CAFAE00309340 /* MadhwaGPTTests */,
+			);
+			name = MadhwaGPTTests;
+			packageProductDependencies = (
+			);
+			productName = MadhwaGPTTests;
+			productReference = 37FF17042F1CAFAE00309340 /* MadhwaGPTTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		37FF170D2F1CAFAE00309340 /* MadhwaGPTUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 37FF171E2F1CAFAE00309340 /* Build configuration list for PBXNativeTarget "MadhwaGPTUITests" */;
+			buildPhases = (
+				37FF170A2F1CAFAE00309340 /* Sources */,
+				37FF170B2F1CAFAE00309340 /* Frameworks */,
+				37FF170C2F1CAFAE00309340 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				37FF17102F1CAFAE00309340 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				37FF17112F1CAFAE00309340 /* MadhwaGPTUITests */,
+			);
+			name = MadhwaGPTUITests;
+			packageProductDependencies = (
+			);
+			productName = MadhwaGPTUITests;
+			productReference = 37FF170E2F1CAFAE00309340 /* MadhwaGPTUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		37FF16ED2F1CAFAC00309340 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					37FF16F42F1CAFAC00309340 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					37FF17032F1CAFAE00309340 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 37FF16F42F1CAFAC00309340;
+					};
+					37FF170D2F1CAFAE00309340 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 37FF16F42F1CAFAC00309340;
+					};
+				};
+			};
+			buildConfigurationList = 37FF16F02F1CAFAC00309340 /* Build configuration list for PBXProject "MadhwaGPT" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 37FF16EC2F1CAFAC00309340;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 37FF16F62F1CAFAC00309340 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				37FF16F42F1CAFAC00309340 /* MadhwaGPT */,
+				37FF17032F1CAFAE00309340 /* MadhwaGPTTests */,
+				37FF170D2F1CAFAE00309340 /* MadhwaGPTUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		37FF16F32F1CAFAC00309340 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37FF17022F1CAFAE00309340 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37FF170C2F1CAFAE00309340 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		37FF16F12F1CAFAC00309340 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37FF17002F1CAFAE00309340 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37FF170A2F1CAFAE00309340 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		37FF17062F1CAFAE00309340 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 37FF16F42F1CAFAC00309340 /* MadhwaGPT */;
+			targetProxy = 37FF17052F1CAFAE00309340 /* PBXContainerItemProxy */;
+		};
+		37FF17102F1CAFAE00309340 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 37FF16F42F1CAFAC00309340 /* MadhwaGPT */;
+			targetProxy = 37FF170F2F1CAFAE00309340 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		37FF17162F1CAFAE00309340 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6J4GP338UB;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		37FF17172F1CAFAE00309340 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6J4GP338UB;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		37FF17192F1CAFAE00309340 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6J4GP338UB;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.learning.praveenvedanti.MadhwaGPT;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		37FF171A2F1CAFAE00309340 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6J4GP338UB;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.learning.praveenvedanti.MadhwaGPT;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		37FF171C2F1CAFAE00309340 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6J4GP338UB;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.learning.praveenvedanti.MadhwaGPTTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MadhwaGPT.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MadhwaGPT";
+			};
+			name = Debug;
+		};
+		37FF171D2F1CAFAE00309340 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6J4GP338UB;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.learning.praveenvedanti.MadhwaGPTTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MadhwaGPT.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MadhwaGPT";
+			};
+			name = Release;
+		};
+		37FF171F2F1CAFAE00309340 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6J4GP338UB;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.learning.praveenvedanti.MadhwaGPTUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MadhwaGPT;
+			};
+			name = Debug;
+		};
+		37FF17202F1CAFAE00309340 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6J4GP338UB;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.learning.praveenvedanti.MadhwaGPTUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MadhwaGPT;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		37FF16F02F1CAFAC00309340 /* Build configuration list for PBXProject "MadhwaGPT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37FF17162F1CAFAE00309340 /* Debug */,
+				37FF17172F1CAFAE00309340 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		37FF17182F1CAFAE00309340 /* Build configuration list for PBXNativeTarget "MadhwaGPT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37FF17192F1CAFAE00309340 /* Debug */,
+				37FF171A2F1CAFAE00309340 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		37FF171B2F1CAFAE00309340 /* Build configuration list for PBXNativeTarget "MadhwaGPTTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37FF171C2F1CAFAE00309340 /* Debug */,
+				37FF171D2F1CAFAE00309340 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		37FF171E2F1CAFAE00309340 /* Build configuration list for PBXNativeTarget "MadhwaGPTUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37FF171F2F1CAFAE00309340 /* Debug */,
+				37FF17202F1CAFAE00309340 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 37FF16ED2F1CAFAC00309340 /* Project object */;
+}
