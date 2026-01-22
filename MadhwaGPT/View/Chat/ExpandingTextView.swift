@@ -11,20 +11,27 @@ import SwiftUI
 struct ExpandingTextInput: View {
     @Binding var text: String
     let placeholder =  "Ask about Madhvacharya's philosophy.."
-    let minHeight: CGFloat = 40
+    let minHeight: CGFloat = 48
     let maxHeight: CGFloat = 150
 
-    @State private var textHeight: CGFloat = 40
+    @State private var textHeight: CGFloat = 48
 
     var body: some View {
         VStack(spacing: 8) {
-            
             ZStack(alignment: .topLeading) {
+                
                 TextEditor(text: $text)
+
                     .frame(height: min(textHeight, maxHeight))
-                    .padding(4)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(Color.gray)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .stroke(Color.gray.opacity(0.8), lineWidth: 1)
+                    )
+                    .cornerRadius(24)
                     .onChange(of: text, { oldValue, newValue in
                         recalculateHeight()
                     })
@@ -32,7 +39,7 @@ struct ExpandingTextInput: View {
                 if text.isEmpty {
                     Text(placeholder)
                         .foregroundColor(Color(.placeholderText))
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, 12)
                         .padding(.vertical, 12)
                         .allowsHitTesting(false)
                 }

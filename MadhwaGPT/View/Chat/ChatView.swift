@@ -17,8 +17,16 @@ struct ChatView: View {
         VStack {
             Spacer()
             
-            ExpandingTextInput(text: $message)
-                .padding()
+            HStack(spacing: 8.0) {
+                ExpandingTextInput(text: $message)
+                   
+                Image(systemName: "paperplane")
+                    .font(.system(size: 16))
+                    .foregroundColor(.white)
+                    .padding(8)
+                    .background(Circle().fill(Color.orange.opacity(0.5)))
+            }
+            .padding()
             
             Spacer()
                 .frame(height: 20)
