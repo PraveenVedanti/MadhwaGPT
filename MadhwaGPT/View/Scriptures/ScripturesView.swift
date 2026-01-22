@@ -22,7 +22,8 @@ struct ScripturesView: View {
                 .frame(height: 20)
             
             headerView
-                        
+                    
+            // Scripture card
             ForEach(viewModel.scriptures) { scripture in
                 ScriptureCard(
                     title: scripture.title,

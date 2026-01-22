@@ -19,6 +19,9 @@ struct ChatView: View {
             
             ExpandingTextInput(text: $message)
                 .padding()
+            
+            Spacer()
+                .frame(height: 20)
         }
         .background(backgroundColor)
     }
