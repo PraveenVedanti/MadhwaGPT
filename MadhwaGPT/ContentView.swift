@@ -29,17 +29,17 @@ struct ContentView: View {
             }
             
             NavigationStack {
-                SettingsView()
-            }
-            .tabItem {
-                Label("Settings", systemImage: "gear")
-            }
-            
-            NavigationStack {
                 FavouritesView()
             }
             .tabItem {
                 Label("Favourites", systemImage: "heart")
+            }
+            
+            NavigationStack {
+                SettingsView()
+            }
+            .tabItem {
+                Label("Settings", systemImage: "gear")
             }
         }
         .tint(Color.orange)

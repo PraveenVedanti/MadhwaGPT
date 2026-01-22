@@ -9,7 +9,18 @@ import Foundation
 import SwiftUI
 
 struct FavouritesView: View {
+    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    
     var body: some View {
-        Text("Favourites view")
+        VStack(alignment: .leading, spacing: 16.0) {
+            Spacer()
+                .frame(height: 20)
+           
+            Text("Favourites view")
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .background(backgroundColor)
     }
 }

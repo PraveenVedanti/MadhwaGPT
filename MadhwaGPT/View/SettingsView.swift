@@ -9,7 +9,18 @@ import Foundation
 import SwiftUI
 
 struct SettingsView: View {
+    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    
     var body: some View {
-        Text("Settings view")
+        VStack {
+            Spacer()
+                .frame(height: 20)
+           
+            Text("Settings view")
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .background(backgroundColor)
     }
 }

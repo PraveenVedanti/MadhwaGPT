@@ -11,15 +11,34 @@ import SwiftUI
 struct ScripturesView: View {
     
     let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    @ObservedObject var viewModel = ScriptureViewModel()
+    
+    let scripturesList: [Scripture] = []
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16.0) {
-            headerView
-            
-            ScriptureCard(title: "Bhagavatgeetha", description: "The song of god", language: "Sanskrit")
-            ScriptureCard(title: "Harikathamrutasara", description: "The Nectar of Hari's stories", language: "Kannada")
-            
+          
             Spacer()
+                .frame(height: 20)
+            
+            headerView
+                        
+            ForEach(viewModel.scriptures) { scripture in
+                ScriptureCard(
+                    title: scripture.title,
+                    description: scripture.description,
+                    language: scripture.language
+                )
+            }
+            
+            footerView
+            
+             Spacer()
+        }
+        .onAppear {
+            if viewModel.scriptures.isEmpty {
+                viewModel.loadScriptures()
+            }
         }
         .background(backgroundColor)
     }
@@ -34,13 +53,32 @@ struct ScripturesView: View {
             Text(Strings.header)
                 .foregroundStyle(Color.black)
                 .font(.headline)
-            
-            Text(Strings.subHeader)
-                .foregroundStyle(Color.gray)
-                .font(.caption)
         }
         .padding(.leading, 8.0)
         .frame(maxWidth: .infinity)
+    }
+    
+    private var footerView: some View {
+        Text(Strings.subHeader)
+            .foregroundStyle(Color.gray)
+            .font(.caption)
+            .padding(.leading, 8.0)
+            .frame(maxWidth: .infinity)
+    }
+}
+
+class ScriptureViewModel: ObservableObject {
+    
+    @Published var scriptures: [Scripture] = []
+   
+    func loadScriptures() {
+        
+        let bhagavatGeetha = Scripture(title: "Bhagavatgeetha", description: "The song of god", language: "Sanskrit", firstMetaDataKey: "18", firstMetaDataValue: "Chapters", secondMetaDataKey: "700", secondMetaDataValue: "Verses")
+        
+        let harikathamrutasara = Scripture(title: "Harikathamrutasara", description: "The Nectar of Hari's stories", language: "Kannada", firstMetaDataKey: "33", firstMetaDataValue: "sandhis", secondMetaDataKey: "960", secondMetaDataValue: "Padyas")
+        
+        scriptures.append(bhagavatGeetha)
+        scriptures.append(harikathamrutasara)
     }
 }
 
@@ -83,6 +121,18 @@ struct ScriptureCard: View {
     }
 }
 
+struct Scripture: Identifiable {
+    let id = UUID()
+    let title: String
+    let description: String
+    let language: String
+    
+    // Meta data (Ex: Chapters, Sandhis)
+    let firstMetaDataKey: String
+    let firstMetaDataValue: String
+    let secondMetaDataKey: String
+    let secondMetaDataValue: String
+}
 
 
 struct Strings {
