@@ -47,11 +47,11 @@ struct ScripturesView: View {
     private var headerView: some View {
         VStack(alignment: .leading, spacing: 12.0) {
             
-            Text(Strings.title)
+            Text(Strings.scripturesTitle)
                 .foregroundStyle(Color.orange)
                 .font(.title)
             
-            Text(Strings.header)
+            Text(Strings.scripturesHeader)
                 .foregroundStyle(Color.black)
                 .font(.headline)
         }
@@ -60,7 +60,7 @@ struct ScripturesView: View {
     }
     
     private var footerView: some View {
-        Text(Strings.subHeader)
+        Text(Strings.scripturesSubHeader)
             .foregroundStyle(Color.gray)
             .font(.caption)
             .padding(.leading, 8.0)
@@ -137,9 +137,9 @@ struct Scripture: Identifiable {
 
 
 struct Strings {
-    
-    static let title = NSLocalizedString("Explore Sacred Texts (Preview)", comment: "Scriptures page title")
-    static let header = NSLocalizedString("Explore sacred verses with detailed meanings and translations", comment: "Scriptures page header")
-    static let subHeader = NSLocalizedString("AI-guided insights from the Madhva guru parampara tradition"
-                                             , comment: "Scriptures page header")
+    static let scripturesTitle = NSLocalizedString("Explore Sacred Texts (Preview)", comment: "Scriptures page title")
+    static let scripturesHeader = NSLocalizedString("Explore sacred verses with detailed meanings and translations", comment: "Scriptures page header")
+    static let scripturesSubHeader = NSLocalizedString("AI-guided insights from the Madhva guru parampara tradition"
+                                            , comment: "Scriptures page header")
+    static let chatTitle = NSLocalizedString("Your guide to Madhvacharya's Dvaita Vedanta philosophy", comment: "Chat page title")
 }
