@@ -16,7 +16,7 @@ struct SettingsView: View {
             Spacer()
                 .frame(height: 20)
            
-            Text("Settings view")
+            Text("Settings")
             
             Spacer()
         }
