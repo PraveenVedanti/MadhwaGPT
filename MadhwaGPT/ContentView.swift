@@ -28,92 +28,38 @@ enum AppTab: CaseIterable {
         case .settings: return "gear"
         }
     }
-    
-    var iconFill: String {
-        switch self {
-        case .chat: return "message.fill"
-        case .scriptures: return "book.fill"
-        case .favourites: return "heart.fill"
-        case .settings: return "gear.circle.fill"
-        }
-    }
 }
 
+
+import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab: AppTab = .chat
-
     var body: some View {
-        ZStack {
-            TabView(selection: $selectedTab) {
-
-                NavigationStack {
-                    ChatView()
+        TabView {
+            ChatView()
+                .tabItem {
+                    Label(AppTab.chat.title, systemImage: AppTab.chat.icon)
                 }
-                .tag(AppTab.chat)
-
-                NavigationStack {
-                    ScripturesView()
+            
+            ScripturesView()
+                .tabItem {
+                    Label(AppTab.scriptures.title, systemImage: AppTab.scriptures.icon)
                 }
-                .tag(AppTab.scriptures)
-
-                NavigationStack {
-                    FavouritesView()
+            
+            FavouritesView()
+                .tabItem {
+                    Label(AppTab.favourites.title, systemImage: AppTab.favourites.icon)
                 }
-                .tag(AppTab.favourites)
-
-                NavigationStack {
-                    SettingsView()
+            
+            SettingsView()
+                .tabItem {
+                    Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
                 }
-                .tag(AppTab.settings)
-            }
-            .toolbar(.hidden, for: .tabBar)
-
-            VStack {
-                 Spacer()
-                TabBar(selectedTab: $selectedTab)
-            }
         }
+        .tint(Color.orange)
     }
 }
 
-struct TabBar: View {
-    @Binding var selectedTab: AppTab
-
-    var body: some View {
-        HStack {
-            ForEach(AppTab.allCases, id: \.self) { tab in
-                tabButton(tab)
-            }
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(.orange.opacity(0.1))
-        )
-        .padding(.horizontal, 16)
-        .padding(.bottom, 12)
-    }
-
-    private func tabButton(_ tab: AppTab) -> some View {
-        Button {
-            selectedTab = tab
-        } label: {
-            VStack(spacing: 4) {
-                
-                Image(systemName: selectedTab == tab ? tab.iconFill : tab.icon)
-                
-                Text(tab.title)
-                    .font(.caption2)
-            }
-            .foregroundColor(
-                selectedTab == tab ? .orange : .gray
-            )
-            .frame(maxWidth: .infinity)
-        }
-    }
-}
 
 
 #Preview {
