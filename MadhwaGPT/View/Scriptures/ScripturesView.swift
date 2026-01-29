@@ -103,7 +103,7 @@ class ScriptureViewModel: ObservableObject {
             title: "Harikathamrutasara",
             description: "The Nectar of Hari's stories",
             language: "Kannada",
-            chaptersURLString: "https://madhwagpt2.onrender.com/api/gita/chapters",
+            chaptersURLString: "https://madhwagpt2.onrender.com/api/works/harikathamritha_sara/chapters",
             firstMetaDataKey: "33",
             firstMetaDataValue: "sandhis",
             secondMetaDataKey: "960",
@@ -211,7 +211,7 @@ struct Scripture: Identifiable {
 
 
 struct Strings {
-    static let scripturesTitle = NSLocalizedString("Explore Sacred Texts (Preview)", comment: "Scriptures page title")
+    static let scripturesTitle = NSLocalizedString("Explore Sacred Texts", comment: "Scriptures page title")
     static let scripturesHeader = NSLocalizedString("Explore sacred verses with detailed meanings and translations", comment: "Scriptures page header")
     static let scripturesSubHeader = NSLocalizedString("AI-guided insights from the Madhva guru parampara tradition"
                                             , comment: "Scriptures page header")

@@ -1,14 +1,14 @@
 //
-//  SettingsView.swift
+//  Pravachana.swift
 //  MadhwaGPT
 //
-//  Created by Praveen Kumar Vedanti on 1/17/26.
+//  Created by Praveen Kumar Vedanti on 1/28/26.
 //
 
 import Foundation
 import SwiftUI
 
-struct SettingsView: View {
+struct PravachanaView: View {
     let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     
     var body: some View {
@@ -16,7 +16,7 @@ struct SettingsView: View {
             Spacer()
                 .frame(height: 20)
            
-            Text("Settings")
+            Text("Pravachana")
             
             Spacer()
         }

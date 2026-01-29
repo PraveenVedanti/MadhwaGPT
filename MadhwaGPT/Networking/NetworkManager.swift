@@ -30,7 +30,7 @@ final class NetworkManager {
         }
 
         let (data, response) = try await URLSession.shared.data(from: url)
-
+        
         guard let httpResponse = response as? HTTPURLResponse else {
             throw NetworkError.invalidResponse
         }
@@ -40,7 +40,8 @@ final class NetworkManager {
         }
 
         do {
-            return try JSONDecoder().decode(T.self, from: data)
+            let decoder = JSONDecoder()
+            return try decoder.decode(T.self, from: data)
         } catch {
             throw NetworkError.decodingFailed
         }
