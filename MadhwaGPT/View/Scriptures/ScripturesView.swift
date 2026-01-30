@@ -29,7 +29,7 @@ struct ScripturesView: View {
                     
                     ForEach(viewModel.scriptures) { scripture in
                         NavigationLink {
-                            ScriptureDetailView(scripture: scripture)
+                            ScriptureChaptersView(scripture: scripture)
                         } label: {
                             ScriptureCard(
                                 title: scripture.title,
@@ -82,38 +82,6 @@ struct ScripturesView: View {
     }
 }
 
-class ScriptureViewModel: ObservableObject {
-    
-    @Published var scriptures: [Scripture] = []
-   
-    func loadScriptures() {
-        
-        let bhagavatGeetha = Scripture(
-            title: "Bhagavatgeetha",
-            description: "The song of god",
-            language: "Sanskrit",
-            chaptersURLString: "https://madhwagpt2.onrender.com/api/gita/chapters",
-            firstMetaDataKey: "18",
-            firstMetaDataValue: "Chapters",
-            secondMetaDataKey: "700",
-            secondMetaDataValue: "Verses"
-        )
-        
-        let harikathamrutasara = Scripture(
-            title: "Harikathamrutasara",
-            description: "The Nectar of Hari's stories",
-            language: "Kannada",
-            chaptersURLString: "https://madhwagpt2.onrender.com/api/works/harikathamritha_sara/chapters",
-            firstMetaDataKey: "33",
-            firstMetaDataValue: "sandhis",
-            secondMetaDataKey: "960",
-            secondMetaDataValue: "Padyas"
-        )
-        
-        scriptures.append(bhagavatGeetha)
-        scriptures.append(harikathamrutasara)
-    }
-}
 
 struct ScriptureCard: View {
     

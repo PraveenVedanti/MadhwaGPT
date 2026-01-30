@@ -1,19 +1,19 @@
 //
-//  ScriptureDetailView.swift
+//  ScriptureChaptersView.swift
 //  MadhwaGPT
 //
-//  Created by Praveen Kumar Vedanti on 1/23/26.
+//  Created by Praveen Kumar Vedanti on 1/30/26.
 //
 
 import Foundation
 import SwiftUI
 
-struct ScriptureDetailView: View {
+struct ScriptureChaptersView: View {
     
     let scripture: Scripture
     let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     
-    @State private var scriptureDetails: [ScriptureDetail] = []
+    @State private var scriptureChapters: [ScriptureChapter] = []
     
     @ObservedObject private var viewModel =  ScripturesViewModel()
     
@@ -21,11 +21,11 @@ struct ScriptureDetailView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16.0) {
-                    ForEach(scriptureDetails) { scriptureDetail in
+                    ForEach(scriptureChapters) { scriptureChapter in
                         NavigationLink {
                             Text("Hello")
                         } label: {
-                            ScriptureDetailCard(scriptureDetail: scriptureDetail)
+                            ScriptureChapterCard(scriptureChapter: scriptureChapter)
                         }
                     }
                 }
@@ -33,16 +33,16 @@ struct ScriptureDetailView: View {
             .background(backgroundColor)
         }
         .task {
-            scriptureDetails = await viewModel.loadScriptureDetails(scripture: scripture)
+            scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
         }
         .navigationTitle(scripture.title)
     }
 }
 
 
-struct ScriptureDetailCard: View {
+struct ScriptureChapterCard: View {
     
-    let scriptureDetail: ScriptureDetail
+    let scriptureChapter: ScriptureChapter
    
     var body: some View {
         
@@ -50,6 +50,8 @@ struct ScriptureDetailCard: View {
             mainTitleView
             
             transliteratedView
+            
+            descriptionView
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -63,13 +65,13 @@ struct ScriptureDetailCard: View {
     
     @ViewBuilder
     private var mainTitleView: some View {
-        if let kannadaName = scriptureDetail.kannadaName {
+        if let kannadaName = scriptureChapter.kannadaName {
             Text(kannadaName)
                 .font(.headline)
                 .foregroundColor(.black)
         }
         
-        if let sanskritName = scriptureDetail.sanskritName {
+        if let sanskritName = scriptureChapter.sanskritName {
             Text(sanskritName)
                 .font(.headline)
                 .foregroundColor(.black)
@@ -77,9 +79,36 @@ struct ScriptureDetailCard: View {
     }
     
     private var transliteratedView: some View {
-        Text(scriptureDetail.transliteratedName)
+        Text(scriptureChapter.transliteratedName)
             .font(.subheadline)
             .italic()
             .foregroundColor(.secondary)
+    }
+    
+    private var descriptionView: some View {
+        Text(scriptureChapter.englishName)
+            .font(.footnote)
+            .foregroundColor(.orange.opacity(0.8))
+    }
+}
+
+struct ScriptureChapter: Identifiable, Decodable {
+    var id = UUID()
+    let number: Int
+    let sanskritName: String?
+    let kannadaName: String?
+    let englishName: String
+    let transliteratedName: String
+    let description: String?
+    let verseCount: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case number
+        case sanskritName = "sanskrit_name"
+        case kannadaName = "kannada_name"
+        case englishName = "english_name"
+        case transliteratedName = "transliterated_name"
+        case description
+        case verseCount = "verse_count"
     }
 }

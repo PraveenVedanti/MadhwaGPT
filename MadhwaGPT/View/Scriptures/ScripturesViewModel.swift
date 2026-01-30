@@ -7,30 +7,8 @@
 
 import Foundation
 
-struct ScriptureDetail: Identifiable, Decodable {
-    var id = UUID()
-    let number: Int
-    let sanskritName: String?
-    let kannadaName: String?
-    let englishName: String
-    let transliteratedName: String
-    let description: String?
-    let verseCount: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case number
-        case sanskritName = "sanskrit_name"
-        case kannadaName = "kannada_name"
-        case englishName = "english_name"
-        case transliteratedName = "transliterated_name"
-        case description
-        case verseCount = "verse_count"
-    }
-}
-
-
 struct ChaptersResponse: Decodable {
-    let sections: [ScriptureDetail]
+    let sections: [ScriptureChapter]
 
     enum CodingKeys: String, CodingKey {
         case sandhis
@@ -40,9 +18,9 @@ struct ChaptersResponse: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        if let sandhis = try container.decodeIfPresent([ScriptureDetail].self, forKey: .sandhis) {
+        if let sandhis = try container.decodeIfPresent([ScriptureChapter].self, forKey: .sandhis) {
             sections = sandhis
-        } else if let chapters = try container.decodeIfPresent([ScriptureDetail].self, forKey: .chapters) {
+        } else if let chapters = try container.decodeIfPresent([ScriptureChapter].self, forKey: .chapters) {
             sections = chapters
         } else {
             sections = []
@@ -50,12 +28,45 @@ struct ChaptersResponse: Decodable {
     }
 }
 
+class ScriptureViewModel: ObservableObject {
+    
+    @Published var scriptures: [Scripture] = []
+   
+    func loadScriptures() {
+        
+        let bhagavatGeetha = Scripture(
+            title: "Bhagavatgeetha",
+            description: "The song of god",
+            language: "Sanskrit",
+            chaptersURLString: "https://madhwagpt2.onrender.com/api/gita/chapters",
+            firstMetaDataKey: "18",
+            firstMetaDataValue: "Chapters",
+            secondMetaDataKey: "700",
+            secondMetaDataValue: "Verses"
+        )
+        
+        let harikathamrutasara = Scripture(
+            title: "Harikathamrutasara",
+            description: "The Nectar of Hari's stories",
+            language: "Kannada",
+            chaptersURLString: "https://madhwagpt2.onrender.com/api/works/harikathamritha_sara/chapters",
+            firstMetaDataKey: "33",
+            firstMetaDataValue: "sandhis",
+            secondMetaDataKey: "960",
+            secondMetaDataValue: "Padyas"
+        )
+        
+        scriptures.append(bhagavatGeetha)
+        scriptures.append(harikathamrutasara)
+    }
+}
+
 
 class ScripturesViewModel: ObservableObject {
     
-    func loadScriptureDetails(scripture: Scripture) async -> [ScriptureDetail] {
+    func loadScriptureChapters(scripture: Scripture) async -> [ScriptureChapter] {
         
-        var returnValue: [ScriptureDetail] = []
+        var returnValue: [ScriptureChapter] = []
         
         do {
             let test = try await NetworkManager.shared.fetch(urlString: scripture.chaptersURLString, type: ChaptersResponse.self)

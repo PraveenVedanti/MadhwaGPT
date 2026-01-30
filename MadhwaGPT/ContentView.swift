@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 enum AppTab: CaseIterable {
-    case chat, scriptures, favourites, settings, pravachana
+    case chat, scriptures, favourites, settings, pravachana, profile
 
     var title: String {
         switch self {
@@ -18,6 +18,7 @@ enum AppTab: CaseIterable {
         case .favourites: return "Favourites"
         case .settings: return "Settings"
         case .pravachana: return "Pravachana"
+        case .profile: return "Profile"
         }
     }
 
@@ -28,6 +29,7 @@ enum AppTab: CaseIterable {
         case .favourites: return "heart"
         case .settings: return "gear"
         case .pravachana: return "headphones"
+        case .profile: return "person"
         }
     }
 }
@@ -52,10 +54,9 @@ struct ContentView: View {
                 .tabItem {
                     Label(AppTab.pravachana.title, systemImage: AppTab.pravachana.icon)
                 }
-            
-            SettingsView()
+            FavouritesView()
                 .tabItem {
-                    Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
+                    Label(AppTab.favourites.title, systemImage: AppTab.favourites.icon)
                 }
         }
         .tint(Color.orange)
