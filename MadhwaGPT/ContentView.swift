@@ -8,52 +8,61 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+enum AppTab: CaseIterable {
+    case chat, scriptures, favourites, settings, pravachana, profile
 
-    var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
+    var title: String {
+        switch self {
+        case .chat: return "Chat"
+        case .scriptures: return "Scriptures"
+        case .favourites: return "Favourites"
+        case .settings: return "Settings"
+        case .pravachana: return "Pravachana"
+        case .profile: return "Profile"
         }
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+    var icon: String {
+        switch self {
+        case .chat: return "message"
+        case .scriptures: return "book"
+        case .favourites: return "heart"
+        case .settings: return "gear"
+        case .pravachana: return "headphones"
+        case .profile: return "person"
         }
     }
 }
+
+
+import SwiftUI
+
+struct ContentView: View {
+    var body: some View {
+        TabView {
+            ChatView()
+                .tabItem {
+                    Label(AppTab.chat.title, systemImage: AppTab.chat.icon)
+                }
+            
+            ScripturesView()
+                .tabItem {
+                    Label(AppTab.scriptures.title, systemImage: AppTab.scriptures.icon)
+                }
+            
+            PravachanaView()
+                .tabItem {
+                    Label(AppTab.pravachana.title, systemImage: AppTab.pravachana.icon)
+                }
+            FavouritesView()
+                .tabItem {
+                    Label(AppTab.favourites.title, systemImage: AppTab.favourites.icon)
+                }
+        }
+        .tint(Color.orange)
+    }
+}
+
 
 #Preview {
     ContentView()
