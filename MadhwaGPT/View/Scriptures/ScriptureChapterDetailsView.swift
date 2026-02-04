@@ -57,7 +57,6 @@ struct ScriptureChapterDetailCard: View {
             Text($0.transliteration)
         }
         .task {
-            print("It is...")
             print(vm.currentItems)
         }
     }

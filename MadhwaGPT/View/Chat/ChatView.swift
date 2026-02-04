@@ -15,14 +15,39 @@ struct ChatView: View {
     
     @ObservedObject var viewModel = ChatViewModel()
     
+    @State var answerText: String?
+    
+    // Use a state variable to track loading
+    @State private var isSending = false
+    @State private var didReceivedAnswer = false
+    
     var body: some View {
         
         NavigationStack {
             VStack(spacing: 12) {
-                
                 navigationBarView
                 
-                chatLevelSelectionView
+                if isSending {
+                    Text("Generating....")
+                }
+                
+                if didReceivedAnswer {
+                    ScrollView {
+                        Text(answerText ?? "")
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
+                         
+                    }
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.clear)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray.opacity(0.8), lineWidth: 1)
+                    )
+                    .padding()
+                }
                 
                 Spacer()
                 
@@ -49,28 +74,11 @@ struct ChatView: View {
         .frame(maxWidth: .infinity)
     }
     
-    private var chatLevelSelectionView: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 16.0) {
-                ForEach(viewModel.chatLevels) { level in
-                    Chip(
-                        title: level.title,
-                        isSelected: level.title.contains("Beginner")
-                    ) {
-                       
-                    }
-                }
-            }
-        }
-        .padding(.horizontal, 12)
-    }
-    
     private var textEditorView: some View {
         HStack(spacing: 8.0) {
             ExpandingTextInput(text: $message)
-            
             Button {
-                print("Send tapped : \(message)")
+                sendQuery()
             } label: {
                 Image(systemName: "paperplane")
                     .font(.system(size: 16))
@@ -84,7 +92,6 @@ struct ChatView: View {
     
     private var settingsButtonView: some View {
         Button {
-            print("Settings tapped")
         } label: {
             Image(systemName: "gear")
                 .font(.system(size: 18, weight: .bold))
@@ -92,5 +99,32 @@ struct ChatView: View {
                 .padding(16)
                 .clipShape(Circle())
         }
+    }
+    
+    private func sendQuery() {
+        let currentMessage = message
+        clearTextEditor()
+        
+        Task {
+            isSending = true
+            await sendQuery(query: currentMessage)
+            isSending = false
+        }
+    }
+    
+    @MainActor
+    private func sendQuery(query: String) async {
+        do {
+            let answer = try await viewModel.queryQuestion(query)
+            self.answerText = answer
+            didReceivedAnswer = true
+        } catch {
+            print("Failed to get answer: \(error.localizedDescription)")
+            didReceivedAnswer = false
+        }
+    }
+    
+    private func clearTextEditor() {
+        message = ""
     }
 }

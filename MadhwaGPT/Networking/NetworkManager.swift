@@ -15,6 +15,19 @@ enum NetworkError: Error {
 }
 
 
+import Foundation
+
+struct QueryRequest: Codable {
+    let question: String
+    let persona: String
+    let stream: Bool
+}
+
+struct QueryResponse: Codable {
+    let answer: String
+}
+
+
 final class NetworkManager {
 
     static let shared = NetworkManager()
@@ -45,5 +58,37 @@ final class NetworkManager {
         } catch {
             throw NetworkError.decodingFailed
         }
+    }
+    
+    func askQuestion(
+        question: String,
+        persona: String = "intermediate"
+    ) async throws -> String {
+        
+        guard let url = URL(string: "https://madhwagpt2.onrender.com/query") else {
+            throw URLError(.badURL)
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = QueryRequest(
+            question: question,
+            persona: persona,
+            stream: false
+        )
+        
+        request.httpBody = try JSONEncoder().encode(body)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse,
+              200...299 ~= httpResponse.statusCode else {
+            throw URLError(.badServerResponse)
+        }
+        
+        let decodedResponse = try JSONDecoder().decode(QueryResponse.self, from: data)
+        return decodedResponse.answer
     }
 }

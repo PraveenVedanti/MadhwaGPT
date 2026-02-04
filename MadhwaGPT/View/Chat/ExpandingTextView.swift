@@ -11,7 +11,7 @@ import SwiftUI
 struct ExpandingTextInput: View {
     @Binding var text: String
     let placeholder =  "Ask about Madhvacharya's philosophy.."
-    let minHeight: CGFloat = 48
+    let minHeight: CGFloat = 52
     let maxHeight: CGFloat = 150
 
     @State private var textHeight: CGFloat = 48
@@ -21,11 +21,13 @@ struct ExpandingTextInput: View {
             ZStack(alignment: .topLeading) {
                 
                 TextEditor(text: $text)
-
+                    .scrollContentBackground(.hidden)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 6)
                     .frame(height: min(textHeight, maxHeight))
                     .background(
                         RoundedRectangle(cornerRadius: 24)
-                            .fill(Color.gray)
+                            .fill(Color.clear)
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 24)
