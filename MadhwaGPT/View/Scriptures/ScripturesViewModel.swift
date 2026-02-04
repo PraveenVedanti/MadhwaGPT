@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ChaptersResponse: Decodable {
+struct ScriptureChaptersResponse: Decodable {
     let sections: [ScriptureChapter]
 
     enum CodingKeys: String, CodingKey {
@@ -26,6 +26,10 @@ struct ChaptersResponse: Decodable {
             sections = []
         }
     }
+}
+
+struct SriptureChapterDetailsResponse: Codable {
+    let verses: [ScriptureChapterDetail]
 }
 
 class ScriptureViewModel: ObservableObject {
@@ -62,14 +66,14 @@ class ScriptureViewModel: ObservableObject {
 }
 
 
-class ScripturesViewModel: ObservableObject {
+class ScriptureChaptersViewModel: ObservableObject {
     
     func loadScriptureChapters(scripture: Scripture) async -> [ScriptureChapter] {
         
         var returnValue: [ScriptureChapter] = []
         
         do {
-            let test = try await NetworkManager.shared.fetch(urlString: scripture.chaptersURLString, type: ChaptersResponse.self)
+            let test = try await NetworkManager.shared.fetch(urlString: scripture.chaptersURLString, type: ScriptureChaptersResponse.self)
             returnValue = test.sections
         }
         catch {
@@ -78,4 +82,29 @@ class ScripturesViewModel: ObservableObject {
         
         return returnValue
     }
+}
+
+
+class ScriptureChapterDetailsViewModel: ObservableObject {
+    
+    func loadScriptureChapterDetails(
+        scripture: Scripture,
+        scriptureChapter: ScriptureChapter
+    ) async -> [ScriptureChapterDetail] {
+        
+        let url = "\(scripture.chaptersURLString)/\(scriptureChapter.number)/verses"
+        
+        var returnValue: [ScriptureChapterDetail] = []
+        
+        do {
+            let test = try await NetworkManager.shared.fetch(urlString: url, type: SriptureChapterDetailsResponse.self)
+            returnValue = test.verses
+        }
+        catch {
+            print("Catch...")
+        }
+        
+        return returnValue
+    }
+    
 }

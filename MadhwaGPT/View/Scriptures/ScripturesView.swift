@@ -54,8 +54,10 @@ struct ScripturesView: View {
                     }
                 }
             }
+            .navigationTitle("Scriptures")
             .background(backgroundColor)
         }
+        
     }
     
     private var headerView: some View {
