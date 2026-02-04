@@ -15,7 +15,7 @@ struct ScriptureChaptersView: View {
     
     @State private var scriptureChapters: [ScriptureChapter] = []
     
-    @ObservedObject private var viewModel =  ScripturesViewModel()
+    @ObservedObject private var viewModel =  ScriptureChaptersViewModel()
     
     var body: some View {
         NavigationStack {
@@ -23,7 +23,10 @@ struct ScriptureChaptersView: View {
                 VStack(alignment: .leading, spacing: 16.0) {
                     ForEach(scriptureChapters) { scriptureChapter in
                         NavigationLink {
-                            Text("Hello")
+                            ScriptureChapterDetailsView(
+                                scriptureChapter: scriptureChapter,
+                                scripture: scripture
+                            )
                         } label: {
                             ScriptureChapterCard(scriptureChapter: scriptureChapter)
                         }
