@@ -22,7 +22,7 @@ struct ScriptureChapterDetailsView: View {
             NavigationStack {
                 ScrollView {
                     ForEach(scriptureChapterDetails) { scriptureChapterDetail in
-                        ScriptureChapterDetailCard(scriptureChapterDetails: scriptureChapterDetails)
+                        ScriptureChapterDetailCard()
                     }
                 }
             }
@@ -37,28 +37,11 @@ struct ScriptureChapterDetailsView: View {
 
 struct ScriptureChapterDetailCard: View {
     
-    var scriptureChapterDetails: [ScriptureChapterDetail]
-    
-    @StateObject private var vm: PaginationViewModel<ScriptureChapterDetail>
-    
-    init(scriptureChapterDetails: [ScriptureChapterDetail]) {
-        self.scriptureChapterDetails = scriptureChapterDetails
-        _vm = StateObject(
-            wrappedValue: PaginationViewModel(
-                items: scriptureChapterDetails
-            )
-        )
-    }
+
     
     var body: some View {
-        Text("Hekllo out ..\(vm.currentItems.count)")
-        List(vm.currentItems) {
-            Text("Hekllo")
-            Text($0.transliteration)
-        }
-        .task {
-            print(vm.currentItems)
-        }
+        Text("Hekllo out")
+        
     }
 }
 

@@ -7,10 +7,20 @@
 
 import Foundation
 
+// Represent specific failure points that can occur during network operations
+
 enum NetworkError: Error {
+    
+    // The URL string provided was malformed couldn't be constructed.
     case invalidURL
+    
+    // Server returned invalid httpResponse
     case invalidResponse
+    
+    // Server returned un expected status code
     case statusCode(Int)
+    
+    // Parsing failed or server response did not match the expected model format
     case decodingFailed
 }
 

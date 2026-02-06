@@ -15,43 +15,70 @@ struct ChatView: View {
     
     @ObservedObject var viewModel = ChatViewModel()
     
-    @State var answerText: String?
+    @State private var messages: [ChatMessage] = []
     
     // Use a state variable to track loading
     @State private var isSending = false
-    @State private var didReceivedAnswer = false
+    
+    @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
         
         NavigationStack {
             VStack(spacing: 12) {
-                navigationBarView
+                
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(messages) { msg in
+                                ChatBubbleView(message: msg)
+                                    .id(msg.id)
+                            }
+                        }
+                        .padding(.vertical)
+                    }
+                    .onChange(of: messages.count, { oldValue, newValue in
+                        scrollToBottom(proxy: proxy)
+                    })
+                }
                 
                 if isSending {
-                    Text("Generating....")
-                }
-                
-                if didReceivedAnswer {
-                    ScrollView {
-                        Text(answerText ?? "")
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 8)
-                         
+                    HStack {
+                        Image(systemName: "slomo")
+                            .font(.system(size: 16))
+                            .foregroundColor(.white)
+                            .padding(8)
+                            .background(Circle().fill(Color.orange.opacity(0.8)))
+                        Text("Generating....")
                     }
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.clear)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.gray.opacity(0.8), lineWidth: 1)
-                    )
-                    .padding()
+                    
                 }
                 
-                Spacer()
+                Divider()
                 
                 textEditorView
+            }
+            .navigationTitle("MadhwaGPT")
+            .toolbar {
+                // Top Right Button
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        print("Settings Tapped")
+                        // Action: Clear messages or start new session
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                }
+                
+                ToolbarItem(placement: .navigation) {
+                    Button {
+                        print("Slider Tapped")
+                        // Action: Clear messages or start new session
+                    } label: {
+                        Image(systemName: "slider.horizontal.3")
+                    }
+                }
+
             }
             .onAppear {
                 if viewModel.chatLevels.isEmpty {
@@ -62,16 +89,12 @@ struct ChatView: View {
         }
     }
     
-    private var navigationBarView: some View {
-        HStack {
-            Spacer()
-            settingsButtonView
+    private func scrollToBottom(proxy: ScrollViewProxy) {
+        guard let lastID = messages.last?.id else { return }
+        
+        withAnimation(.easeOut(duration: 0.3)) {
+            proxy.scrollTo(lastID, anchor: .bottom)
         }
-        .overlay {
-            Text("MadhwaGPT")
-                .font(.title)
-        }
-        .frame(maxWidth: .infinity)
     }
     
     private var textEditorView: some View {
@@ -102,12 +125,15 @@ struct ChatView: View {
     }
     
     private func sendQuery() {
-        let currentMessage = message
+        let currentMessage = ChatMessage(text: message, isUser: true)
+        messages.append(currentMessage)
+       
+        // Clear the text editor.
         clearTextEditor()
         
         Task {
             isSending = true
-            await sendQuery(query: currentMessage)
+            await sendQuery(query: currentMessage.text)
             isSending = false
         }
     }
@@ -116,11 +142,9 @@ struct ChatView: View {
     private func sendQuery(query: String) async {
         do {
             let answer = try await viewModel.queryQuestion(query)
-            self.answerText = answer
-            didReceivedAnswer = true
+            messages.append(ChatMessage(text: answer, isUser: false))
         } catch {
             print("Failed to get answer: \(error.localizedDescription)")
-            didReceivedAnswer = false
         }
     }
     
