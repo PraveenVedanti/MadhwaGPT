@@ -13,64 +13,138 @@ struct ChatView: View {
     @State private var message = ""
     let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     
+    // Chat view model.
     @ObservedObject var viewModel = ChatViewModel()
+    
+    @State private var messages: [ChatMessage] = []
+    
+    // Use a state variable to track loading
+    @State private var isSending = false
+    
+    @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
         
         NavigationStack {
             VStack(spacing: 12) {
                 
-                navigationBarView
+                chatScrollView
                 
-                chatLevelSelectionView
+                if isSending {
+                    typingIndicator
+                }
                 
-                Spacer()
+                suggestionChips
+                
+                Divider()
                 
                 textEditorView
             }
-            .onAppear {
-                if viewModel.chatLevels.isEmpty {
-                    viewModel.loadChatTypes()
+            .navigationTitle("MadhwaGPT")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                // Top Right Button
+                ToolbarItem(placement: .primaryAction) {
+                    settingsView
                 }
+                // Top Left Button
+                ToolbarItem(placement: .navigation) {
+                    chatHistory
+                }
+            }
+            .onAppear {
+                loadInitialData()
             }
             .background(backgroundColor)
         }
     }
     
-    private var navigationBarView: some View {
-        HStack {
-            Spacer()
-            settingsButtonView
+    // MARK: - Subviews
+    private var chatScrollView: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    // Helpful for new users to see what the app is about
+                    if messages.isEmpty {
+                        welcomeHeader
+                    }
+                    
+                    ForEach(messages) { msg in
+                        ChatBubbleView(message: msg)
+                            .id(msg.id)
+                    }
+                }
+                .padding()
+            }
+            .onChange(of: messages.count, { oldValue, newValue in
+                scrollToBottom(proxy: proxy)
+            })
         }
-        .overlay {
-            Text("MadhwaGPT")
-                .font(.title)
-        }
-        .frame(maxWidth: .infinity)
     }
     
-    private var chatLevelSelectionView: some View {
+    private var welcomeHeader: some View {
+        VStack {
+            Image("madhwaImage")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 64, height: 64)
+                .clipShape(Circle())
+                       .overlay(
+                           Circle()
+                               .stroke(Color.gray, lineWidth: 2)
+                       )
+
+            Text(Strings.welcomeHeaderTitle)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+    }
+    
+    private var suggestionChips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 16.0) {
-                ForEach(viewModel.chatLevels) { level in
-                    Chip(
-                        title: level.title,
-                        isSelected: level.title.contains("Beginner")
-                    ) {
-                       
+            HStack(spacing: 12) {
+                ForEach(viewModel.initialSuggestions) { suggestion in
+                    Chip(title: suggestion.suggestion) {
+                        sendQuery(text: suggestion.suggestion)
                     }
                 }
             }
+            .padding(.horizontal)
         }
-        .padding(.horizontal, 12)
+    }
+    
+    private var typingIndicator: some View {
+        HStack(spacing: 8) {
+            ProgressView()
+                .tint(.orange)
+            Text("Consulting Shastras...")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding(.bottom, 8)
+    }
+    
+    private var settingsView: some View {
+        Button {
+            print("Settings Tapped")
+        } label: {
+            Image(systemName: "gear")
+        }
+    }
+    
+    private var chatHistory: some View {
+        Button {
+            print("Slider Tapped")
+        } label: {
+            Image(systemName: "slider.horizontal.3")
+        }
     }
     
     private var textEditorView: some View {
         HStack(spacing: 8.0) {
             ExpandingTextInput(text: $message)
-            
             Button {
-                print("Send tapped : \(message)")
+                sendQuery(text: message)
             } label: {
                 Image(systemName: "paperplane")
                     .font(.system(size: 16))
@@ -82,15 +156,83 @@ struct ChatView: View {
         .padding()
     }
     
-    private var settingsButtonView: some View {
-        Button {
-            print("Settings tapped")
-        } label: {
-            Image(systemName: "gear")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(.secondary)
-                .padding(16)
-                .clipShape(Circle())
+    private func loadInitialData() {
+        if viewModel.initialSuggestions.isEmpty {
+            viewModel.loadChatSuggestions()
         }
+    }
+
+    // Scroll to bottom when results are generated.
+    private func scrollToBottom(proxy: ScrollViewProxy) {
+        guard let lastID = messages.last?.id else { return }
+        
+        withAnimation(.easeOut(duration: 0.3)) {
+            proxy.scrollTo(lastID, anchor: .bottom)
+        }
+    }
+    
+    private func sendQuery(text: String) {
+        let currentMessage = ChatMessage(text: text, isUser: true)
+        messages.append(currentMessage)
+       
+        // Clear the text editor.
+        clearTextEditor()
+        
+        Task {
+            isSending = true
+            await executeQuery(query: currentMessage.text)
+            isSending = false
+        }
+    }
+    
+    @MainActor
+    private func executeQuery(query: String) async {
+        do {
+            let answer = try await viewModel.queryQuestion(query)
+            messages.append(ChatMessage(text: answer, isUser: false))
+        } catch {
+            print("Failed to get answer: \(error.localizedDescription)")
+        }
+    }
+    
+    private func clearTextEditor() {
+        message = ""
+    }
+}
+
+// MARK: - Chip View
+public struct Chip: View {
+    
+    private let title: String
+    private let onTap: () -> Void
+    
+    public init(
+          title: String,
+          onTap: @escaping () -> Void
+      ) {
+          self.title = title
+          self.onTap = onTap
+      }
+    
+    public var body: some View {
+        HStack {
+            Text(title)
+                .font(.footnote)
+                .fontWeight(.medium)
+                .foregroundColor(.primary)
+                .multilineTextAlignment(.leading)
+                .frame(width: UIScreen.main.bounds.width * 0.75, alignment: .leading)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .onTapGesture {
+            onTap()
+        }
+        .padding()
+        .background(
+            Capsule()
+                .fill(Color.orange.opacity(0.1))
+                .overlay(Capsule().stroke(Color.orange.opacity(0.3), lineWidth: 1))
+        )
     }
 }
