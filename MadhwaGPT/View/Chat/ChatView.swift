@@ -13,6 +13,7 @@ struct ChatView: View {
     @State private var message = ""
     let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     
+    // Chat view model.
     @ObservedObject var viewModel = ChatViewModel()
     
     @State private var messages: [ChatMessage] = []
@@ -27,73 +28,115 @@ struct ChatView: View {
         NavigationStack {
             VStack(spacing: 12) {
                 
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(messages) { msg in
-                                ChatBubbleView(message: msg)
-                                    .id(msg.id)
-                            }
-                        }
-                        .padding(.vertical)
-                    }
-                    .onChange(of: messages.count, { oldValue, newValue in
-                        scrollToBottom(proxy: proxy)
-                    })
-                }
+                chatScrollView
                 
                 if isSending {
-                    HStack {
-                        Image(systemName: "slomo")
-                            .font(.system(size: 16))
-                            .foregroundColor(.white)
-                            .padding(8)
-                            .background(Circle().fill(Color.orange.opacity(0.8)))
-                        Text("Generating....")
-                    }
-                    
+                    typingIndicator
                 }
+                
+                suggestionChips
                 
                 Divider()
                 
                 textEditorView
             }
             .navigationTitle("MadhwaGPT")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 // Top Right Button
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        print("Settings Tapped")
-                        // Action: Clear messages or start new session
-                    } label: {
-                        Image(systemName: "gear")
-                    }
+                    settingsView
                 }
-                
+                // Top Left Button
                 ToolbarItem(placement: .navigation) {
-                    Button {
-                        print("Slider Tapped")
-                        // Action: Clear messages or start new session
-                    } label: {
-                        Image(systemName: "slider.horizontal.3")
-                    }
+                    chatHistory
                 }
-
             }
             .onAppear {
-                if viewModel.chatLevels.isEmpty {
-                    viewModel.loadChatTypes()
-                }
+                loadInitialData()
             }
             .background(backgroundColor)
         }
     }
     
-    private func scrollToBottom(proxy: ScrollViewProxy) {
-        guard let lastID = messages.last?.id else { return }
-        
-        withAnimation(.easeOut(duration: 0.3)) {
-            proxy.scrollTo(lastID, anchor: .bottom)
+    // MARK: - Subviews
+    private var chatScrollView: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    // Helpful for new users to see what the app is about
+                    if messages.isEmpty {
+                        welcomeHeader
+                    }
+                    
+                    ForEach(messages) { msg in
+                        ChatBubbleView(message: msg)
+                            .id(msg.id)
+                    }
+                }
+                .padding()
+            }
+            .onChange(of: messages.count, { oldValue, newValue in
+                scrollToBottom(proxy: proxy)
+            })
+        }
+    }
+    
+    private var welcomeHeader: some View {
+        VStack {
+            Image("madhwaImage")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 64, height: 64)
+                .clipShape(Circle())
+                       .overlay(
+                           Circle()
+                               .stroke(Color.gray, lineWidth: 2)
+                       )
+
+            Text(Strings.welcomeHeaderTitle)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+    }
+    
+    private var suggestionChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(viewModel.initialSuggestions) { suggestion in
+                    Chip(title: suggestion.suggestion) {
+                        sendQuery(text: suggestion.suggestion)
+                    }
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    private var typingIndicator: some View {
+        HStack(spacing: 8) {
+            ProgressView()
+                .tint(.orange)
+            Text("Consulting Shastras...")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding(.bottom, 8)
+    }
+    
+    private var settingsView: some View {
+        Button {
+            print("Settings Tapped")
+        } label: {
+            Image(systemName: "gear")
+        }
+    }
+    
+    private var chatHistory: some View {
+        Button {
+            print("Slider Tapped")
+        } label: {
+            Image(systemName: "slider.horizontal.3")
         }
     }
     
@@ -101,7 +144,7 @@ struct ChatView: View {
         HStack(spacing: 8.0) {
             ExpandingTextInput(text: $message)
             Button {
-                sendQuery()
+                sendQuery(text: message)
             } label: {
                 Image(systemName: "paperplane")
                     .font(.system(size: 16))
@@ -113,19 +156,23 @@ struct ChatView: View {
         .padding()
     }
     
-    private var settingsButtonView: some View {
-        Button {
-        } label: {
-            Image(systemName: "gear")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(.secondary)
-                .padding(16)
-                .clipShape(Circle())
+    private func loadInitialData() {
+        if viewModel.initialSuggestions.isEmpty {
+            viewModel.loadChatSuggestions()
+        }
+    }
+
+    // Scroll to bottom when results are generated.
+    private func scrollToBottom(proxy: ScrollViewProxy) {
+        guard let lastID = messages.last?.id else { return }
+        
+        withAnimation(.easeOut(duration: 0.3)) {
+            proxy.scrollTo(lastID, anchor: .bottom)
         }
     }
     
-    private func sendQuery() {
-        let currentMessage = ChatMessage(text: message, isUser: true)
+    private func sendQuery(text: String) {
+        let currentMessage = ChatMessage(text: text, isUser: true)
         messages.append(currentMessage)
        
         // Clear the text editor.
@@ -133,13 +180,13 @@ struct ChatView: View {
         
         Task {
             isSending = true
-            await sendQuery(query: currentMessage.text)
+            await executeQuery(query: currentMessage.text)
             isSending = false
         }
     }
     
     @MainActor
-    private func sendQuery(query: String) async {
+    private func executeQuery(query: String) async {
         do {
             let answer = try await viewModel.queryQuestion(query)
             messages.append(ChatMessage(text: answer, isUser: false))
@@ -150,5 +197,42 @@ struct ChatView: View {
     
     private func clearTextEditor() {
         message = ""
+    }
+}
+
+// MARK: - Chip View
+public struct Chip: View {
+    
+    private let title: String
+    private let onTap: () -> Void
+    
+    public init(
+          title: String,
+          onTap: @escaping () -> Void
+      ) {
+          self.title = title
+          self.onTap = onTap
+      }
+    
+    public var body: some View {
+        HStack {
+            Text(title)
+                .font(.footnote)
+                .fontWeight(.medium)
+                .foregroundColor(.primary)
+                .multilineTextAlignment(.leading)
+                .frame(width: UIScreen.main.bounds.width * 0.75, alignment: .leading)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .onTapGesture {
+            onTap()
+        }
+        .padding()
+        .background(
+            Capsule()
+                .fill(Color.orange.opacity(0.1))
+                .overlay(Capsule().stroke(Color.orange.opacity(0.3), lineWidth: 1))
+        )
     }
 }

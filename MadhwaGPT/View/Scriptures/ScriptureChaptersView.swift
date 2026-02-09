@@ -39,6 +39,7 @@ struct ScriptureChaptersView: View {
             scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
         }
         .navigationTitle(scripture.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
