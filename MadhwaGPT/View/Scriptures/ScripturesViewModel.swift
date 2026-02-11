@@ -28,9 +28,6 @@ struct ScriptureChaptersResponse: Decodable {
     }
 }
 
-struct SriptureChapterDetailsResponse: Codable {
-    let verses: [ScriptureChapterDetail]
-}
 
 class ScriptureViewModel: ObservableObject {
     
@@ -87,17 +84,17 @@ class ScriptureChaptersViewModel: ObservableObject {
 
 class ScriptureChapterDetailsViewModel: ObservableObject {
     
-    func loadScriptureChapterDetails(
+    func loadScriptureChapterVerseList(
         scripture: Scripture,
         scriptureChapter: ScriptureChapter
-    ) async -> [ScriptureChapterDetail] {
+    ) async -> [ScriptureChapterVerse] {
         
         let url = "\(scripture.chaptersURLString)/\(scriptureChapter.number)/verses"
         
-        var returnValue: [ScriptureChapterDetail] = []
+        var returnValue: [ScriptureChapterVerse] = []
         
         do {
-            let test = try await NetworkManager.shared.fetch(urlString: url, type: SriptureChapterDetailsResponse.self)
+            let test = try await NetworkManager.shared.fetch(urlString: url, type: ScriptureChapterVerseResponse.self)
             returnValue = test.verses
         }
         catch {
@@ -108,3 +105,4 @@ class ScriptureChapterDetailsViewModel: ObservableObject {
     }
     
 }
+

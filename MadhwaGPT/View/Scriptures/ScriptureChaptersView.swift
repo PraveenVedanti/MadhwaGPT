@@ -23,7 +23,7 @@ struct ScriptureChaptersView: View {
                 VStack(alignment: .leading, spacing: 16.0) {
                     ForEach(scriptureChapters) { scriptureChapter in
                         NavigationLink {
-                            ScriptureChapterDetailsView(
+                            ScriptureVerseListView(
                                 scriptureChapter: scriptureChapter,
                                 scripture: scripture
                             )
