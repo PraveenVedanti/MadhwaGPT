@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 struct ScriptureVerseListView: View {
     
     let scriptureChapter: ScriptureChapter
@@ -27,7 +26,10 @@ struct ScriptureVerseListView: View {
                         ForEach(scriptureChapterVerseList) { verse in
                             
                             NavigationLink {
-                                ScriptureVerseDetailView(verse: verse)
+                                ScriptureVerseDetailView(
+                                    verse: verse,
+                                    verseList: scriptureChapterVerseList
+                                )
                             } label: {
                                 ScriptureChapterVerseCard(verse: verse)
                             }
@@ -116,6 +118,12 @@ struct ScriptureChapterVerse: Codable, Identifiable {
         case translationEnglish = "translation_english"
         case suggestedQuestions = "suggested_questions"
         case wordByWord = "word_by_word"
+    }
+}
+
+extension ScriptureChapterVerse: Equatable {
+    static func == (lhs: ScriptureChapterVerse, rhs: ScriptureChapterVerse) -> Bool {
+        lhs.canonicalId == rhs.canonicalId
     }
 }
 
