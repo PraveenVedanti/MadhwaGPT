@@ -8,165 +8,116 @@
 import Foundation
 import SwiftUI
 
+import SwiftUI
+
 struct ScripturesView: View {
-    
+    // MARK: - Properties
     let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
-    @ObservedObject var viewModel = ScriptureViewModel()
     
-    let scripturesList: [Scripture] = []
+    @StateObject var viewModel = ScriptureViewModel()
+    @State private var selectedScripture: Scripture?
+    @State private var isLoading = true
     
     var body: some View {
-        
         NavigationStack {
-            ScrollView {
+            VStack(spacing: 0) {
+                headerSection
                 
-                VStack(alignment: .leading, spacing: 16.0) {
-                    
-                    Spacer()
-                        .frame(height: 20)
- 
-                    headerView
-                    
-                    ForEach(viewModel.scriptures) { scripture in
-                        NavigationLink {
-                            ScriptureChaptersView(scripture: scripture)
-                        } label: {
-                            ScriptureCard(
-                                title: scripture.title,
-                                description: scripture.description,
-                                language: scripture.language,
-                                firstMetaDataKey: scripture.firstMetaDataKey,
-                                firstMetaDataValue: scripture.firstMetaDataValue,
-                                secondMetaDataKey: scripture.secondMetaDataKey,
-                                secondMetaDataValue: scripture.secondMetaDataValue
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    
-                    footerView
-                    
-                    Spacer()
-                }
-                .onAppear {
-                    if viewModel.scriptures.isEmpty {
-                        viewModel.loadScriptures()
+                contentSection
+            }
+            .navigationTitle("Scriptures")
+            .navigationBarTitleDisplayMode(.inline)
+            .background(backgroundColor)
+            .task {
+                await loadInitialData()
+            }
+        }
+    }
+    
+    // MARK: - View Components
+    private var headerSection: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(viewModel.scriptures) { scripture in
+                    Chip(
+                        title: "\(scripture.title)  - \(scripture.language)",
+                        isSelected: scripture == selectedScripture
+                    ) {
+                        selectedScripture = scripture
                     }
                 }
             }
-            .navigationTitle("Scriptures")
-            .background(backgroundColor)
+            .padding()
         }
-        
     }
     
+    @ViewBuilder
+    private var contentSection: some View {
+        if isLoading {
+            ContentUnavailableView {
+                Label("Loading Scriptures", systemImage: "book.pages")
+            } description: {
+                ProgressView()
+            }
+        } else if let scripture = selectedScripture {
+            ScrollView {
+                ScriptureChaptersView(scripture: scripture)
+                    .padding(.top)
+                    .id(scripture.id)
+            }
+        } else {
+            ContentUnavailableView(
+                "No Selection",
+                systemImage: "book.closed",
+                description: Text("Please select a scripture to begin reading.")
+            )
+        }
+    }
+    
+    // MARK: - Subviews
     private var headerView: some View {
-        VStack(alignment: .leading, spacing: 12.0) {
-            
-            Text(Strings.scripturesTitle)
-                .foregroundStyle(Color.orange)
-                .font(.title)
-            
-            Text(Strings.scripturesHeader)
-                .foregroundStyle(Color.black)
-                .font(.headline)
+        HStack(spacing: 12.0) {
+            ForEach(viewModel.scriptures) { scripture in
+                Chip(
+                    title: scripture.title,
+                    isSelected: scripture.title == selectedScripture?.title
+                ) {
+                    selectedScripture = scripture
+                }
+            }
         }
-        .padding(.leading, 8.0)
-        .frame(maxWidth: .infinity)
+        .padding(.horizontal)
+        .frame(minWidth: UIScreen.main.bounds.width, alignment: .center)
     }
     
-    private var footerView: some View {
-        Text(Strings.scripturesSubHeader)
-            .foregroundStyle(Color.gray)
-            .font(.caption)
-            .padding(.leading, 8.0)
-            .frame(maxWidth: .infinity)
-    }
-}
-
-
-struct ScriptureCard: View {
-    
-    let title: String
-    let description: String
-    let language: String
-    
-    let firstMetaDataKey: String
-    let firstMetaDataValue: String
-    let secondMetaDataKey: String
-    let secondMetaDataValue: String
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            
-            titleView
-            
-            descriptionView
-            
-            Spacer()
-                .frame(height: 12)
-            
-            metadDataView
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemBackground))
-        )
-        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
-        .padding(.horizontal, 12)
-    }
-    
-    private var titleView: some View {
-        HStack {
-            Text(title)
-                .font(.headline)
-            
-            Spacer()
-            
-            Text(language)
-                .font(.subheadline)
-                .foregroundColor(.orange)
-            
-            Image(systemName: "chevron.right")
-                .foregroundColor(Color.gray.opacity(0.4))
-        }
-    }
-    
-    private var descriptionView: some View {
-        Text(description)
-            .font(.subheadline)
-            .foregroundColor(.secondary)
-    }
-    
-    private var metadDataView: some View {
-        HStack {
-            Text(firstMetaDataKey)
-                .fontWeight(.semibold)
-                .font(.system(size: 18))
-                
-            Text(firstMetaDataValue)
-                .foregroundColor(.gray)
-                .font(.subheadline)
-            
-            Divider()
-                .frame(height: 20)
-                .background(Color.gray)
-            
-            Text(secondMetaDataKey)
-                .fontWeight(.semibold)
-                .font(.system(size: 18))
-
-            Text(secondMetaDataValue)
-                .foregroundColor(.gray)
-                .font(.subheadline)
+    // MARK: - Private Methods
+    private func loadInitialData() async {
+        guard viewModel.scriptures.isEmpty else { return }
+        
+        // Simulating network delay
+        viewModel.loadScriptures()
+        
+        // Set default selection
+        if let first = viewModel.scriptures.first {
+            withAnimation {
+                selectedScripture = first
+                isLoading = false
+            }
         }
     }
 }
 
-struct Scripture: Identifiable {
-    let id = UUID()
+// Helper to make the UI look cleaner
+extension View {
+    func divider() -> some View {
+        Rectangle()
+            .fill(Color.gray.opacity(0.2))
+            .frame(height: 1)
+    }
+}
+
+struct Scripture: Identifiable, Equatable {
+    var id: String { title }
     let title: String
     let description: String
     let language: String
@@ -177,6 +128,10 @@ struct Scripture: Identifiable {
     let firstMetaDataValue: String
     let secondMetaDataKey: String
     let secondMetaDataValue: String
+    
+    static func == (lhs: Scripture, rhs: Scripture) -> Bool {
+        return lhs.title == rhs.title
+    }
 }
 
 

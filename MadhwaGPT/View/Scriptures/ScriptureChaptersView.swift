@@ -38,8 +38,6 @@ struct ScriptureChaptersView: View {
         .task {
             scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
         }
-        .navigationTitle(scripture.title)
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -51,8 +49,16 @@ struct ScriptureChapterCard: View {
     var body: some View {
         
         VStack(alignment: .leading, spacing: 6) {
-            mainTitleView
             
+            HStack {
+                mainTitleView
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.gray.opacity(0.5))
+            }
+           
             transliteratedView
             
             descriptionView

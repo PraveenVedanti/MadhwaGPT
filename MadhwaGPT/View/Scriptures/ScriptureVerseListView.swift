@@ -53,6 +53,8 @@ struct ScriptureVerseListView: View {
 struct ScriptureChapterVerseCard: View {
     let verse: ScriptureChapterVerse
     
+    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    
     var body: some View {
     
         VStack(alignment: .leading, spacing: 6) {
@@ -83,12 +85,12 @@ struct ScriptureChapterVerseCard: View {
 }
 
 // MARK: - Scripture chapter detail response.
-struct ScriptureChapterVerseResponse: Codable {
+struct ScriptureChapterVerseResponse: Decodable {
     let verses: [ScriptureChapterVerse]
 }
 
 // MARK: - Scripture chapter detail.
-struct ScriptureChapterVerse: Codable, Identifiable {
+struct ScriptureChapterVerse: Decodable, Identifiable {
     var id: String { canonicalId }
     
     let canonicalId: String
@@ -128,7 +130,45 @@ extension ScriptureChapterVerse: Equatable {
 }
 
 // MARK: - WordDetail
-struct WordDetail: Codable {
-    // Define properties based on your 'word_by_word' JSON structure
-    // Example: let word: String, let meaning: String
+//struct WordDetail: Codable, Identifiable, Equatable {
+//    let id = UUID()
+//    let term: String
+//    let meaning: String
+//    
+//    enum CodingKeys: String, CodingKey {
+//        case term, meaning
+//    }
+//    
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        self.term = try container.decode(String.self, forKey: .term)
+//        self.meaning = try container.decode(String.self, forKey: .meaning)
+//    }
+//}
+
+
+// MARK: - WordDetail
+struct WordDetail: Decodable, Identifiable, Equatable {
+    var id: String { word }
+    let word: String
+    let meaning: String
+    
+    enum CodingKeys: String, CodingKey {
+        case word, term, meaning
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        // Handle both "word" and "term" keys
+        if let wordValue = try? container.decode(String.self, forKey: .word) {
+            self.word = wordValue
+        } else if let termValue = try? container.decode(String.self, forKey: .term) {
+            self.word = termValue
+        } else {
+            throw DecodingError.dataCorruptedError(forKey: .word, in: container, debugDescription: "No word or term key found")
+        }
+        
+        self.meaning = try container.decode(String.self, forKey: .meaning)
+    }
 }

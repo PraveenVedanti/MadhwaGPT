@@ -8,22 +8,12 @@
 import Foundation
 import SwiftUI
 
-enum ScriptureVerseDetailTab: String, CaseIterable, Identifiable {
-    var id: String { self.rawValue }
-    
-    case verse = "Verse"
-    case word = "Word by word meanings"
-    case ai = "Ask AI"
-}
-
 struct ScriptureVerseDetailView: View {
     let verseList: [ScriptureChapterVerse]
     
     @State private var currentIndex: Int
-    @State private var currentTab: ScriptureVerseDetailTab = .verse
-    @State private var isSheetPresented = false
-    
-    @State private var selectedTab: ScriptureVerseDetailTab = .verse
+    @State private var showMeanings = false
+    @State private var showAI = false
     
     // Derived state for the currently visible verse
     private var selectedVerse: ScriptureChapterVerse {
@@ -44,79 +34,93 @@ struct ScriptureVerseDetailView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                headerView
-            }
-    
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(alignment: .leading, spacing: 16) {
-                    switch selectedTab {
-                    case .verse:
-                        ScriptureChapterVerseView(verse: selectedVerse)
-                    case .word:
-                        Text("Word Detail View")
-                    case .ai:
-                        Text("AI Insights")
-                    }
+        NavigationStack {
+            ZStack {
+                Color(red: 1.0, green: 0.976, blue: 0.961).ignoresSafeArea()
+                
+                // Verse details view
+                ScrollView {
+                    ScriptureChapterVerseView(verse: selectedVerse)
+                        .padding(.bottom, 120)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-
-            navigationToolbar
-                .padding(.top, 8)
-                .background(Material.bar)
-        }
-        .background(backgroundColor)
-        .navigationTitle(selectedVerse.canonicalId)
-        .navigationBarTitleDisplayMode(.inline)
-    }
-    
-    // MARK: - Subviews
-    
-    private var headerView: some View {
-        HStack(spacing: 16.0) {
-            ForEach(ScriptureVerseDetailTab.allCases) { tab in
-                Chip(title: tab.rawValue,
-                     isSelected: selectedTab.id == tab.id
-                ) {
-                    selectedTab = tab
+                
+                // Navigation and helper controls.
+                VStack {
+                    Spacer()
+                    navigationDock
                 }
             }
+            .navigationTitle(selectedVerse.canonicalId)
+            .navigationBarTitleDisplayMode(.large)
+            .fullScreenCover(isPresented: $showMeanings) {
+                WordByWordSheet(words: selectedVerse.wordByWord ?? [])
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
+            .sheet(isPresented: $showAI) {
+                Text("Hello")
+            }
         }
-        .padding()
     }
     
-    private var navigationToolbar: some View {
-        HStack {
+    private var navigationDock: some View {
+        HStack(spacing: 15) {
             // Previous Button
             Button(action: showPrevious) {
-                Label("Previous", systemImage: "chevron.left")
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(isFirstVerse ? .gray : .orange)
+                    .frame(width: 44, height: 44)
+                    .background(Circle().fill(.ultraThinMaterial))
             }
-            .buttonStyle(ScriptureNavigationButtonStyle(color: isFirstVerse ? .secondary : .orange))
+          
             .disabled(isFirstVerse)
+            
+            Spacer()
+            
+            // Study Tools (Central Pill)
+            HStack(spacing: 4) {
+                toolButton(title: "Meanings", icon: "character.book.closed") { showMeanings.toggle() }
+                
+                Divider().frame(height: 20).padding(.horizontal, 10)
+                
+                toolButton(title: "Ask AI", icon: "sparkles") { showAI.toggle() }
+            }
+            .padding(12)
+            .background(.ultraThinMaterial, in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(.white.opacity(0.3), lineWidth: 1)
+            )
             
             Spacer()
             
             // Next Button
             Button(action: showNext) {
-                HStack {
-                    Text("Next")
-                    Image(systemName: "chevron.right")
-                }
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(isLastVerse ? .gray : .orange)
+                    .frame(width: 44, height: 44)
+                    .background(Circle().fill(.ultraThinMaterial))
             }
-            .buttonStyle(ScriptureNavigationButtonStyle(color: isLastVerse ? .secondary : .orange))
             .disabled(isLastVerse)
         }
-        .padding(.horizontal)
-        .padding(.bottom, 16)
-        .background(backgroundColor)
+        .padding(8)
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(.white.opacity(0.2), lineWidth: 0.5))
+    }
+    
+    // MARK: - Helper View Builders
+    private func toolButton(title: String, icon: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                Text(title).font(.caption2).bold()
+            }
+        }
     }
     
     // MARK: - Actions
-    
     private func showPrevious() {
         guard !isFirstVerse else { return }
         withAnimation(.easeInOut(duration: 0.05)) {
@@ -129,27 +133,6 @@ struct ScriptureVerseDetailView: View {
         withAnimation(.easeInOut(duration: 0.05)) {
             currentIndex += 1
         }
-    }
-}
-
-// MARK: - Navigation button style
-
-struct ScriptureNavigationButtonStyle: ButtonStyle {
-    let color: Color
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .fontWeight(.medium)
-            .foregroundColor(configuration.isPressed ? color.opacity(0.5) : color)
-            .padding(.vertical, 12)
-            .padding(.horizontal, 16)
-            .background(RoundedRectangle(cornerRadius: 12).fill(Color.clear))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(color, lineWidth: 0.5)
-            )
-            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
-            .opacity(configuration.isPressed ? 0.9 : 1.0)
     }
 }
 
@@ -187,6 +170,75 @@ struct ScriptureChapterVerseView: View {
     }
 }
 
+// MARK: - Word by Word meaning view.
+struct WordByWordSheet: View {
+    let words: [WordDetail]
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    
+                    // Card Content
+                    VStack(alignment: .leading, spacing: 14) {
+                        ForEach(words) { word in
+                            HStack(alignment: .top, spacing: 16) {
+                                // The Term
+                                Text(word.word)
+                                    .font(.system(.body, design: .serif))
+                                    .bold()
+                                    .foregroundColor(.brown)
+                                    .frame(width: 110, alignment: .leading)
+                                
+                                // The Meaning
+                                Text(word.meaning)
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
+                                    .lineSpacing(4)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            
+                            if word.id != words.last?.id {
+                                Divider()
+                                    .padding(.leading, 126) // Aligns divider with meaning text
+                                    .opacity(0.6)
+                            }
+                        }
+                    }
+                    .padding(20)
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                }
+                .padding(.vertical)
+            }
+            .navigationTitle("Word Meanings")
+            .navigationBarTitleDisplayMode(.large)
+            .background(Color(red: 1.0, green: 0.976, blue: 0.961))
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.orange)
+                            .frame(width: 36, height: 36)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .stroke(.white.opacity(0.2), lineWidth: 0.5)
+                            )
+                            .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+                    }
+                }
+            }
+        }
+    }
+}
+
 // MARK: - AI Insights view.
 
 struct ScriptureAIInsightView: View {
@@ -202,20 +254,16 @@ struct VerseContentCard: View {
     let text: String
     var isItalic: Bool = false
     
+    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(title)
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundColor(.orange)
-                Spacer()
-                Button(action: { UIPasteboard.general.string = text }) {
-                    Image(systemName: "doc.on.doc")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
+            Text(title)
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(.orange)
+            
+            Divider()
             
             Text(text)
                 .font(.system(size: 18, weight: .regular, design: .serif))

@@ -28,11 +28,12 @@ struct ScriptureChaptersResponse: Decodable {
     }
 }
 
-
+@MainActor
 class ScriptureViewModel: ObservableObject {
     
     @Published var scriptures: [Scripture] = []
-   
+    
+    // Simulating data loading
     func loadScriptures() {
         
         let bhagavatGeetha = Scripture(
@@ -97,12 +98,15 @@ class ScriptureChapterDetailsViewModel: ObservableObject {
             let test = try await NetworkManager.shared.fetch(urlString: url, type: ScriptureChapterVerseResponse.self)
             returnValue = test.verses
         }
-        catch {
-            print("Catch...")
+        catch DecodingError.keyNotFound(let key, let context) {
+            print("Missing key: \(key.stringValue) — \(context.debugDescription)")
+        } catch DecodingError.typeMismatch(let type, let context) {
+            print("Type mismatch: \(type) — \(context.debugDescription)")
+        } catch {
+            print("Generic error: \(error)")
         }
         
         return returnValue
     }
-    
 }
 
