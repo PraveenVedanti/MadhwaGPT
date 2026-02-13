@@ -34,7 +34,7 @@ struct ChatView: View {
                     typingIndicator
                 }
                 
-                suggestionChips
+               // suggestionChips
                 
                 Divider()
                 
@@ -100,18 +100,18 @@ struct ChatView: View {
         }
     }
     
-    private var suggestionChips: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(viewModel.initialSuggestions) { suggestion in
-                    Chip(title: suggestion.suggestion) {
-                        sendQuery(text: suggestion.suggestion)
-                    }
-                }
-            }
-            .padding(.horizontal)
-        }
-    }
+//    private var suggestionChips: some View {
+//        ScrollView(.horizontal, showsIndicators: false) {
+//            HStack(spacing: 12) {
+//                ForEach(viewModel.initialSuggestions) { suggestion in
+//                    Chip(title: suggestion.suggestion, isSelected: <#Bool#>) {
+//                        sendQuery(text: suggestion.suggestion)
+//                    }
+//                }
+//            }
+//            .padding(.horizontal)
+//        }
+//    }
     
     private var typingIndicator: some View {
         HStack(spacing: 8) {
@@ -197,42 +197,5 @@ struct ChatView: View {
     
     private func clearTextEditor() {
         message = ""
-    }
-}
-
-// MARK: - Chip View
-public struct Chip: View {
-    
-    private let title: String
-    private let onTap: () -> Void
-    
-    public init(
-          title: String,
-          onTap: @escaping () -> Void
-      ) {
-          self.title = title
-          self.onTap = onTap
-      }
-    
-    public var body: some View {
-        HStack {
-            Text(title)
-                .font(.footnote)
-                .fontWeight(.medium)
-                .foregroundColor(.primary)
-                .multilineTextAlignment(.leading)
-                .frame(width: UIScreen.main.bounds.width * 0.75, alignment: .leading)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .onTapGesture {
-            onTap()
-        }
-        .padding()
-        .background(
-            Capsule()
-                .fill(Color.orange.opacity(0.1))
-                .overlay(Capsule().stroke(Color.orange.opacity(0.3), lineWidth: 1))
-        )
     }
 }

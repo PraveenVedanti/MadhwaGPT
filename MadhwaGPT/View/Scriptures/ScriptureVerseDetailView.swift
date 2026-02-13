@@ -8,8 +8,11 @@
 import Foundation
 import SwiftUI
 
-enum ScriptureVerseDetailTab: String, CaseIterable {
+enum ScriptureVerseDetailTab: String, CaseIterable, Identifiable {
+    var id: String { self.rawValue }
+    
     case verse = "Verse"
+    case word = "Word by word meanings"
     case ai = "Ask AI"
 }
 
@@ -19,6 +22,8 @@ struct ScriptureVerseDetailView: View {
     @State private var currentIndex: Int
     @State private var currentTab: ScriptureVerseDetailTab = .verse
     @State private var isSheetPresented = false
+    
+    @State private var selectedTab: ScriptureVerseDetailTab = .verse
     
     // Derived state for the currently visible verse
     private var selectedVerse: ScriptureChapterVerse {
@@ -40,39 +45,29 @@ struct ScriptureVerseDetailView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Tab Switcher
-            SlidingTabView(
-                tabs: ScriptureVerseDetailTab.allCases,
-                selectedTab: $currentTab,
-                activeColor: .orange,
-                titleMapper: { $0.rawValue }
-            ) { tab in
-                contentForTab(tab)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                headerView
             }
-            
-            Spacer()
-            
-            Button(action: {
-                isSheetPresented.toggle()
-            }) {
-                HStack {
-                    Text("WORD-BY-WORD MEANINGS (12 TERMS)")
-                        .font(.system(size: 13, weight: .bold))
-                    Spacer()
-                    Image(systemName: "chevron.up")
+    
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .leading, spacing: 16) {
+                    switch selectedTab {
+                    case .verse:
+                        ScriptureChapterVerseView(verse: selectedVerse)
+                    case .word:
+                        Text("Word Detail View")
+                    case .ai:
+                        Text("AI Insights")
+                    }
                 }
-                .foregroundColor(.primary)
                 .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(.secondarySystemBackground))
-                )
-                .padding(.horizontal)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.vertical, 8)
-            
-            // Bottom Navigation
+
             navigationToolbar
+                .padding(.top, 8)
+                .background(Material.bar)
         }
         .background(backgroundColor)
         .navigationTitle(selectedVerse.canonicalId)
@@ -81,17 +76,16 @@ struct ScriptureVerseDetailView: View {
     
     // MARK: - Subviews
     
-    @ViewBuilder
-    private func contentForTab(_ tab: ScriptureVerseDetailTab) -> some View {
-        VStack {
-            switch tab {
-            case .verse:
-                ScriptureChapterVerseView(verse: selectedVerse)
-            case .ai:
-                ScriptureAIInsightView()
+    private var headerView: some View {
+        HStack(spacing: 16.0) {
+            ForEach(ScriptureVerseDetailTab.allCases) { tab in
+                Chip(title: tab.rawValue,
+                     isSelected: selectedTab.id == tab.id
+                ) {
+                    selectedTab = tab
+                }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
     }
     
@@ -165,6 +159,8 @@ struct ScriptureChapterVerseView: View {
     
     let verse: ScriptureChapterVerse
     
+    @State private var isSheetPresented = false
+    
     init(verse: ScriptureChapterVerse) {
         self.verse = verse
     }
@@ -172,20 +168,20 @@ struct ScriptureChapterVerseView: View {
     var body: some View {
         VStack(spacing: 8) {
             ScrollView {
+                
+                // Used for Bhagavatgeetha
                 if let sanskrit = verse.sanskrit {
                     VerseContentCard(title: "SANSKRIT (DEVANAGARI)", text: sanskrit)
                 }
                 
+                // Used for HKS
                 if let kannada = verse.kannada {
                     VerseContentCard(title: "KANNADA TEXT", text: kannada)
                 }
-               
+                
                 VerseContentCard(title: "TRANSLITERATION", text: verse.transliteration)
                 
-                if let englishTranslation = verse.englishTranslation {
-                    VerseContentCard(title: "ENGLISH TRANSLATION", text: englishTranslation)
-                }
-                
+                VerseContentCard(title: "ENGLISH TRANSLATION", text: verse.translationEnglish)
             }
         }
     }
