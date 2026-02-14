@@ -50,7 +50,6 @@ struct ScriptureVerseListView: View {
 
 struct ScriptureChapterVerseCard: View {
     let verse: ScriptureChapterVerse
-    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
     

@@ -276,7 +276,7 @@ struct CyberNaturalistCard: View {
             HStack(spacing: 16) {
                 Image(systemName: "book.closed.fill")
                     .font(.system(size: 40))
-                    .foregroundStyle(.orange)
+                   // .foregroundStyle(.orange)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(scripture.title)
@@ -316,7 +316,7 @@ struct CyberNaturalistCard: View {
                 .stroke(Color.primary.opacity(0.05), lineWidth: 1)
         )
         .shadow(
-            color: isActive ? .orange.opacity(0.15) : .black.opacity(0.05),
+            color: .black.opacity(0.05),
             radius: isActive ? 20 : 8,
             x: 0,
             y: isActive ? 10 : 4
