@@ -52,11 +52,6 @@ struct ScriptureVerseDetailView: View {
             }
             .navigationTitle(selectedVerse.canonicalId)
             .navigationBarTitleDisplayMode(.large)
-            .fullScreenCover(isPresented: $showMeanings) {
-                WordByWordSheet(words: selectedVerse.wordByWord ?? [])
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            }
             .sheet(isPresented: $showAI) {
                 Text("Hello")
             }
@@ -78,20 +73,13 @@ struct ScriptureVerseDetailView: View {
             
             Spacer()
             
-            // Study Tools (Central Pill)
-            HStack(spacing: 4) {
-                toolButton(title: "Meanings", icon: "character.book.closed") { showMeanings.toggle() }
-                
-                Divider().frame(height: 20).padding(.horizontal, 10)
-                
-                toolButton(title: "Ask AI", icon: "sparkles") { showAI.toggle() }
-            }
-            .padding(12)
-            .background(.ultraThinMaterial, in: Capsule())
-            .overlay(
-                Capsule()
-                    .stroke(.white.opacity(0.3), lineWidth: 1)
-            )
+            toolButton(title: "Ask AI", icon: "sparkles") { showAI.toggle() }
+                .padding(12)
+                .background(.ultraThinMaterial, in: Capsule())
+                .overlay(
+                    Capsule()
+                        .stroke(.white.opacity(0.3), lineWidth: 1)
+                )
             
             Spacer()
             
@@ -141,101 +129,107 @@ struct ScriptureVerseDetailView: View {
 struct ScriptureChapterVerseView: View {
     
     let verse: ScriptureChapterVerse
-    
-    @State private var isSheetPresented = false
+    var words: [WordDetail] = []
     
     init(verse: ScriptureChapterVerse) {
         self.verse = verse
+        self.words = verse.wordByWord ?? []
     }
     
     var body: some View {
-        VStack(spacing: 8) {
-            ScrollView {
-                
-                // Used for Bhagavatgeetha
-                if let sanskrit = verse.sanskrit {
-                    VerseContentCard(title: "SANSKRIT (DEVANAGARI)", text: sanskrit)
-                }
-                
-                // Used for HKS
-                if let kannada = verse.kannada {
-                    VerseContentCard(title: "KANNADA TEXT", text: kannada)
-                }
-                
-                VerseContentCard(title: "TRANSLITERATION", text: verse.transliteration)
-                
-                VerseContentCard(title: "ENGLISH TRANSLATION", text: verse.translationEnglish)
+        VStack(spacing: 0) {
+            ScrollView(showsIndicators: false) {
+                VerseContentCard(verse: verse)
+                wordByWordCard
+                englishTranslationCard
             }
         }
     }
-}
-
-// MARK: - Word by Word meaning view.
-struct WordByWordSheet: View {
-    let words: [WordDetail]
-    @Environment(\.dismiss) var dismiss
     
-    var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+    private var wordByWordCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("WORD-BY-WORD MEANINGS")
+                .font(.system(size: 12, weight: .black))
+                .kerning(1)
+                .foregroundColor(.orange)
+            
+            Spacer()
+                .frame(height: 8)
+            
+            ForEach(words) { word in
+                HStack(alignment: .top, spacing: 16) {
+                    // The Term
+                    Text(word.word)
+                        .font(.system(.body, design: .serif))
+                        .bold()
+                        .foregroundColor(.brown)
+                        .frame(width: 110, alignment: .leading)
                     
-                    // Card Content
-                    VStack(alignment: .leading, spacing: 14) {
-                        ForEach(words) { word in
-                            HStack(alignment: .top, spacing: 16) {
-                                // The Term
-                                Text(word.word)
-                                    .font(.system(.body, design: .serif))
-                                    .bold()
-                                    .foregroundColor(.brown)
-                                    .frame(width: 110, alignment: .leading)
-                                
-                                // The Meaning
-                                Text(word.meaning)
-                                    .font(.subheadline)
-                                    .foregroundColor(.primary)
-                                    .lineSpacing(4)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                            
-                            if word.id != words.last?.id {
-                                Divider()
-                                    .padding(.leading, 126) // Aligns divider with meaning text
-                                    .opacity(0.6)
-                            }
-                        }
-                    }
-                    .padding(20)
-                    .background(Color(.secondarySystemGroupedBackground))
-                    .cornerRadius(20)
-                    .padding(.horizontal)
+                    // The Meaning
+                    Text(word.meaning)
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                        .lineSpacing(4)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.vertical)
-            }
-            .navigationTitle("Word Meanings")
-            .navigationBarTitleDisplayMode(.large)
-            .background(Color(red: 1.0, green: 0.976, blue: 0.961))
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.orange)
-                            .frame(width: 36, height: 36)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle()
-                                    .stroke(.white.opacity(0.2), lineWidth: 0.5)
-                            )
-                            .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
-                    }
+                
+                if word.id != words.last?.id {
+                    Divider()
+                        .padding(.leading, 126)
+                        .opacity(0.6)
                 }
             }
         }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                // Use secondaryGroupedBackground for a premium "inset" look
+                .fill(Color(.secondarySystemGroupedBackground))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                // Subtle hairline border that only appears in dark mode to define edges
+                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
+        )
+        // High-dispersion shadow that disappears in dark mode for a flat-modern feel
+        .shadow(color: Color.black.opacity(0.04), radius: 20, x: 0, y: 10)
+        .padding()
+    }
+    
+    private var englishTranslationCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            titleHeader(title: "ENGLISH TRANSLATION", color: .orange)
+            titleDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), design: .rounded)
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                // Use secondaryGroupedBackground for a premium "inset" look
+                .fill(Color(.secondarySystemGroupedBackground))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                // Subtle hairline border that only appears in dark mode to define edges
+                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
+        )
+        // High-dispersion shadow that disappears in dark mode for a flat-modern feel
+        .shadow(color: Color.black.opacity(0.04), radius: 20, x: 0, y: 10)
+        .padding(.horizontal, 12)
+        .padding(.vertical)
+    }
+    
+    private func titleHeader(title: String, color: Color) -> some View {
+        Text(title)
+            .font(.system(size: 12, weight: .black))
+            .kerning(1)
+            .foregroundColor(color)
+    }
+    
+    private func titleDescription(description: String, color: Color, design: Font.Design) -> some View {
+        Text(description)
+            .font(.system(size: 20, weight: .regular, design: design))
+            .lineSpacing(2)
+            .foregroundColor(color)
     }
 }
 
@@ -250,34 +244,64 @@ struct ScriptureAIInsightView: View {
 // MARK: - Verse content card.
 
 struct VerseContentCard: View {
-    let title: String
-    let text: String
-    var isItalic: Bool = false
-    
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    let verse: ScriptureChapterVerse
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.caption)
-                .fontWeight(.bold)
-                .foregroundColor(.orange)
+        VStack(alignment: .leading, spacing: 32) {
             
-            Divider()
+            if let sanskrit = verse.sanskrit {
+                // 1. Primary Verse
+                VStack(alignment: .leading, spacing: 8) {
+                    titleHeader(title: "SANSKRIT (DEVANAGARI)", color: .orange)
+                    titleDescription(description: sanskrit, color: .primary, design: .serif)
+                }
+            }
             
-            Text(text)
-                .font(.system(size: 18, weight: .regular, design: .serif))
-                .italic(isItalic)
-                .lineSpacing(6)
-                .fixedSize(horizontal: false, vertical: true)
+            if let kannada = verse.kannada {
+                VStack(alignment: .leading, spacing: 8) {
+                    titleHeader(title: "KANNADA", color: .orange)
+                    titleDescription(description: kannada, color: .primary, design: .serif)
+                }
+            }
+            
+            // 2. Transliteration
+            VStack(alignment: .leading, spacing: 8) {
+                titleHeader(title: "TRANSLITERATION", color: .secondary.opacity(0.6))
+                
+                Text(verse.transliteration)
+                    .font(.system(.body, design: .serif))
+                    .italic()
+                    .foregroundColor(.secondary)
+            }
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemBackground))
+            RoundedRectangle(cornerRadius: 24)
+                // Use secondaryGroupedBackground for a premium "inset" look
+                .fill(Color(.secondarySystemGroupedBackground))
         )
-        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
-        .padding(.horizontal, 8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                // Subtle hairline border that only appears in dark mode to define edges
+                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
+        )
+        // High-dispersion shadow that disappears in dark mode for a flat-modern feel
+        .shadow(color: Color.black.opacity(0.04), radius: 20, x: 0, y: 10)
+        .padding(.horizontal, 12)
+        .padding(.vertical)
+    }
+    
+    private func titleHeader(title: String, color: Color) -> some View {
+        Text(title)
+            .font(.system(size: 12, weight: .black))
+            .kerning(1)
+            .foregroundColor(color)
+    }
+    
+    private func titleDescription(description: String, color: Color, design: Font.Design) -> some View {
+        Text(description)
+            .font(.system(size: 20, weight: .medium, design: design))
+            .lineSpacing(2)
+            .foregroundColor(color)
     }
 }
