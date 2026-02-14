@@ -34,8 +34,6 @@ struct ChatView: View {
                     typingIndicator
                 }
                 
-                suggestionChips
-                
                 Divider()
                 
                 textEditorView
@@ -55,7 +53,7 @@ struct ChatView: View {
             .onAppear {
                 loadInitialData()
             }
-            .background(backgroundColor)
+            .background(Color(.systemBackground))
         }
     }
     
@@ -99,20 +97,7 @@ struct ChatView: View {
                 .foregroundColor(.secondary)
         }
     }
-    
-    private var suggestionChips: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(viewModel.initialSuggestions) { suggestion in
-                    Chip(title: suggestion.suggestion) {
-                        sendQuery(text: suggestion.suggestion)
-                    }
-                }
-            }
-            .padding(.horizontal)
-        }
-    }
-    
+
     private var typingIndicator: some View {
         HStack(spacing: 8) {
             ProgressView()
@@ -129,7 +114,17 @@ struct ChatView: View {
             print("Settings Tapped")
         } label: {
             Image(systemName: "gear")
+                .font(.system(size: 18, weight: .bold))
+                .frame(width: 36, height: 36)
+                .background(.ultraThinMaterial)
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(.white.opacity(0.2), lineWidth: 0.5)
+                )
+                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
         }
+        .padding()
     }
     
     private var chatHistory: some View {
@@ -137,7 +132,17 @@ struct ChatView: View {
             print("Slider Tapped")
         } label: {
             Image(systemName: "slider.horizontal.3")
+                .font(.system(size: 18, weight: .bold))
+                .frame(width: 36, height: 36)
+                .background(.ultraThinMaterial)
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(.white.opacity(0.2), lineWidth: 0.5)
+                )
+                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
         }
+        .padding()
     }
     
     private var textEditorView: some View {
@@ -197,42 +202,5 @@ struct ChatView: View {
     
     private func clearTextEditor() {
         message = ""
-    }
-}
-
-// MARK: - Chip View
-public struct Chip: View {
-    
-    private let title: String
-    private let onTap: () -> Void
-    
-    public init(
-          title: String,
-          onTap: @escaping () -> Void
-      ) {
-          self.title = title
-          self.onTap = onTap
-      }
-    
-    public var body: some View {
-        HStack {
-            Text(title)
-                .font(.footnote)
-                .fontWeight(.medium)
-                .foregroundColor(.primary)
-                .multilineTextAlignment(.leading)
-                .frame(width: UIScreen.main.bounds.width * 0.75, alignment: .leading)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .onTapGesture {
-            onTap()
-        }
-        .padding()
-        .background(
-            Capsule()
-                .fill(Color.orange.opacity(0.1))
-                .overlay(Capsule().stroke(Color.orange.opacity(0.3), lineWidth: 1))
-        )
     }
 }

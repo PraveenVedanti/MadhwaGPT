@@ -15,6 +15,7 @@ struct ExpandingTextInput: View {
     let maxHeight: CGFloat = 150
 
     @State private var textHeight: CGFloat = 48
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         VStack(spacing: 8) {
@@ -27,11 +28,13 @@ struct ExpandingTextInput: View {
                     .frame(height: min(textHeight, maxHeight))
                     .background(
                         RoundedRectangle(cornerRadius: 24)
-                            .fill(Color.clear)
+                            // Adaptive: White in Light, Elegant Charcoal in Dark
+                            .fill(Color(.secondarySystemGroupedBackground))
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 24)
-                            .stroke(Color.gray.opacity(0.8), lineWidth: 1)
+                            // Adaptive: Subtle hairline that only "pops" in Dark Mode
+                            .stroke(Color.primary.opacity(0.6), lineWidth: 0.5)
                     )
                     .cornerRadius(24)
                     .onChange(of: text, { oldValue, newValue in

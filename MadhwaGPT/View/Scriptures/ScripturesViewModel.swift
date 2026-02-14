@@ -28,14 +28,12 @@ struct ScriptureChaptersResponse: Decodable {
     }
 }
 
-struct SriptureChapterDetailsResponse: Codable {
-    let verses: [ScriptureChapterDetail]
-}
-
+@MainActor
 class ScriptureViewModel: ObservableObject {
     
     @Published var scriptures: [Scripture] = []
-   
+    
+    // Simulating data loading
     func loadScriptures() {
         
         let bhagavatGeetha = Scripture(
@@ -87,24 +85,28 @@ class ScriptureChaptersViewModel: ObservableObject {
 
 class ScriptureChapterDetailsViewModel: ObservableObject {
     
-    func loadScriptureChapterDetails(
+    func loadScriptureChapterVerseList(
         scripture: Scripture,
         scriptureChapter: ScriptureChapter
-    ) async -> [ScriptureChapterDetail] {
+    ) async -> [ScriptureChapterVerse] {
         
         let url = "\(scripture.chaptersURLString)/\(scriptureChapter.number)/verses"
         
-        var returnValue: [ScriptureChapterDetail] = []
+        var returnValue: [ScriptureChapterVerse] = []
         
         do {
-            let test = try await NetworkManager.shared.fetch(urlString: url, type: SriptureChapterDetailsResponse.self)
+            let test = try await NetworkManager.shared.fetch(urlString: url, type: ScriptureChapterVerseResponse.self)
             returnValue = test.verses
         }
-        catch {
-            print("Catch...")
+        catch DecodingError.keyNotFound(let key, let context) {
+            print("Missing key: \(key.stringValue) — \(context.debugDescription)")
+        } catch DecodingError.typeMismatch(let type, let context) {
+            print("Type mismatch: \(type) — \(context.debugDescription)")
+        } catch {
+            print("Generic error: \(error)")
         }
         
         return returnValue
     }
-    
 }
+
