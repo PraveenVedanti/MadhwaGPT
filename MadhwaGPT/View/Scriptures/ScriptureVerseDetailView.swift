@@ -23,8 +23,6 @@ struct ScriptureVerseDetailView: View {
     // Boundary check variables.
     private var isFirstVerse: Bool { currentIndex == 0 }
     private var isLastVerse: Bool { currentIndex == verseList.count - 1 }
-    
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
 
     init(verse: ScriptureChapterVerse, verseList: [ScriptureChapterVerse]) {
         self.verseList = verseList
@@ -36,7 +34,6 @@ struct ScriptureVerseDetailView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(red: 1.0, green: 0.976, blue: 0.961).ignoresSafeArea()
                 
                 // Verse details view
                 ScrollView {
@@ -50,12 +47,14 @@ struct ScriptureVerseDetailView: View {
                     navigationDock
                 }
             }
+            .background(Color(.systemBackground))
             .navigationTitle(selectedVerse.canonicalId)
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showAI) {
                 Text("Hello")
             }
         }
+       
     }
     
     private var navigationDock: some View {
@@ -144,6 +143,7 @@ struct ScriptureChapterVerseView: View {
                 englishTranslationCard
             }
         }
+        .background(Color(.systemBackground))
     }
     
     private var wordByWordCard: some View {

@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 struct PravachanaView: View {
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     
     var body: some View {
         VStack {
@@ -21,6 +20,6 @@ struct PravachanaView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .background(backgroundColor)
+        .background(Color(.systemBackground))
     }
 }

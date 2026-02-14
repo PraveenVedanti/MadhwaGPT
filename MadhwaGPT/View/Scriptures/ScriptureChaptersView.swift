@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+   
 struct ScriptureChaptersView: View {
     
     let scripture: Scripture
@@ -33,14 +33,13 @@ struct ScriptureChaptersView: View {
                     }
                 }
             }
-            .background(backgroundColor)
+            .background(Color(.systemBackground))
         }
         .task {
             scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
         }
     }
 }
-
 
 struct ScriptureChapterCard: View {
     
@@ -67,9 +66,18 @@ struct ScriptureChapterCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemBackground))
+                .fill(Color(.secondarySystemGroupedBackground))
         )
-        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
+        )
+        .shadow(
+            color: Color.black.opacity(0.05),
+            radius: 8,
+            x: 0,
+            y: 4
+        )
         .padding(.horizontal, 12)
     }
     
@@ -78,13 +86,13 @@ struct ScriptureChapterCard: View {
         if let kannadaName = scriptureChapter.kannadaName {
             Text(kannadaName)
                 .font(.headline)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
         }
         
         if let sanskritName = scriptureChapter.sanskritName {
             Text(sanskritName)
                 .font(.headline)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
         }
     }
     

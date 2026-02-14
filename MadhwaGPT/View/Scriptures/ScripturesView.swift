@@ -12,7 +12,6 @@ import SwiftUI
 
 struct ScripturesView: View {
     // MARK: - Properties
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     
     @StateObject var viewModel = ScriptureViewModel()
     @State private var selectedScripture: Scripture?
@@ -124,7 +123,6 @@ struct ScriptureLibrarySheet: View {
             } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 18, weight: .bold))
-                    //.foregroundColor(.orange)
                     .frame(width: 36, height: 36)
                     .background(.ultraThinMaterial)
                     .clipShape(Circle())
@@ -136,7 +134,7 @@ struct ScriptureLibrarySheet: View {
             }
             .padding()
         }
-        .background(Color(red: 1.0, green: 0.976, blue: 0.961).ignoresSafeArea())
+        .background(Color(.systemBackground))
     }
     
     private var content: some View {
@@ -146,7 +144,6 @@ struct ScriptureLibrarySheet: View {
                     selectedScripture = scripture
                     dismiss()
                 } label: {
-                   // ScriptureCard(scripture: scripture)
                     CyberNaturalistCard(scripture: scripture, isActive: selectedScripture == scripture)
                 }
             }
@@ -162,7 +159,7 @@ struct ScriptureLibrarySheet: View {
                 .font(.title)
             
             Text(Strings.scripturesHeader)
-                .foregroundStyle(Color.black)
+                .foregroundStyle(.primary)
                 .font(.headline)
         }
         .padding(.leading, 8.0)

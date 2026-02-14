@@ -16,8 +16,6 @@ struct ScriptureVerseListView: View {
     @State private var scriptureChapterVerseList: [ScriptureChapterVerse] = []
     @ObservedObject private var viewModel = ScriptureChapterDetailsViewModel()
     
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
-    
     var body: some View {
         VStack {
             NavigationStack {
@@ -38,7 +36,7 @@ struct ScriptureVerseListView: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 8)
                 }
-                .background(backgroundColor)
+                .background(Color(.systemBackground))
             }
             .navigationTitle(scripture.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -52,8 +50,7 @@ struct ScriptureVerseListView: View {
 
 struct ScriptureChapterVerseCard: View {
     let verse: ScriptureChapterVerse
-    
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
     
@@ -61,11 +58,9 @@ struct ScriptureChapterVerseCard: View {
             Text(verse.canonicalId)
                 .font(.caption2)
                 .fontWeight(.bold)
-                .padding(.horizontal, 8)
+                .padding(.horizontal, 4)
                 .padding(.vertical, 4)
-                .background(Color.orange.opacity(0.2))
                 .foregroundColor(.orange)
-                .clipShape(Capsule())
             
             Text(verse.sanskrit ?? verse.kannada ?? "")
                 .font(.headline)
@@ -77,9 +72,18 @@ struct ScriptureChapterVerseCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemBackground))
+                .fill(Color(.secondarySystemGroupedBackground))
         )
-        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
+        )
+        .shadow(
+            color: Color.black.opacity(0.05),
+            radius: 8,
+            x: 0,
+            y: 4
+        )
         .padding(.horizontal, 12)
     }
 }
