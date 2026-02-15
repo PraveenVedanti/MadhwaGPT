@@ -66,6 +66,11 @@ struct AIInsightsView: View {
                     }
                     
                     if !shouldHideInitialSuggestions {
+                        HStack {
+                            Label("Get AI insights:", systemImage: "lightbulb")
+                                .foregroundStyle(Color.orange)
+                            Spacer()
+                        }
                         chatSuggestionView
                     }
                     
@@ -111,8 +116,7 @@ struct AIInsightsView: View {
     
     private var chatSuggestionView: some View {
         ForEach(verse.suggestedQuestions, id: \.self) { suggestion in
-            
-            ChatSuggestionsView(suggestion: suggestion) {
+            ChatSuggestionCard(text: suggestion) {
                 sendQuery(text: suggestion)
             }
         }
