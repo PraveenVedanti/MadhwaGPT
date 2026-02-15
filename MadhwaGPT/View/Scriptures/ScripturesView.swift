@@ -13,6 +13,8 @@ import SwiftUI
 struct ScripturesView: View {
     // MARK: - Properties
     
+    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    
     @StateObject var viewModel = ScriptureViewModel()
     @State private var selectedScripture: Scripture?
     @State private var isLoading = true
@@ -30,16 +32,6 @@ struct ScripturesView: View {
                         showLibrary.toggle()
                     } label: {
                         Image(systemName: "books.vertical.fill")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.orange)
-                            .frame(width: 36, height: 36)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle()
-                                    .stroke(.white.opacity(0.2), lineWidth: 0.5)
-                            )
-                            .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
                     }
                 }
             }
@@ -103,39 +95,39 @@ struct ScripturesView: View {
 
 struct ScriptureLibrarySheet: View {
    
+    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     @Binding var selectedScripture: Scripture?
     let allScriptures: [Scripture]
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                Spacer().frame(height: 60)
-                
-                headerView
-
-                content
+        ZStack(alignment: .topLeading) {
+            
+            ScrollView {
+                VStack(spacing: 16) {
+                    Spacer()
+                        .frame(height: 60)
+                    headerView
+                    content
+                }
+                .frame(maxWidth: .infinity)
             }
-        }
-        .overlay(alignment: .topLeading) {
+            
             Button {
                 dismiss()
             } label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 18, weight: .bold))
-                    .frame(width: 36, height: 36)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(.white.opacity(0.2), lineWidth: 0.5)
-                    )
-                    .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
+                    .padding(12)
+                    .background(.ultraThinMaterial, in: Circle())
             }
             .padding()
         }
-        .background(Color(.systemBackground))
+       // .background(Color("SaffronViewBackground"))
+        // .background(backgroundColor)
     }
+
     
     private var content: some View {
         VStack(spacing: 16) {
@@ -193,7 +185,6 @@ struct ScriptureCard: View {
         .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
         .padding(.horizontal, 12)
     }
-    
     
     private var titleView: some View {
         HStack {
@@ -351,14 +342,4 @@ struct CyberNaturalistCard: View {
             .font(.subheadline)
         }
     }
-}
-
-
-struct Strings {
-    static let scripturesTitle = NSLocalizedString("Explore Sacred Texts", comment: "Scriptures page title")
-    static let scripturesHeader = NSLocalizedString("Explore sacred verses with detailed meanings and translations", comment: "Scriptures page header")
-    static let scripturesSubHeader = NSLocalizedString("AI-guided insights from the Madhva guru parampara tradition"
-                                            , comment: "Scriptures page header")
-    static let chatTitle = NSLocalizedString("Your guide to Madhvacharya's Dvaita Vedanta philosophy", comment: "Chat page title")
-    static let welcomeHeaderTitle = NSLocalizedString("Your guide to Madhvacharya's Dvaita Vedanta philosophy", comment: "welcome header title")
 }

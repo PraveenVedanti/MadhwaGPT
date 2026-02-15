@@ -133,24 +133,6 @@ extension ScriptureChapterVerse: Equatable {
 }
 
 // MARK: - WordDetail
-//struct WordDetail: Codable, Identifiable, Equatable {
-//    let id = UUID()
-//    let term: String
-//    let meaning: String
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case term, meaning
-//    }
-//    
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        self.term = try container.decode(String.self, forKey: .term)
-//        self.meaning = try container.decode(String.self, forKey: .meaning)
-//    }
-//}
-
-
-// MARK: - WordDetail
 struct WordDetail: Decodable, Identifiable, Equatable {
     var id: String { word }
     let word: String

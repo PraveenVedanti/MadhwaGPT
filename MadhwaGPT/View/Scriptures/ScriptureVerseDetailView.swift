@@ -35,43 +35,53 @@ struct ScriptureVerseDetailView: View {
         NavigationStack {
             ZStack {
                 
-                // Verse details view
                 ScrollView {
                     ScriptureChapterVerseView(verse: selectedVerse)
                         .padding(.bottom, 120)
-                }
-                
-                // Navigation and helper controls.
-                VStack {
-                    Spacer()
-                    navigationDock
                 }
             }
             .background(Color(.systemBackground))
             .navigationTitle(selectedVerse.canonicalId)
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showAI) {
-                Text("Hello")
+            .fullScreenCover(isPresented: $showAI) {
+                AIInsightsView(verse: selectedVerse)
             }
         }
-       
+        .overlay(alignment: .bottomTrailing, content: {
+            Button {
+                showAI.toggle()
+            } label: {
+                Image(systemName: "sparkles")
+                    .font(.title2.bold())
+                    .foregroundColor(.orange)
+                    .frame(width: 52, height: 52)
+                    .background(.ultraThinMaterial)
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(.white.opacity(0.2), lineWidth: 1)
+                    )
+                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+            }
+            .padding()
+        })
     }
     
     private var navigationDock: some View {
         HStack(spacing: 15) {
             // Previous Button
-            Button(action: showPrevious) {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(isFirstVerse ? .gray : .orange)
-                    .frame(width: 44, height: 44)
-                    .background(Circle().fill(.ultraThinMaterial))
-            }
-          
-            .disabled(isFirstVerse)
+            //            Button(action: showPrevious) {
+            //                Image(systemName: "chevron.left")
+            //                    .font(.system(size: 18, weight: .bold))
+            //                    .foregroundColor(isFirstVerse ? .gray : .orange)
+            //                    .frame(width: 44, height: 44)
+            //                    .background(Circle().fill(.ultraThinMaterial))
+            //            }
+            //
+            //            .disabled(isFirstVerse)
             
+            //            Spacer()
             Spacer()
-            
             toolButton(title: "Ask AI", icon: "sparkles") { showAI.toggle() }
                 .padding(12)
                 .background(.ultraThinMaterial, in: Capsule())
@@ -80,21 +90,22 @@ struct ScriptureVerseDetailView: View {
                         .stroke(.white.opacity(0.3), lineWidth: 1)
                 )
             
-            Spacer()
+            //  Spacer()
             
             // Next Button
-            Button(action: showNext) {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(isLastVerse ? .gray : .orange)
-                    .frame(width: 44, height: 44)
-                    .background(Circle().fill(.ultraThinMaterial))
-            }
-            .disabled(isLastVerse)
+            //            Button(action: showNext) {
+            //                Image(systemName: "chevron.right")
+            //                    .font(.system(size: 18, weight: .bold))
+            //                    .foregroundColor(isLastVerse ? .gray : .orange)
+            //                    .frame(width: 44, height: 44)
+            //                    .background(Circle().fill(.ultraThinMaterial))
+            //            }
+            //            .disabled(isLastVerse)
+            //        }
+            //        .padding(8)
+            //        .clipShape(Capsule())
+            //        .overlay(Capsule().stroke(.white.opacity(0.2), lineWidth: 0.5))
         }
-        .padding(8)
-        .clipShape(Capsule())
-        .overlay(Capsule().stroke(.white.opacity(0.2), lineWidth: 0.5))
     }
     
     // MARK: - Helper View Builders

@@ -55,7 +55,6 @@ struct ScriptureChapterCard: View {
                 Spacer()
                 
                 Image(systemName: "chevron.right")
-                    .foregroundColor(.gray.opacity(0.5))
             }
            
             transliteratedView

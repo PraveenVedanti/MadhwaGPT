@@ -1,20 +1,18 @@
 //
-//  ChatView.swift
+//  AIInsightsView.swift
 //  MadhwaGPT
 //
-//  Created by Praveen Kumar Vedanti on 1/17/26.
+//  Created by Praveen Kumar Vedanti on 2/14/26.
 //
 
 import Foundation
 import SwiftUI
 
-struct ChatView: View {
+struct AIInsightsView: View {
     
-    @State private var message = ""
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
+    @Environment(\.dismiss) var dismiss
     
-    // Chat view model.
-    @ObservedObject var viewModel = ChatViewModel()
+    let verse: ScriptureChapterVerse
     
     @State private var messages: [ChatMessage] = []
     
@@ -27,12 +25,15 @@ struct ChatView: View {
     // State variable to show/hide initial suggestions.
     @State private var shouldHideInitialSuggestions = false
     
-    @FocusState private var isTextFieldFocused: Bool
+    @State private var message = ""
+    
+    init(verse: ScriptureChapterVerse) {
+        self.verse = verse
+    }
     
     var body: some View {
-        
         NavigationStack {
-            VStack(spacing: 12) {
+            VStack {
                 
                 chatScrollView
                 
@@ -40,28 +41,17 @@ struct ChatView: View {
                     typingIndicator
                 }
                 
-               textEditorView
-        
+                textEditorView
             }
-            .navigationTitle("MadhwaGPT")
-            .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                // Top Right Button
-                ToolbarItem(placement: .topBarTrailing) {
-                    settingsView
-                }
-                // Top Left Button
                 ToolbarItem(placement: .topBarLeading) {
-                    chatHistory
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
                 }
             }
-            .onAppear {
-                loadInitialData()
-            }
-            .background(Color(.systemBackground))
-            .sheet(isPresented: $shouldShowSettings, content: {
-                SettingsView()
-            })
         }
     }
     
@@ -72,7 +62,7 @@ struct ChatView: View {
                 LazyVStack(spacing: 16) {
                     // Helpful for new users to see what the app is about
                     if messages.isEmpty {
-                       // welcomeHeader
+                        // welcomeHeader
                     }
                     
                     if !shouldHideInitialSuggestions {
@@ -92,24 +82,6 @@ struct ChatView: View {
         }
     }
     
-    private var welcomeHeader: some View {
-        VStack {
-            Image("madhwaImage")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 64, height: 64)
-                .clipShape(Circle())
-                       .overlay(
-                           Circle()
-                               .stroke(Color.gray, lineWidth: 2)
-                       )
-
-            Text(Strings.welcomeHeaderTitle)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-    }
-
     private var typingIndicator: some View {
         HStack(spacing: 8) {
             ProgressView()
@@ -119,25 +91,6 @@ struct ChatView: View {
                 .foregroundColor(.secondary)
         }
         .padding(.bottom, 8)
-    }
-    
-    private var settingsView: some View {
-        Button {
-            if shouldHideInitialSuggestions {
-                shouldHideInitialSuggestions = false
-                messages.removeAll()
-            }
-        } label: {
-            Image(systemName: "bubble.and.pencil")
-       }
-    }
-    
-    private var chatHistory: some View {
-        Button {
-            print("Slider Tapped")
-        } label: {
-            Image(systemName: "slider.horizontal.3")
-        }
     }
     
     private var textEditorView: some View {
@@ -157,26 +110,11 @@ struct ChatView: View {
     }
     
     private var chatSuggestionView: some View {
-        ForEach(viewModel.initialSuggestions) { suggestion in
+        ForEach(verse.suggestedQuestions, id: \.self) { suggestion in
             
-            ChatSuggestionsView(suggestion: suggestion.suggestion) {
-                sendQuery(text: suggestion.suggestion)
+            ChatSuggestionsView(suggestion: suggestion) {
+                sendQuery(text: suggestion)
             }
-        }
-    }
-    
-    private func loadInitialData() {
-        if viewModel.initialSuggestions.isEmpty {
-            viewModel.loadChatSuggestions()
-        }
-    }
-
-    // Scroll to bottom when results are generated.
-    private func scrollToBottom(proxy: ScrollViewProxy) {
-        guard let lastID = messages.first?.id else { return }
-        
-        withAnimation(.easeOut(duration: 0.3)) {
-            proxy.scrollTo(lastID, anchor: .bottom)
         }
     }
     
@@ -200,7 +138,7 @@ struct ChatView: View {
     @MainActor
     private func executeQuery(query: String) async {
         do {
-            let answer = try await viewModel.queryQuestion(query)
+            let answer = try await queryQuestion(query)
             messages.append(ChatMessage(text: answer, isUser: false))
         } catch {
             print("Failed to get answer: \(error.localizedDescription)")
@@ -210,5 +148,23 @@ struct ChatView: View {
     private func clearTextEditor() {
         message = ""
     }
+    
+    func queryQuestion(_ query: String) async throws -> String {
+        do {
+            let answer = try await NetworkManager.shared.askQuestion(question: query)
+            return answer
+        } catch {
+            print("Error:", error.localizedDescription)
+            return ""
+        }
+    }
+    
+    // Scroll to bottom when results are generated.
+    private func scrollToBottom(proxy: ScrollViewProxy) {
+        guard let lastID = messages.first?.id else { return }
+        
+        withAnimation(.easeOut(duration: 0.3)) {
+            proxy.scrollTo(lastID, anchor: .bottom)
+        }
+    }
 }
-
