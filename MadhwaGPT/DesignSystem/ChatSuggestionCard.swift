@@ -34,7 +34,7 @@ struct ChatSuggestionCard: View {
             .background(
                 ZStack {
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(.ultraThinMaterial) // Adaptive blur
+                        .fill(.ultraThinMaterial)
                     
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .fill(Color.orange.opacity(colorScheme == .dark ? 0.05 : 0.08))
