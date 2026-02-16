@@ -141,6 +141,8 @@ struct ScriptureChapterVerseView: View {
     let verse: ScriptureChapterVerse
     var words: [WordDetail] = []
     
+    @Environment(\.colorScheme) var colorScheme
+    
     init(verse: ScriptureChapterVerse) {
         self.verse = verse
         self.words = verse.wordByWord ?? []
@@ -192,18 +194,7 @@ struct ScriptureChapterVerseView: View {
             }
         }
         .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                // Use secondaryGroupedBackground for a premium "inset" look
-                .fill(Color(.secondarySystemGroupedBackground))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                // Subtle hairline border that only appears in dark mode to define edges
-                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
-        )
-        // High-dispersion shadow that disappears in dark mode for a flat-modern feel
-        .shadow(color: Color.black.opacity(0.04), radius: 20, x: 0, y: 10)
+        .cardBackgroundStyle()
         .padding()
     }
     
@@ -213,18 +204,7 @@ struct ScriptureChapterVerseView: View {
             titleDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), design: .rounded)
         }
         .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                // Use secondaryGroupedBackground for a premium "inset" look
-                .fill(Color(.secondarySystemGroupedBackground))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                // Subtle hairline border that only appears in dark mode to define edges
-                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
-        )
-        // High-dispersion shadow that disappears in dark mode for a flat-modern feel
-        .shadow(color: Color.black.opacity(0.04), radius: 20, x: 0, y: 10)
+        .cardBackgroundStyle()
         .padding(.horizontal, 12)
         .padding(.vertical)
     }
@@ -257,6 +237,8 @@ struct ScriptureAIInsightView: View {
 struct VerseContentCard: View {
     let verse: ScriptureChapterVerse
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 32) {
             
@@ -286,18 +268,7 @@ struct VerseContentCard: View {
             }
         }
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                // Use secondaryGroupedBackground for a premium "inset" look
-                .fill(Color(.secondarySystemGroupedBackground))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                // Subtle hairline border that only appears in dark mode to define edges
-                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
-        )
-        // High-dispersion shadow that disappears in dark mode for a flat-modern feel
-        .shadow(color: Color.black.opacity(0.04), radius: 20, x: 0, y: 10)
+        .cardBackgroundStyle()
         .padding(.horizontal, 12)
         .padding(.vertical)
     }

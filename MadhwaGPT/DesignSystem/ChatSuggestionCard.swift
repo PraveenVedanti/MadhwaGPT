@@ -31,20 +31,7 @@ struct ChatSuggestionCard: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                    
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Color.orange.opacity(colorScheme == .dark ? 0.05 : 0.08))
-                }
-            )
-            .overlay {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(Color.orange.opacity(colorScheme == .dark ? 0.15 : 0.1), lineWidth: 0.5)
-            }
-            .shadow(color: .black.opacity(0.04), radius: 8, y: 4)
+            .cardBackgroundStyle()
         }
         .buttonStyle(ScaleButtonStyle())
     }
