@@ -20,7 +20,7 @@ struct ScriptureVerseListView: View {
         VStack {
             NavigationStack {
                 ScrollView {
-                    LazyVStack {
+                    LazyVStack(spacing: 16) {
                         ForEach(scriptureChapterVerseList) { verse in
                             
                             NavigationLink {
@@ -51,16 +51,24 @@ struct ScriptureVerseListView: View {
 struct ScriptureChapterVerseCard: View {
     let verse: ScriptureChapterVerse
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
     
-        VStack(alignment: .leading, spacing: 6) {
-            Text(verse.canonicalId)
-                .font(.caption2)
-                .fontWeight(.bold)
-                .padding(.horizontal, 4)
-                .padding(.vertical, 4)
-                .foregroundColor(.orange)
-            
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(verse.canonicalId)
+                    .font(.caption2)
+                    .fontWeight(.bold)
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 4)
+                    .foregroundColor(.orange)
+                
+                Spacer()
+                
+                Image(systemName: "arrow.right")
+            }
+           
             Text(verse.sanskrit ?? verse.kannada ?? "")
                 .font(.headline)
                 .fontWeight(.regular)
@@ -69,20 +77,7 @@ struct ScriptureChapterVerseCard: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.secondarySystemGroupedBackground))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
-        )
-        .shadow(
-            color: Color.black.opacity(0.05),
-            radius: 8,
-            x: 0,
-            y: 4
-        )
+        .cardBackgroundStyle()
         .padding(.horizontal, 12)
     }
 }

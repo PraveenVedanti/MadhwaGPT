@@ -76,6 +76,11 @@ struct ChatView: View {
                     }
                     
                     if !shouldHideInitialSuggestions {
+                        HStack {
+                            Label("Try asking:", systemImage: "lightbulb")
+                                .foregroundStyle(Color.orange)
+                            Spacer()
+                        }
                         chatSuggestionView
                     }
                     
@@ -158,8 +163,7 @@ struct ChatView: View {
     
     private var chatSuggestionView: some View {
         ForEach(viewModel.initialSuggestions) { suggestion in
-            
-            ChatSuggestionsView(suggestion: suggestion.suggestion) {
+            ChatSuggestionCard(text: suggestion.suggestion) {
                 sendQuery(text: suggestion.suggestion)
             }
         }
