@@ -14,28 +14,60 @@ struct ScriptureChaptersView: View {
     
     @State private var scriptureChapters: [ScriptureChapter] = []
     
-    @ObservedObject private var viewModel =  ScriptureChaptersViewModel()
+    @StateObject private var viewModel =  ScriptureChaptersViewModel()
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(scriptureChapters) { scriptureChapter in
-                        NavigationLink {
-                            ScriptureVerseListView(
-                                scriptureChapter: scriptureChapter,
-                                scripture: scripture
-                            )
-                        } label: {
-                            ScriptureChapterCard(scriptureChapter: scriptureChapter)
+        List {
+            ForEach(scriptureChapters) { chapter in
+                NavigationLink {
+                    ScriptureVerseListView(
+                        scriptureChapter: chapter,
+                        scripture: scripture
+                    )
+                    
+                } label: {
+                    ScriptureChapterCard(scriptureChapter: chapter)
+                }
+                .listRowBackground(Color("SaffronCardBackround"))
+            }
+            .padding(.horizontal, 12)
+        }
+        .task(id: scripture.id) {
+            scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
+        }
+    }
+}
+
+struct ScriptureChaptersView1: View {
+    let scripture: Scripture
+    @StateObject private var viewModel = ScriptureChaptersViewModel()
+    @State private var scriptureChapters: [ScriptureChapter] = []
+
+    var body: some View {
+        Group {
+            if scriptureChapters.isEmpty {
+                // This helps us see if the view is actually alive
+                ContentUnavailableView("Loading...", systemImage: "book.pages")
+            } else {
+                List {
+                    ForEach(scriptureChapters) { chapter in
+                        NavigationLink(value: chapter) {
+                            ScriptureChapterCard(scriptureChapter: chapter)
                         }
+                        .listRowBackground(Color("SaffronCardBackground"))
                     }
                 }
+                .listStyle(.insetGrouped)
             }
-            .background(Color(.systemBackground))
         }
-        .task {
-            scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
+        .navigationTitle(scripture.title)
+        .scrollContentBackground(.hidden)
+        .background(Color("SaffronBackground"))
+        .task(id: scripture.id) {
+            // Debug: Print to console to see if this even runs
+            print("Fetching chapters for \(scripture.title)")
+            let data = await viewModel.loadScriptureChapters(scripture: scripture)
+            self.scriptureChapters = data
         }
     }
 }
@@ -48,24 +80,15 @@ struct ScriptureChapterCard: View {
    
     var body: some View {
         
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 2) {
             
-            HStack {
-                mainTitleView
-                
-                Spacer()
-                
-                Image(systemName: "arrow.right")
-            }
+            mainTitleView
            
             transliteratedView
             
             descriptionView
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .cardBackgroundStyle()
-        .padding(.horizontal, 12)
+        .padding(.vertical, 2)
     }
     
     @ViewBuilder
@@ -97,7 +120,7 @@ struct ScriptureChapterCard: View {
     }
 }
 
-struct ScriptureChapter: Identifiable, Decodable {
+struct ScriptureChapter: Identifiable, Decodable, Hashable {
     var id = UUID()
     let number: Int
     let sanskritName: String?

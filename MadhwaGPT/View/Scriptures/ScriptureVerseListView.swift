@@ -19,30 +19,26 @@ struct ScriptureVerseListView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack {
-            NavigationStack {
-                List {
-                    ForEach(scriptureChapterVerseList) { verse in
-                        
-                        NavigationLink {
-                            ScriptureVerseDetailView(
-                                verse: verse,
-                                verseList: scriptureChapterVerseList
-                            )
-                        } label: {
-                            ScriptureChapterVerseCard(verse: verse)
-                        }
-                        .listRowBackground(Color("SaffronCardBackround"))
-                    }
-                    .padding(.horizontal, 12)
+        List {
+            ForEach(scriptureChapterVerseList) { verse in
+                
+                NavigationLink {
+                    ScriptureVerseDetailView(
+                        verse: verse,
+                        verseList: scriptureChapterVerseList
+                    )
+                } label: {
+                    ScriptureChapterVerseCard(verse: verse)
                 }
-                .scrollContentBackground(.hidden)
-                .background(Color("SaffronBackround"))
-                .listStyle(.insetGrouped)
+                .listRowBackground(Color("SaffronCardBackround"))
             }
-            .navigationTitle(scripture.title)
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.horizontal, 12)
         }
+        .navigationTitle(scriptureChapter.sanskritName ?? scriptureChapter.kannadaName ?? "Unknown")
+        .navigationBarTitleDisplayMode(.large)
+        .scrollContentBackground(.hidden)
+        .background(Color("SaffronBackround"))
+        .listStyle(.insetGrouped)
         .task {
             scriptureChapterVerseList = await viewModel.loadScriptureChapterVerseList(scripture: scripture, scriptureChapter: scriptureChapter)
         }
@@ -52,8 +48,6 @@ struct ScriptureVerseListView: View {
 
 struct ScriptureChapterVerseCard: View {
     let verse: ScriptureChapterVerse
-    
-    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {

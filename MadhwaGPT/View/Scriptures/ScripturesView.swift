@@ -13,8 +13,6 @@ import SwiftUI
 struct ScripturesView: View {
     // MARK: - Properties
     
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
-    
     @StateObject var viewModel = ScriptureViewModel()
     @State private var selectedScripture: Scripture?
     @State private var isLoading = true
@@ -23,44 +21,33 @@ struct ScripturesView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                contentSection
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        ForEach(viewModel.scriptures) { scripture in
-                            Button {
-                                selectedScripture = scripture
-                            } label: {
-                                HStack {
-                                    VStack {
-                                        Text(scripture.title)
-                                        Text(scripture.description)
-                                    }
-                                  //  Image(systemImage: selectedScripture == scripture ? "checkmark" : "")
-                                }
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "books.vertical.fill")
+            contentSection
+                .navigationTitle(selectedScripture?.title ?? "Scriptures")
+                .navigationBarTitleDisplayMode(.large)
+                .background(Color.clear)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        scriptureMenu
                     }
                 }
+        }
+        .task {
+            await loadInitialData()
+        }
+    }
+    
+    private var scriptureMenu: some View {
+        Menu {
+            ForEach(viewModel.scriptures) { scripture in
+                Button {
+                    selectedScripture = scripture
+                } label: {
+                    Label(scripture.title, systemImage: "book")
+                }
             }
-            .sheet(isPresented: $showLibrary) {
-                ScriptureLibrarySheet(
-                    selectedScripture: $selectedScripture,
-                    allScriptures: viewModel.scriptures
-                )
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-            }
-            .navigationTitle(selectedScripture?.title ?? "Scriptures")
-            .navigationBarTitleDisplayMode(.large)
-            .background(Color.clear)
-            .task {
-                await loadInitialData()
-            }
+        } label: {
+            Image(systemName: "books.vertical.fill")
+                .symbolRenderingMode(.hierarchical)
         }
     }
     
@@ -74,11 +61,8 @@ struct ScripturesView: View {
                 ProgressView()
             }
         } else if let scripture = selectedScripture {
-            ScrollView {
-                ScriptureChaptersView(scripture: scripture)
-                    .padding(.top)
-                    .id(scripture.id)
-            }
+            ScriptureChaptersView(scripture: scripture)
+                .id(scripture.id)
         } else {
             ContentUnavailableView(
                 "No Selection",
@@ -105,71 +89,6 @@ struct ScripturesView: View {
     }
 }
 
-struct ScriptureLibrarySheet: View {
-   
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
-    @Binding var selectedScripture: Scripture?
-    let allScriptures: [Scripture]
-    @Environment(\.dismiss) var dismiss
-    
-    var body: some View {
-        ZStack(alignment: .topLeading) {
-            
-            ScrollView {
-                VStack(spacing: 16) {
-                    Spacer()
-                        .frame(height: 60)
-                    headerView
-                    content
-                }
-                .frame(maxWidth: .infinity)
-            }
-            
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark")
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                    .padding(12)
-                    .background(.ultraThinMaterial, in: Circle())
-            }
-            .padding()
-        }
-    }
-
-    
-    private var content: some View {
-        VStack(spacing: 16) {
-            ForEach(allScriptures) { scripture in
-                ScriptureSelectionCard(
-                    scripture: scripture,
-                    isSelected: selectedScripture == scripture
-                ) {
-                    selectedScripture = scripture
-                    dismiss()
-                }
-                .padding()
-            }
-        }
-        .padding()
-    }
-    
-    private var headerView: some View {
-        VStack(alignment: .leading, spacing: 12.0) {
-            
-            Text(Strings.scripturesTitle)
-                .foregroundStyle(.primary)
-                .font(.title)
-            
-            Text(Strings.scripturesHeader)
-                .foregroundStyle(.secondary)
-                .font(.headline)
-        }
-        .padding(.leading, 8.0)
-        .frame(maxWidth: .infinity)
-    }
-}
 
 struct ScriptureCard: View {
     

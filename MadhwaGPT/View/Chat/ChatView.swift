@@ -11,7 +11,6 @@ import SwiftUI
 struct ChatView: View {
     
     @State private var message = ""
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     
     // Chat view model.
     @ObservedObject var viewModel = ChatViewModel()
