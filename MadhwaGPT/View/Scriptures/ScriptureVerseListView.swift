@@ -16,27 +16,29 @@ struct ScriptureVerseListView: View {
     @State private var scriptureChapterVerseList: [ScriptureChapterVerse] = []
     @ObservedObject private var viewModel = ScriptureChapterDetailsViewModel()
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         VStack {
             NavigationStack {
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        ForEach(scriptureChapterVerseList) { verse in
-                            
-                            NavigationLink {
-                                ScriptureVerseDetailView(
-                                    verse: verse,
-                                    verseList: scriptureChapterVerseList
-                                )
-                            } label: {
-                                ScriptureChapterVerseCard(verse: verse)
-                            }
+                List {
+                    ForEach(scriptureChapterVerseList) { verse in
+                        
+                        NavigationLink {
+                            ScriptureVerseDetailView(
+                                verse: verse,
+                                verseList: scriptureChapterVerseList
+                            )
+                        } label: {
+                            ScriptureChapterVerseCard(verse: verse)
                         }
+                        .listRowBackground(Color("SaffronCardBackround"))
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, 12)
                 }
-                .background(Color(.systemBackground))
+                .scrollContentBackground(.hidden)
+                .background(Color("SaffronBackround"))
+                .listStyle(.insetGrouped)
             }
             .navigationTitle(scripture.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -54,31 +56,44 @@ struct ScriptureChapterVerseCard: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-    
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(verse.canonicalId)
-                    .font(.caption2)
-                    .fontWeight(.bold)
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 4)
-                    .foregroundColor(.orange)
-                
-                Spacer()
-                
-                Image(systemName: "arrow.right")
+        VStack(alignment: .leading, spacing: 2) {
+            Text(titleView())
+                .font(.system(.caption, design: .monospaced))
+                .fontWeight(.bold)
+                .foregroundColor(.orange)
+            
+            if let kannadaVerse = verse.kannada {
+                Text(kannadaVerse)
+                    .font(.system(.body, design: .serif))
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.leading)
+                    .lineSpacing(2)
             }
-           
-            Text(verse.sanskrit ?? verse.kannada ?? "")
-                .font(.headline)
-                .fontWeight(.regular)
-                .foregroundColor(.primary)
-                .multilineTextAlignment(.leading)
+            
+            if let sanskritVerse = verse.sanskrit {
+                Text(sanskritVerse)
+                    .font(.system(.body, design: .serif))
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.leading)
+                    .lineSpacing(2)
+            }
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .cardBackgroundStyle()
-        .padding(.horizontal, 12)
+        .padding(.vertical, 2)
+    }
+    
+    private func titleView() -> String {
+        var chapter: Int = 0
+        var subChapter: Int = 0
+        if let _ = verse.kannada {
+            chapter = verse.sandhi ?? 0
+            subChapter = verse.padya ?? 0
+        }
+        
+        if let _ = verse.sanskrit {
+            chapter = verse.chapter ?? 0
+            subChapter = verse.verse ?? 0
+        }
+        return "\(chapter).\(subChapter)"
     }
 }
 

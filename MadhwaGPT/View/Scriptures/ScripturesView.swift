@@ -28,10 +28,22 @@ struct ScripturesView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showLibrary.toggle()
+                    Menu {
+                        ForEach(viewModel.scriptures) { scripture in
+                            Button {
+                                selectedScripture = scripture
+                            } label: {
+                                HStack {
+                                    VStack {
+                                        Text(scripture.title)
+                                        Text(scripture.description)
+                                    }
+                                  //  Image(systemImage: selectedScripture == scripture ? "checkmark" : "")
+                                }
+                            }
+                        }
                     } label: {
-                        Image(systemName: "book.closed.fill")
+                        Image(systemName: "books.vertical.fill")
                     }
                 }
             }

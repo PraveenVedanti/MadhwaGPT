@@ -15,18 +15,18 @@ struct CardBackgroundModifier: ViewModifier {
         content
             .background(
                 ZStack {
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .fill(.ultraThinMaterial)
                     
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .fill(Color.orange.opacity(colorScheme == .dark ? 0.05 : 0.08))
                 }
             )
             .overlay {
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .stroke(
                         Color.orange.opacity(colorScheme == .dark ? 0.15 : 0.1),
-                        lineWidth: 0.5
+                        lineWidth: 1
                     )
             }
             .shadow(color: .black.opacity(0.04), radius: 8, y: 4)
