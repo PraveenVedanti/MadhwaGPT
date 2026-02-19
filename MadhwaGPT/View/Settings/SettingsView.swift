@@ -20,3 +20,17 @@ struct SettingsView: View {
         }
     }
 }
+
+
+struct ChatLevel: Identifiable {
+    var id = UUID()
+    let title: String
+    let description: String
+}
+
+struct ChatThemes: Identifiable {
+    var id = UUID()
+    let title: String
+    let description: String
+    let color: Color
+}

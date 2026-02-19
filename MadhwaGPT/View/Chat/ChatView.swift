@@ -42,7 +42,7 @@ struct ChatView: View {
                textEditorView
         
             }
-            .navigationTitle("MadhwaGPT")
+            .navigationTitle("Chat")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 // Top Right Button

@@ -120,7 +120,7 @@ struct ChatBubbleView: View {
                 MarkdownMessageView(content: message.text)
             }
             .padding(12)
-            .background(message.isUser ? Color.gray.opacity(0.2) : Color.orange.opacity(0.2))
+            .background(message.isUser ? Color.gray.opacity(0.2) : Color("SaffronCardBackround"))
             .foregroundColor(.primary)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .frame(

@@ -33,19 +33,13 @@ struct ScriptureVerseDetailView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                
-                ScrollView {
-                    ScriptureChapterVerseView(verse: selectedVerse)
-                        .padding(.bottom, 120)
+            ScriptureChapterVerseView(verse: selectedVerse)
+                .background(Color("SaffronCardBackround"))
+                .navigationTitle(selectedVerse.canonicalId)
+                .navigationBarTitleDisplayMode(.large)
+                .fullScreenCover(isPresented: $showAI) {
+                    AIInsightsView(verse: selectedVerse)
                 }
-            }
-            .background(Color(.systemBackground))
-            .navigationTitle(selectedVerse.canonicalId)
-            .navigationBarTitleDisplayMode(.large)
-            .fullScreenCover(isPresented: $showAI) {
-                AIInsightsView(verse: selectedVerse)
-            }
         }
         .overlay(alignment: .bottomTrailing, content: {
             Button {
@@ -149,26 +143,71 @@ struct ScriptureChapterVerseView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            ScrollView(showsIndicators: false) {
-                VerseContentCard(verse: verse)
-                wordByWordCard
-                englishTranslationCard
+        
+        List {
+            
+            // Main verse section
+            Section {
+                if let sanskrit = verse.sanskrit {
+                    titleDescription(description: sanskrit, color: .primary, design: .serif)
+                }
+                
+                if let kannada = verse.kannada {
+                    titleDescription(description: kannada, color: .primary, design: .serif)
+                }
+            } header: {
+                if let _ = verse.sanskrit {
+                    titleHeader(title: "SANSKRIT (DEVANAGARI)", color: .orange)
+                }
+                
+                if let _ = verse.kannada {
+                    titleHeader(title: "KANNADA", color: .orange)
+                }
             }
+            .listRowBackground(Color("SaffronCardBackround"))
+            .listRowSeparator(.hidden)
+            
+            // Transliteration section
+            Section {
+                Text(verse.transliteration)
+                    .font(.system(.body, design: .serif))
+                    .italic()
+                    .foregroundColor(.secondary)
+            } header: {
+                titleHeader(title: "TRANSLITERATION", color: .orange)
+            }
+            .listRowBackground(Color("SaffronCardBackround"))
+            .listRowSeparator(.hidden)
+
+        
+            // Word by word section
+            Section {
+                wordByWordCard
+            } header: {
+                Text("WORD-BY-WORD MEANINGS")
+                    .font(.system(size: 12, weight: .black))
+                    .kerning(1)
+                    .foregroundColor(.orange)
+            }
+            .listRowBackground(Color("SaffronCardBackround"))
+            .listRowSeparator(.hidden)
+            
+            // English translation section
+            Section {
+                englishTranslationCard
+            } header: {
+                titleHeader(title: "ENGLISH TRANSLATION", color: .orange)
+            }
+            .listRowBackground(Color("SaffronCardBackround"))
+            .listRowSeparator(.hidden)
         }
-        .background(Color(.systemBackground))
+        .listStyle(.grouped)
+        .scrollContentBackground(.hidden)
+        .background(Color("SaffronCardBackround"))
     }
     
     private var wordByWordCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("WORD-BY-WORD MEANINGS")
-                .font(.system(size: 12, weight: .black))
-                .kerning(1)
-                .foregroundColor(.orange)
-            
-            Spacer()
-                .frame(height: 8)
-            
             ForEach(words) { word in
                 HStack(alignment: .top, spacing: 16) {
                     // The Term
@@ -193,20 +232,10 @@ struct ScriptureChapterVerseView: View {
                 }
             }
         }
-        .padding(12)
-        .cardBackgroundStyle()
-        .padding()
     }
     
     private var englishTranslationCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            titleHeader(title: "ENGLISH TRANSLATION", color: .orange)
-            titleDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), design: .rounded)
-        }
-        .padding(12)
-        .cardBackgroundStyle()
-        .padding(.horizontal, 12)
-        .padding(.vertical)
+        titleDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), design: .rounded)
     }
     
     private func titleHeader(title: String, color: Color) -> some View {
@@ -229,61 +258,5 @@ struct ScriptureChapterVerseView: View {
 struct ScriptureAIInsightView: View {
     var body: some View {
         Text("AI Tab")
-    }
-}
-
-// MARK: - Verse content card.
-
-struct VerseContentCard: View {
-    let verse: ScriptureChapterVerse
-    
-    @Environment(\.colorScheme) var colorScheme
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 32) {
-            
-            if let sanskrit = verse.sanskrit {
-                // 1. Primary Verse
-                VStack(alignment: .leading, spacing: 8) {
-                    titleHeader(title: "SANSKRIT (DEVANAGARI)", color: .orange)
-                    titleDescription(description: sanskrit, color: .primary, design: .serif)
-                }
-            }
-            
-            if let kannada = verse.kannada {
-                VStack(alignment: .leading, spacing: 8) {
-                    titleHeader(title: "KANNADA", color: .orange)
-                    titleDescription(description: kannada, color: .primary, design: .serif)
-                }
-            }
-            
-            // 2. Transliteration
-            VStack(alignment: .leading, spacing: 8) {
-                titleHeader(title: "TRANSLITERATION", color: .secondary.opacity(0.6))
-                
-                Text(verse.transliteration)
-                    .font(.system(.body, design: .serif))
-                    .italic()
-                    .foregroundColor(.secondary)
-            }
-        }
-        .padding(16)
-        .cardBackgroundStyle()
-        .padding(.horizontal, 12)
-        .padding(.vertical)
-    }
-    
-    private func titleHeader(title: String, color: Color) -> some View {
-        Text(title)
-            .font(.system(size: 12, weight: .black))
-            .kerning(1)
-            .foregroundColor(color)
-    }
-    
-    private func titleDescription(description: String, color: Color, design: Font.Design) -> some View {
-        Text(description)
-            .font(.system(size: 20, weight: .medium, design: design))
-            .lineSpacing(2)
-            .foregroundColor(color)
     }
 }

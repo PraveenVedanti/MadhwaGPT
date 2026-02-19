@@ -31,7 +31,15 @@ struct ChatSuggestionCard: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .cardBackgroundStyle()
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                    
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(Color("SaffronCardBackround"))
+                }
+            )
         }
         .buttonStyle(ScaleButtonStyle())
     }

@@ -24,7 +24,6 @@ struct ScripturesView: View {
             contentSection
                 .navigationTitle(selectedScripture?.title ?? "Scriptures")
                 .navigationBarTitleDisplayMode(.large)
-                .background(Color.clear)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         scriptureMenu
@@ -62,6 +61,7 @@ struct ScripturesView: View {
             }
         } else if let scripture = selectedScripture {
             ScriptureChaptersView(scripture: scripture)
+                .background(Color("SaffronCardBackround"))
                 .id(scripture.id)
         } else {
             ContentUnavailableView(

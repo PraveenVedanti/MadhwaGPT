@@ -7,10 +7,7 @@
 
 import Foundation
 
-struct ChatLevel: Identifiable {
-    var id = UUID()
-    let title: String
-}
+
 
 struct InitialChatSuggestions: Identifiable {
     var id = UUID()
@@ -23,25 +20,9 @@ struct ChatRequestBody {
 
 class ChatViewModel: ObservableObject {
     
-    @Published var chatLevels: [ChatLevel] = []
     @Published var selectedChatLevel: ChatLevel?
     
     @Published var initialSuggestions: [InitialChatSuggestions] = []
-    
-    func loadChatTypes()  {
-        let beginner = ChatLevel(title: "👶 Beginner")
-        let intermediate = ChatLevel(title: "📘 Intermediate")
-        let advanced = ChatLevel(title: "🎓 Advanced")
-        
-        chatLevels.append(beginner)
-        chatLevels.append(intermediate)
-        chatLevels.append(advanced)
-        
-        // Select the first category by default.
-        if self.selectedChatLevel == nil, let first = chatLevels.first {
-            self.selectedChatLevel = first
-        }
-    }
     
     // This is hard-coded way to load initial suggestions.
     func loadChatSuggestions() {

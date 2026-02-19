@@ -31,14 +31,15 @@ struct ScriptureVerseListView: View {
                     ScriptureChapterVerseCard(verse: verse)
                 }
                 .listRowBackground(Color("SaffronCardBackround"))
+                .listRowSeparator(.hidden)
             }
             .padding(.horizontal, 12)
         }
         .navigationTitle(scriptureChapter.sanskritName ?? scriptureChapter.kannadaName ?? "Unknown")
         .navigationBarTitleDisplayMode(.large)
         .scrollContentBackground(.hidden)
-        .background(Color("SaffronBackround"))
-        .listStyle(.insetGrouped)
+        .background(Color("SaffronCardBackround"))
+        .listStyle(.grouped)
         .task {
             scriptureChapterVerseList = await viewModel.loadScriptureChapterVerseList(scripture: scripture, scriptureChapter: scriptureChapter)
         }

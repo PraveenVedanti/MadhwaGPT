@@ -29,45 +29,15 @@ struct ScriptureChaptersView: View {
                     ScriptureChapterCard(scriptureChapter: chapter)
                 }
                 .listRowBackground(Color("SaffronCardBackround"))
+                .listRowSeparator(.hidden)
             }
             .padding(.horizontal, 12)
         }
+        .scrollContentBackground(.hidden)
+        .background(Color("SaffronCardBackround"))
+        .listStyle(.grouped)
         .task(id: scripture.id) {
             scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
-        }
-    }
-}
-
-struct ScriptureChaptersView1: View {
-    let scripture: Scripture
-    @StateObject private var viewModel = ScriptureChaptersViewModel()
-    @State private var scriptureChapters: [ScriptureChapter] = []
-
-    var body: some View {
-        Group {
-            if scriptureChapters.isEmpty {
-                // This helps us see if the view is actually alive
-                ContentUnavailableView("Loading...", systemImage: "book.pages")
-            } else {
-                List {
-                    ForEach(scriptureChapters) { chapter in
-                        NavigationLink(value: chapter) {
-                            ScriptureChapterCard(scriptureChapter: chapter)
-                        }
-                        .listRowBackground(Color("SaffronCardBackground"))
-                    }
-                }
-                .listStyle(.insetGrouped)
-            }
-        }
-        .navigationTitle(scripture.title)
-        .scrollContentBackground(.hidden)
-        .background(Color("SaffronBackground"))
-        .task(id: scripture.id) {
-            // Debug: Print to console to see if this even runs
-            print("Fetching chapters for \(scripture.title)")
-            let data = await viewModel.loadScriptureChapters(scripture: scripture)
-            self.scriptureChapters = data
         }
     }
 }
