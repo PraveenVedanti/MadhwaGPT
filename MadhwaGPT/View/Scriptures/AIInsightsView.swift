@@ -116,7 +116,7 @@ struct AIInsightsView: View {
     
     private var chatSuggestionView: some View {
         ForEach(verse.suggestedQuestions, id: \.self) { suggestion in
-            ChatSuggestionCard(text: suggestion) {
+            ChatSuggestionCard(text: suggestion, font: "Iowan Old Style") {
                 sendQuery(text: suggestion)
             }
         }

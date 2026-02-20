@@ -12,6 +12,7 @@ import Foundation
 struct InitialChatSuggestions: Identifiable {
     var id = UUID()
     var suggestion: String
+    var suggestionFont: String
 }
 
 struct ChatRequestBody {
@@ -27,24 +28,31 @@ class ChatViewModel: ObservableObject {
     // This is hard-coded way to load initial suggestions.
     func loadChatSuggestions() {
         let first = InitialChatSuggestions(
-            suggestion: "Explain the five-fold difference (Pancha-bheda)"
+            suggestion: "Explain the five-fold difference (Pancha-bheda)",
+            suggestionFont: "Iowan Old Style"
         )
         let second = InitialChatSuggestions(
-            suggestion: "In 'कर्मण्येवाधिकारस्ते' (Gita 2.47), what is Krishna teaching Arjuna?"
+            suggestion: "In 'कर्मण्येवाधिकारस्ते' (Gita 2.47), what is Krishna teaching Arjuna?",
+            suggestionFont: "Iowan Old Style"
         )
         
         let third = InitialChatSuggestions(
-            suggestion: "What is the hierarchy among souls according to Madhvacharya?"
+            suggestion: "What is the hierarchy among souls according to Madhvacharya?",
+            suggestionFont: "Iowan Old Style"
         )
         
         let fourth = InitialChatSuggestions(
-            suggestion: "ಭಗವದ್ಗೀತೆಯ ಪ್ರಕಾರ ಭಕ್ತಿ ಎಂದರೇನು?"
+            suggestion: "ಭಗವದ್ಗೀತೆಯ ಪ್ರಕಾರ ಭಕ್ತಿ ಎಂದರೇನು?",
+            suggestionFont: "KannadaSangamMN"
         )
         
-        let fifth = InitialChatSuggestions(suggestion: "How does Harikathāmṛtasāra explain creation, sustenance, and dissolution of the universe?")
+        let fifth = InitialChatSuggestions(suggestion: "How does Harikathāmṛtasāra explain creation, sustenance, and dissolution of the universe?",
+            suggestionFont: "Iowan Old Style"
+        )
         
         let sixth = InitialChatSuggestions(
-            suggestion: "नासतो विद्यते भावो नाभावो विद्यते सतः। उभयोरपि दृष्टोऽन्तस्त्वनयोस्तत्त्वदर्शिभिः॥ - Explain"
+            suggestion: "नासतो विद्यते भावो नाभावो विद्यते सतः। उभयोरपि दृष्टोऽन्तस्त्वनयोस्तत्त्वदर्शिभिः॥ - Explain",
+            suggestionFont: "DevanagariSangamMN"
         )
         
         initialSuggestions.append(first)

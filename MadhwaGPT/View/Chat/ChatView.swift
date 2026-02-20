@@ -28,6 +28,8 @@ struct ChatView: View {
     
     @FocusState private var isTextFieldFocused: Bool
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         
         NavigationStack {
@@ -57,7 +59,7 @@ struct ChatView: View {
             .onAppear {
                 loadInitialData()
             }
-            .background(Color(.systemBackground))
+            .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
             .sheet(isPresented: $shouldShowSettings, content: {
                 SettingsView()
             })
@@ -77,7 +79,8 @@ struct ChatView: View {
                     if !shouldHideInitialSuggestions {
                         HStack {
                             Label("Try asking:", systemImage: "lightbulb")
-                                .foregroundStyle(Color.orange)
+                                .font(.footnote)
+                                .foregroundStyle(.orange)
                             Spacer()
                         }
                         chatSuggestionView
@@ -162,7 +165,7 @@ struct ChatView: View {
     
     private var chatSuggestionView: some View {
         ForEach(viewModel.initialSuggestions) { suggestion in
-            ChatSuggestionCard(text: suggestion.suggestion) {
+            ChatSuggestionCard(text: suggestion.suggestion, font: suggestion.suggestionFont) {
                 sendQuery(text: suggestion.suggestion)
             }
         }

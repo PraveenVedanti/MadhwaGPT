@@ -67,13 +67,13 @@ struct ScriptureChapterCard: View {
         if let kannadaName = scriptureChapter.kannadaName {
             Text(kannadaName)
                 .font(.custom("DevanagariSangamMN-Bold", size: 18))
-                .foregroundColor(.primary)
+                .foregroundColor(.orange)
         }
         
         if let sanskritName = scriptureChapter.sanskritName {
             Text(sanskritName)
                 .font(.custom("DevanagariSangamMN-Bold", size: 18))
-                .foregroundColor(.primary)
+                .foregroundColor(.orange)
         }
     }
     
@@ -81,7 +81,7 @@ struct ScriptureChapterCard: View {
         Text(scriptureChapter.transliteratedName)
             .font(.custom("Iowan Old Style", size: 18))
             .italic()
-            .foregroundColor(.secondary)
+            .foregroundColor(.primary)
     }
     
     private var descriptionView: some View {

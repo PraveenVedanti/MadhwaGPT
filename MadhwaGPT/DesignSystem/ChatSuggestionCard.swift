@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ChatSuggestionCard: View {
     let text: String
+    let font: String
     let onTap: () -> Void
     
     @Environment(\.colorScheme) var colorScheme
@@ -20,25 +21,19 @@ struct ChatSuggestionCard: View {
         } label: {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "sparkles")
-                    .foregroundStyle(Color.orange)
+                    .foregroundStyle(Color.blue)
                     .padding(.top, 2)
                 
                 Text(text)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                    .font(.custom(font, size: 16))
+                    .foregroundColor(.primary)
                     .multilineTextAlignment(.leading)
-                    .foregroundStyle(.primary)
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                    
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(Color("SaffronCardBackround"))
-                }
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill((colorScheme == .dark ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground)))
             )
         }
         .buttonStyle(ScaleButtonStyle())

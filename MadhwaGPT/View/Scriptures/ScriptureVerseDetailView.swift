@@ -129,20 +129,6 @@ struct ScriptureVerseDetailView: View {
 
 // MARK: - Verse view
 
-//struct ScriptureChapterVerseDescriptionCard: View {
-//    
-//    let verse: ScriptureChapterVerse
-//    
-//    init(verse: ScriptureChapterVerse) {
-//        self.verse = verse
-//    }
-//    
-//    var body: some View {
-//        
-//    }
-//}
-
-
 struct ScriptureChapterVerseView: View {
     
     let verse: ScriptureChapterVerse
@@ -157,95 +143,139 @@ struct ScriptureChapterVerseView: View {
     
     var body: some View {
         
-        List {
+        ZStack {
+            (colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+                .ignoresSafeArea()
             
-            // Main verse section
-            Section {
-                if let sanskrit = verse.sanskrit {
-                    sectionDescription(description: sanskrit, color: .primary, font: "DevanagariSangamMN")
+            ScrollView {
+               
+                VStack(alignment: .leading, spacing: 24) {
+                    
+                    verseCard
+                    
+                    transliterationCard
+                    
+                    wordByWordCard
+                  
+                    englishTranslationCard
                 }
-                
-                if let kannada = verse.kannada {
-                    sectionDescription(description: kannada, color: .primary, font: "KannadaSangamMN")
-                }
-            } header: {
-                if let _ = verse.sanskrit {
-                    sectionHeader(title: "SANSKRIT (DEVANAGARI)", color: .secondary, font: "Iowan Old Style")
-                }
-                
-                if let _ = verse.kannada {
-                    sectionHeader(title: "KANNADA", color: .secondary, font: "Iowan Old Style")
-                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 16)
             }
-            .listRowBackground(Color(.systemBackground))
-            .listRowSeparator(.hidden)
-            
-            // Transliteration section
-            Section {
-                Text(verse.transliteration)
-                    .font(.system(.body, design: .serif))
-                    .italic()
-                    .foregroundColor(.secondary)
-            } header: {
-                sectionHeader(title: "TRANSLITERATION", color: .secondary, font: "Iowan Old Style")
-            }
-            .listRowBackground(Color(.systemBackground))
-            .listRowSeparator(.hidden)
-
-            // English translation section
-            Section {
-                englishTranslationCard
-            } header: {
-                sectionHeader(title: "ENGLISH TRANSLATION", color: .secondary, font: "Iowan Old Style")
-            }
-            .listRowBackground(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
-            .listRowSeparator(.hidden)
-        
-            // Word by word section
-            Section {
-                wordByWordCard
-            } header: {
-                sectionHeader(title: "WORD-BY-WORD MEANINGS", color: .secondary, font: "Iowan Old Style")
-            }
-            .listRowBackground(Color(.systemBackground))
-            .listRowSeparator(.hidden)
         }
-        .listStyle(.insetGrouped)
-        .scrollContentBackground(colorScheme == .dark ? .hidden : .visible)
-        .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+    }
+    
+    private var verseCard: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            
+            // Verse header view
+            if let _ = verse.sanskrit {
+                sectionHeader(title: "SANSKRIT (DEVANAGARI)", color: .secondary, font: "Iowan Old Style")
+            }
+            
+            if let _ = verse.kannada {
+                sectionHeader(title: "KANNADA", color: .secondary, font: "Iowan Old Style")
+            }
+            
+            verseContentView
+        }
+    }
+    
+    private var verseContentView: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            
+            if let sanskrit = verse.sanskrit {
+                sectionDescription(description: sanskrit, color: .primary, font: "DevanagariSangamMN")
+                    .multilineTextAlignment(.leading)
+            }
+            
+            if let kannada = verse.kannada {
+                sectionDescription(description: kannada, color: .primary, font: "KannadaSangamMN")
+                    .multilineTextAlignment(.leading)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+        )
+    }
+    
+    private var transliterationContentView: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionDescription(description: verse.transliteration, color: .primary, font: "DevanagariSangamMN")
+                .multilineTextAlignment(.leading)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+        )
+    }
+    
+    private var transliterationCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionHeader(title: "TRANSLITERATION", color: .secondary, font: "Iowan Old Style")
+            transliterationContentView
+        }
     }
     
     private var wordByWordCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ForEach(words) { word in
-                HStack(alignment: .top, spacing: 16) {
-                    // The Term
-                    Text(word.word)
-                        .font(.custom("Iowan Old Style", size: 18))
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.leading)
-                        .lineSpacing(2)
-                        .frame(width: 110, alignment: .leading)
-                    
-                    // The Meaning
-                    Text(word.meaning)
-                        .font(.custom("Iowan Old Style", size: 18))
-                        .foregroundColor(.secondary)
-                        .lineSpacing(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                
-                if word.id != words.last?.id {
-                    Divider()
-                        .padding(.leading, 126)
-                        .opacity(0.6)
-                }
-            }
+        VStack(alignment: .leading, spacing: 8) {
+            sectionHeader(title: "WORD-BY-WORD MEANINGS", color: .secondary, font: "Iowan Old Style")
+            wordByWordContent
         }
     }
     
+    var wordByWordContent: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 16) {
+               
+                ForEach(words) { word in
+                    GridRow(alignment: .top) {
+                        // Original Script
+                        Text(word.word)
+                            .font(.custom("DevanagariSangamMN", size: 16))
+                            .foregroundColor(.primary)
+                        
+                        // Meaning
+                        Text(word.meaning)
+                            .font(.system(.body, design: .serif))
+                            .foregroundColor(.primary.opacity(0.8))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    
+                    if word.id != words.last?.id {
+                        Divider().padding(.top, 8)
+                    }
+                }
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+        )
+    }
+    
     private var englishTranslationCard: some View {
-        sectionDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), font: "Iowan Old Style")
+        VStack(alignment: .leading, spacing: 8) {
+            sectionHeader(title: "ENGLISH TRANSLATION", color: .secondary, font: "Iowan Old Style")
+            englishTranslationContent
+        }
+    }
+    
+    private var englishTranslationContent: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), font: "Iowan Old Style")
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+        )
     }
     
     private func sectionHeader(title: String, color: Color, font: String) -> some View {
