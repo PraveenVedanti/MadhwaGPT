@@ -46,7 +46,6 @@ struct ScripturesView: View {
             }
         } label: {
             Image(systemName: "books.vertical.fill")
-                .symbolRenderingMode(.hierarchical)
         }
     }
     

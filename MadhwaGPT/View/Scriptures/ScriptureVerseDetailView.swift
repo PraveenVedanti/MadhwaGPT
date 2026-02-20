@@ -47,7 +47,6 @@ struct ScriptureVerseDetailView: View {
             } label: {
                 Image(systemName: "sparkles")
                     .font(.title2.bold())
-                    .foregroundColor(.orange)
                     .frame(width: 52, height: 52)
                     .background(.ultraThinMaterial)
                     .clipShape(Circle())
@@ -130,6 +129,20 @@ struct ScriptureVerseDetailView: View {
 
 // MARK: - Verse view
 
+//struct ScriptureChapterVerseDescriptionCard: View {
+//    
+//    let verse: ScriptureChapterVerse
+//    
+//    init(verse: ScriptureChapterVerse) {
+//        self.verse = verse
+//    }
+//    
+//    var body: some View {
+//        
+//    }
+//}
+
+
 struct ScriptureChapterVerseView: View {
     
     let verse: ScriptureChapterVerse
@@ -149,22 +162,22 @@ struct ScriptureChapterVerseView: View {
             // Main verse section
             Section {
                 if let sanskrit = verse.sanskrit {
-                    titleDescription(description: sanskrit, color: .primary, design: .serif)
+                    sectionDescription(description: sanskrit, color: .primary, font: "DevanagariSangamMN")
                 }
                 
                 if let kannada = verse.kannada {
-                    titleDescription(description: kannada, color: .primary, design: .serif)
+                    sectionDescription(description: kannada, color: .primary, font: "KannadaSangamMN")
                 }
             } header: {
                 if let _ = verse.sanskrit {
-                    titleHeader(title: "SANSKRIT (DEVANAGARI)", color: .orange)
+                    sectionHeader(title: "SANSKRIT (DEVANAGARI)", color: .secondary, font: "Iowan Old Style")
                 }
                 
                 if let _ = verse.kannada {
-                    titleHeader(title: "KANNADA", color: .orange)
+                    sectionHeader(title: "KANNADA", color: .secondary, font: "Iowan Old Style")
                 }
             }
-            .listRowBackground(Color("SaffronCardBackround"))
+            .listRowBackground(Color(.systemBackground))
             .listRowSeparator(.hidden)
             
             // Transliteration section
@@ -174,36 +187,32 @@ struct ScriptureChapterVerseView: View {
                     .italic()
                     .foregroundColor(.secondary)
             } header: {
-                titleHeader(title: "TRANSLITERATION", color: .orange)
+                sectionHeader(title: "TRANSLITERATION", color: .secondary, font: "Iowan Old Style")
             }
-            .listRowBackground(Color("SaffronCardBackround"))
+            .listRowBackground(Color(.systemBackground))
             .listRowSeparator(.hidden)
 
+            // English translation section
+            Section {
+                englishTranslationCard
+            } header: {
+                sectionHeader(title: "ENGLISH TRANSLATION", color: .secondary, font: "Iowan Old Style")
+            }
+            .listRowBackground(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+            .listRowSeparator(.hidden)
         
             // Word by word section
             Section {
                 wordByWordCard
             } header: {
-                Text("WORD-BY-WORD MEANINGS")
-                    .font(.system(size: 12, weight: .black))
-                    .kerning(1)
-                    .foregroundColor(.orange)
+                sectionHeader(title: "WORD-BY-WORD MEANINGS", color: .secondary, font: "Iowan Old Style")
             }
-            .listRowBackground(Color("SaffronCardBackround"))
-            .listRowSeparator(.hidden)
-            
-            // English translation section
-            Section {
-                englishTranslationCard
-            } header: {
-                titleHeader(title: "ENGLISH TRANSLATION", color: .orange)
-            }
-            .listRowBackground(Color("SaffronCardBackround"))
+            .listRowBackground(Color(.systemBackground))
             .listRowSeparator(.hidden)
         }
-        .listStyle(.grouped)
-        .scrollContentBackground(.hidden)
-        .background(Color("SaffronCardBackround"))
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(colorScheme == .dark ? .hidden : .visible)
+        .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
     }
     
     private var wordByWordCard: some View {
@@ -212,16 +221,17 @@ struct ScriptureChapterVerseView: View {
                 HStack(alignment: .top, spacing: 16) {
                     // The Term
                     Text(word.word)
-                        .font(.system(.body, design: .serif))
-                        .bold()
-                        .foregroundColor(.brown)
+                        .font(.custom("Iowan Old Style", size: 18))
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.leading)
+                        .lineSpacing(2)
                         .frame(width: 110, alignment: .leading)
                     
                     // The Meaning
                     Text(word.meaning)
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
-                        .lineSpacing(4)
+                        .font(.custom("Iowan Old Style", size: 18))
+                        .foregroundColor(.secondary)
+                        .lineSpacing(2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 
@@ -235,21 +245,22 @@ struct ScriptureChapterVerseView: View {
     }
     
     private var englishTranslationCard: some View {
-        titleDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), design: .rounded)
+        sectionDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), font: "Iowan Old Style")
     }
     
-    private func titleHeader(title: String, color: Color) -> some View {
+    private func sectionHeader(title: String, color: Color, font: String) -> some View {
         Text(title)
-            .font(.system(size: 12, weight: .black))
+            .font(.custom(font, size: 18))
             .kerning(1)
             .foregroundColor(color)
     }
     
-    private func titleDescription(description: String, color: Color, design: Font.Design) -> some View {
+    private func sectionDescription(description: String, color: Color, font: String) -> some View {
         Text(description)
-            .font(.system(size: 20, weight: .regular, design: design))
+            .font(.custom(font, size: 20))
+            .foregroundColor(.primary)
+            .multilineTextAlignment(.leading)
             .lineSpacing(2)
-            .foregroundColor(color)
     }
 }
 

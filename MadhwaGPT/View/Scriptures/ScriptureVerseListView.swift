@@ -30,7 +30,7 @@ struct ScriptureVerseListView: View {
                 } label: {
                     ScriptureChapterVerseCard(verse: verse)
                 }
-                .listRowBackground(Color("SaffronCardBackround"))
+                .listRowBackground(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
                 .listRowSeparator(.hidden)
             }
             .padding(.horizontal, 12)
@@ -38,8 +38,8 @@ struct ScriptureVerseListView: View {
         .navigationTitle(scriptureChapter.sanskritName ?? scriptureChapter.kannadaName ?? "Unknown")
         .navigationBarTitleDisplayMode(.large)
         .scrollContentBackground(.hidden)
-        .background(Color("SaffronCardBackround"))
-        .listStyle(.grouped)
+        .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+        .listStyle(.plain)
         .task {
             scriptureChapterVerseList = await viewModel.loadScriptureChapterVerseList(scripture: scripture, scriptureChapter: scriptureChapter)
         }
@@ -55,19 +55,20 @@ struct ScriptureChapterVerseCard: View {
             Text(titleView())
                 .font(.system(.caption, design: .monospaced))
                 .fontWeight(.bold)
-                .foregroundColor(.orange)
+                .foregroundColor(.secondary)
+               
             
             if let kannadaVerse = verse.kannada {
                 Text(kannadaVerse)
-                    .font(.system(.body, design: .serif))
+                    .font(.custom("KannadaSangamMN", size: 20))
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.leading)
-                    .lineSpacing(2)
+                    .lineSpacing(4)
             }
             
             if let sanskritVerse = verse.sanskrit {
                 Text(sanskritVerse)
-                    .font(.system(.body, design: .serif))
+                    .font(.custom("DevanagariSangamMN", size: 20))
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.leading)
                     .lineSpacing(2)

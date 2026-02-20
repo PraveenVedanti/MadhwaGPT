@@ -15,6 +15,7 @@ struct ScriptureChaptersView: View {
     @State private var scriptureChapters: [ScriptureChapter] = []
     
     @StateObject private var viewModel =  ScriptureChaptersViewModel()
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         List {
@@ -28,14 +29,14 @@ struct ScriptureChaptersView: View {
                 } label: {
                     ScriptureChapterCard(scriptureChapter: chapter)
                 }
-                .listRowBackground(Color("SaffronCardBackround"))
+                .listRowBackground(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
                 .listRowSeparator(.hidden)
             }
             .padding(.horizontal, 12)
         }
-        .scrollContentBackground(.hidden)
-        .background(Color("SaffronCardBackround"))
-        .listStyle(.grouped)
+        .scrollContentBackground(colorScheme == .dark ? .hidden : .visible)
+        .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+        .listStyle(.plain)
         .task(id: scripture.id) {
             scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
         }
@@ -65,28 +66,28 @@ struct ScriptureChapterCard: View {
     private var mainTitleView: some View {
         if let kannadaName = scriptureChapter.kannadaName {
             Text(kannadaName)
-                .font(.headline)
+                .font(.custom("DevanagariSangamMN-Bold", size: 18))
                 .foregroundColor(.primary)
         }
         
         if let sanskritName = scriptureChapter.sanskritName {
             Text(sanskritName)
-                .font(.headline)
+                .font(.custom("DevanagariSangamMN-Bold", size: 18))
                 .foregroundColor(.primary)
         }
     }
     
     private var transliteratedView: some View {
         Text(scriptureChapter.transliteratedName)
-            .font(.subheadline)
+            .font(.custom("Iowan Old Style", size: 18))
             .italic()
             .foregroundColor(.secondary)
     }
     
     private var descriptionView: some View {
         Text(scriptureChapter.englishName)
-            .font(.footnote)
-            .foregroundColor(.orange.opacity(0.8))
+            .font(.custom("Iowan Old Style", size: 16))
+            .foregroundColor(.secondary)
     }
 }
 
