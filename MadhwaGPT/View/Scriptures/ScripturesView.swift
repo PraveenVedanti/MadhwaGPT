@@ -24,9 +24,18 @@ struct ScripturesView: View {
             contentSection
                 .navigationTitle(selectedScripture?.title ?? "Scriptures")
                 .navigationBarTitleDisplayMode(.inline)
+                .sheet(isPresented: $showLibrary) {
+                    scriptureSelectionView
+                        .presentationDetents([.medium])
+                        .presentationDragIndicator(.visible)
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        scriptureMenu
+                        Button {
+                            showLibrary.toggle()
+                        } label: {
+                            Image(systemName: "books.vertical.fill")
+                        }
                     }
                 }
         }
@@ -35,21 +44,7 @@ struct ScripturesView: View {
         }
     }
     
-    private var scriptureMenu: some View {
-        Menu {
-            ForEach(viewModel.scriptures) { scripture in
-                Button {
-                    selectedScripture = scripture
-                } label: {
-                    Label(scripture.title, systemImage: "book")
-                }
-            }
-        } label: {
-            Image(systemName: "books.vertical.fill")
-        }
-    }
-    
-    // MARK: - View Components
+    // MARK: - Sub views
     @ViewBuilder
     private var contentSection: some View {
         if isLoading {
@@ -68,6 +63,21 @@ struct ScripturesView: View {
                 systemImage: "book.closed",
                 description: Text("Please select a scripture to begin reading.")
             )
+        }
+    }
+    
+    private var scriptureSelectionView: some View {
+        NavigationStack {
+            List(viewModel.scriptures) { scripture in
+                ScriptureSelectionCard(
+                    scripture: scripture,
+                    isSelected: selectedScripture == scripture) {
+                        selectedScripture = scripture
+                        showLibrary.toggle()
+                    }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Explore sacred texts")
         }
     }
     

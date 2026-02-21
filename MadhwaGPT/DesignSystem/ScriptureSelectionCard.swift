@@ -38,10 +38,10 @@ struct ScriptureSelectionCard: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Spacer()
         }
         .padding()
+        .background(Color.black.opacity(0.0001))
+        .contentShape(Rectangle())
         .onTapGesture {
             onTap()
         }

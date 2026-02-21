@@ -26,7 +26,7 @@ struct ChatSuggestionCard: View {
                 
                 Text(text)
                     .font(.custom(font, size: 16))
-                    .foregroundColor(.primary)
+                    .foregroundColor(.secondary)
                     .multilineTextAlignment(.leading)
             }
             .padding()
