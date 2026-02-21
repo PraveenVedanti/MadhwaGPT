@@ -36,7 +36,7 @@ struct ScriptureVerseListView: View {
             .padding(.horizontal, 12)
         }
         .navigationTitle(scriptureChapter.sanskritName ?? scriptureChapter.kannadaName ?? "Unknown")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
         .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
         .listStyle(.plain)

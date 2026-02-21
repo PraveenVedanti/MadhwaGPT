@@ -36,7 +36,7 @@ struct ScriptureVerseDetailView: View {
             ScriptureChapterVerseView(verse: selectedVerse)
                 .background(Color("SaffronCardBackround"))
                 .navigationTitle(selectedVerse.canonicalId)
-                .navigationBarTitleDisplayMode(.large)
+                .navigationBarTitleDisplayMode(.inline)
                 .fullScreenCover(isPresented: $showAI) {
                     AIInsightsView(verse: selectedVerse)
                 }

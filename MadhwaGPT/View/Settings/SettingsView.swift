@@ -58,7 +58,7 @@ struct SettingsView: View {
                 chatThemeSection
             }
             .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(colorScheme == .dark ? .hidden : .visible)
             .background(Color(.systemBackground))
             .listStyle(.insetGrouped)

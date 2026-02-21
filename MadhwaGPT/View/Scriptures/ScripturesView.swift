@@ -23,7 +23,7 @@ struct ScripturesView: View {
         NavigationStack {
             contentSection
                 .navigationTitle(selectedScripture?.title ?? "Scriptures")
-                .navigationBarTitleDisplayMode(.large)
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         scriptureMenu

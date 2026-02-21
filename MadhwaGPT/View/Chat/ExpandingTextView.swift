@@ -11,7 +11,7 @@ import SwiftUI
 struct ExpandingTextInput: View {
     @Binding var text: String
     let placeholder =  "Ask about Madhvacharya's philosophy.."
-    let minHeight: CGFloat = 52
+    let minHeight: CGFloat = 60
     let maxHeight: CGFloat = 150
 
     @State private var textHeight: CGFloat = 48

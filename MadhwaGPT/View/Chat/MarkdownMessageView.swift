@@ -23,8 +23,11 @@ struct MarkdownMessageView: View {
         if let attributed = try? AttributedString(markdown: cleaned, options: options) {
             
             Text(styleMarkdown(attributed))
-                .fixedSize(horizontal: false, vertical: true)
+                .font(.system(size: 18, weight: .regular))
+                .foregroundColor(.primary.opacity(0.9))
                 .lineSpacing(6)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
         } else {
             Text(cleaned)
         }
@@ -34,7 +37,7 @@ struct MarkdownMessageView: View {
         var styled = attributed
         
         // 1. Set base font and Paragraph Style
-        styled.font = .system(size: 16, weight: .regular)
+        styled.font = .system(size: 18, weight: .regular)
         styled.foregroundColor = .primary
         
         // Add spacing between paragraphs/bullets
@@ -81,23 +84,6 @@ struct MarkdownMessageView: View {
                 }
             }
         }
-        
-       
-        // 3. Handle Citations (e.g., [1], [23])
-        let textString = String(styled.characters)
-        
-        if let regex = try? NSRegularExpression(pattern: "\\[\\d+\\]", options: []) {
-            let matches = regex.matches(in: textString, options: [], range: NSRange(location: 0, length: textString.count))
-            
-            for match in matches {
-                if let range = Range(match.range, in: styled) {
-                    styled[range].foregroundColor = .orange
-                    styled[range].font = .system(size: 18, weight: .bold)
-                    styled[range].baselineOffset = 4
-                }
-            }
-        }
-        
         return styled
     }
 }
@@ -120,7 +106,7 @@ struct ChatBubbleView: View {
                 MarkdownMessageView(content: message.text)
             }
             .padding(12)
-            .background(message.isUser ? Color.gray.opacity(0.2) : Color("SaffronCardBackround"))
+            .background(message.isUser ? Color.gray.opacity(0.2) : Color.clear)
             .foregroundColor(.primary)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .frame(

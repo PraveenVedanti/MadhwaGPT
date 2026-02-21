@@ -40,12 +40,12 @@ struct ChatView: View {
                 if isSending {
                     typingIndicator
                 }
-                
-               textEditorView
-        
+            }
+            .safeAreaInset(edge: .bottom) {
+                textEditorView
             }
             .navigationTitle("Chat")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 // Top Right Button
                 ToolbarItem(placement: .topBarTrailing) {
