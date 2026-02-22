@@ -23,7 +23,8 @@ class ChatViewModel: ObservableObject {
     
     @Published var selectedChatLevel: ChatLevel?
     
-    @Published var initialSuggestions: [InitialChatSuggestions] = []
+    @Published var chatSuggestions: [InitialChatSuggestions] = []
+    @Published var initialChatSuggestions: [InitialChatSuggestions] = []
     
     // This is hard-coded way to load initial suggestions.
     func loadChatSuggestions() {
@@ -55,12 +56,17 @@ class ChatViewModel: ObservableObject {
             suggestionFont: "DevanagariSangamMN"
         )
         
-        initialSuggestions.append(first)
-        initialSuggestions.append(second)
-        initialSuggestions.append(third)
-        initialSuggestions.append(fourth)
-        initialSuggestions.append(fifth)
-        initialSuggestions.append(sixth)
+        chatSuggestions.append(first)
+        chatSuggestions.append(second)
+        chatSuggestions.append(third)
+        chatSuggestions.append(fourth)
+        chatSuggestions.append(fifth)
+        chatSuggestions.append(sixth)
+        
+        // Initial chat suggestions.
+        initialChatSuggestions.append(second)
+        initialChatSuggestions.append(third)
+        initialChatSuggestions.append(fourth)
     }
     
     func queryQuestion(_ query: String) async throws -> String {

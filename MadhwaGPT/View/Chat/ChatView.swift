@@ -20,11 +20,10 @@ struct ChatView: View {
     // Use a state variable to track loading
     @State private var isSending = false
     
-    // State variable for show settings view.
-    @State private var shouldShowSettings = false
-    
     // State variable to show/hide initial suggestions.
     @State private var shouldHideInitialSuggestions = false
+    
+    @State private var showChatSuggestionsSheet = false
     
     @FocusState private var isTextFieldFocused: Bool
     
@@ -40,16 +39,30 @@ struct ChatView: View {
                 if isSending {
                     typingIndicator
                 }
-            }
-            .safeAreaInset(edge: .bottom) {
-                textEditorView
+                
+                VStack {
+                    if !shouldHideInitialSuggestions {
+                        HStack {
+                            Label("Try asking:", systemImage: "lightbulb")
+                                .font(.title3)
+                                .foregroundStyle(.orange)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 16)
+                    }
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        chipView
+                            .padding(.horizontal, 16)
+                    }
+                    textEditorView
+                }
             }
             .navigationTitle("Chat")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 // Top Right Button
                 ToolbarItem(placement: .topBarTrailing) {
-                    settingsView
+                    newChatView
                 }
                 // Top Left Button
                 ToolbarItem(placement: .topBarLeading) {
@@ -60,9 +73,9 @@ struct ChatView: View {
                 loadInitialData()
             }
             .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
-            .sheet(isPresented: $shouldShowSettings, content: {
-                SettingsView()
-            })
+            .sheet(isPresented: $showChatSuggestionsSheet) {
+                chatSuggestionView
+            }
         }
     }
     
@@ -71,19 +84,9 @@ struct ChatView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(spacing: 16) {
-                    // Helpful for new users to see what the app is about
+                   
                     if messages.isEmpty {
-                       // welcomeHeader
-                    }
-                    
-                    if !shouldHideInitialSuggestions {
-                        HStack {
-                            Label("Try asking:", systemImage: "lightbulb")
-                                .font(.footnote)
-                                .foregroundStyle(.orange)
-                            Spacer()
-                        }
-                        chatSuggestionView
+                        welcomeHeader
                     }
                     
                     ForEach(messages) { msg in
@@ -128,7 +131,7 @@ struct ChatView: View {
         .padding(.bottom, 8)
     }
     
-    private var settingsView: some View {
+    private var newChatView: some View {
         Button {
             if shouldHideInitialSuggestions {
                 shouldHideInitialSuggestions = false
@@ -136,6 +139,7 @@ struct ChatView: View {
             }
         } label: {
             Image(systemName: "bubble.and.pencil")
+                .font(.system(size: 14))
        }
     }
     
@@ -143,7 +147,7 @@ struct ChatView: View {
         Button {
             print("Slider Tapped")
         } label: {
-            Image(systemName: "slider.horizontal.3")
+            Text("㆔")
         }
     }
     
@@ -163,16 +167,53 @@ struct ChatView: View {
         .padding()
     }
     
-    private var chatSuggestionView: some View {
-        ForEach(viewModel.initialSuggestions) { suggestion in
-            ChatSuggestionCard(text: suggestion.suggestion, font: suggestion.suggestionFont) {
-                sendQuery(text: suggestion.suggestion)
+    private var chipView: some View {
+        HStack(spacing: 16.0) {
+            ForEach(viewModel.initialChatSuggestions) { suggestion in
+                Chip(
+                    title: suggestion.suggestion,
+                    isSelected: false) {
+                        sendQuery(text: suggestion.suggestion)
+                    }
             }
+            
+            // More suggestions button.
+            Button {
+                showChatSuggestionsSheet = true
+            } label: {
+               HStack(spacing: 4) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 20))
+                        .foregroundStyle(.orange)
+                    Text("More")
+                       .font(.footnote)
+                        .fontWeight(.medium)
+                }
+                .frame(width: 96, height: 48)
+                .background(
+                    Capsule()
+                        .fill(Color.secondary.opacity(0.1))
+                )
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    
+    private var chatSuggestionView: some View {
+        NavigationStack {
+            List {
+                ForEach(viewModel.chatSuggestions) { suggestion in
+                    ChatSuggestionCard(text: suggestion.suggestion, font: suggestion.suggestionFont) {
+                        sendQuery(text: suggestion.suggestion)
+                    }
+                }
+            }
+            .navigationTitle("💡 Try asking")
         }
     }
     
     private func loadInitialData() {
-        if viewModel.initialSuggestions.isEmpty {
+        if viewModel.chatSuggestions.isEmpty {
             viewModel.loadChatSuggestions()
         }
     }
