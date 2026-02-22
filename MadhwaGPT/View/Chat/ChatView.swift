@@ -41,19 +41,7 @@ struct ChatView: View {
                 }
                 
                 VStack {
-                    if !shouldHideInitialSuggestions {
-                        HStack {
-                            Label("Try asking:", systemImage: "lightbulb")
-                                .font(.title3)
-                                .foregroundStyle(.orange)
-                            Spacer()
-                        }
-                        .padding(.horizontal, 16)
-                    }
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        chipView
-                            .padding(.horizontal, 16)
-                    }
+                    if !shouldHideInitialSuggestions { chatSuggestionView }
                     textEditorView
                 }
             }
@@ -74,7 +62,9 @@ struct ChatView: View {
             }
             .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
             .sheet(isPresented: $showChatSuggestionsSheet) {
-                chatSuggestionView
+                chatSuggestionListView
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
             }
         }
     }
@@ -166,52 +156,7 @@ struct ChatView: View {
         }
         .padding()
     }
-    
-    private var chipView: some View {
-        HStack(spacing: 16.0) {
-            ForEach(viewModel.initialChatSuggestions) { suggestion in
-                Chip(
-                    title: suggestion.suggestion,
-                    isSelected: false) {
-                        sendQuery(text: suggestion.suggestion)
-                    }
-            }
-            
-            // More suggestions button.
-            Button {
-                showChatSuggestionsSheet = true
-            } label: {
-               HStack(spacing: 4) {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.system(size: 20))
-                        .foregroundStyle(.orange)
-                    Text("More")
-                       .font(.footnote)
-                        .fontWeight(.medium)
-                }
-                .frame(width: 96, height: 48)
-                .background(
-                    Capsule()
-                        .fill(Color.secondary.opacity(0.1))
-                )
-            }
-            .buttonStyle(.plain)
-        }
-    }
-    
-    private var chatSuggestionView: some View {
-        NavigationStack {
-            List {
-                ForEach(viewModel.chatSuggestions) { suggestion in
-                    ChatSuggestionCard(text: suggestion.suggestion, font: suggestion.suggestionFont) {
-                        sendQuery(text: suggestion.suggestion)
-                    }
-                }
-            }
-            .navigationTitle("💡 Try asking")
-        }
-    }
-    
+
     private func loadInitialData() {
         if viewModel.chatSuggestions.isEmpty {
             viewModel.loadChatSuggestions()
@@ -259,3 +204,74 @@ struct ChatView: View {
     }
 }
 
+// MARK: - Chat suggestion sub views
+extension ChatView {
+    
+    private var chatSuggestionView: some View {
+        VStack {
+            HStack {
+                Label("Try asking:", systemImage: "lightbulb")
+                    .font(.title3)
+                    .foregroundStyle(.orange)
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                suggestionCarousel
+                    .padding(.horizontal, 16)
+            }
+        }
+    }
+    
+    private var suggestionCarousel: some View {
+        HStack(spacing: 16.0) {
+            ForEach(viewModel.initialChatSuggestions) { suggestion in
+                Chip(
+                    title: suggestion.suggestion,
+                    isSelected: false) {
+                        sendQuery(text: suggestion.suggestion)
+                    }
+            }
+            
+            // More suggestions button.
+            moreSuggestionButton
+        }
+    }
+    
+    private var moreSuggestionButton: some View {
+        Button {
+            showChatSuggestionsSheet = true
+        } label: {
+           HStack(spacing: 4) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: 20))
+                    .foregroundStyle(.orange)
+                Text("More")
+                   .font(.footnote)
+                    .fontWeight(.medium)
+            }
+            .frame(width: 96, height: 48)
+            .background(
+                Capsule()
+                    .fill(Color.secondary.opacity(0.1))
+            )
+        }
+        .buttonStyle(.plain)
+    }
+    
+    private var chatSuggestionListView: some View {
+        NavigationStack {
+            List {
+                ForEach(viewModel.chatSuggestions) { suggestion in
+                    ChatSuggestionCard(text: suggestion.suggestion, font: suggestion.suggestionFont) {
+                        sendQuery(text: suggestion.suggestion)
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Try asking")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}

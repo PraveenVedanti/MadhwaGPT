@@ -28,13 +28,12 @@ struct ChatSuggestionCard: View {
                     .font(.custom(font, size: 16))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.leading)
+                
+                Image(systemName: "arrow.right")
+                    .foregroundStyle(Color.orange)
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill((colorScheme == .dark ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground)))
-            )
         }
         .buttonStyle(ScaleButtonStyle())
     }
