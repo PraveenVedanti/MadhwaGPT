@@ -15,6 +15,7 @@ struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     
     @State private var showChatThemeSelectionSheet = false
+    @State private var showChatLevelSelectionSheet = false
     
     var body: some View {
         NavigationStack {
@@ -22,42 +23,37 @@ struct SettingsView: View {
                
                 // Profile view.
                 Section {
-                    profileView
+                    profileSection
                 }
                
                 // User level.
                 Section {
-                    userLevelSection
+                    chatLevelSelection
                 } header: {
-                    Text("USER LEVEL")
+                    Text(Strings.SettingsTab.userLevelSectionTitle)
                 }
                 
                 // Themes
                 Section {
-                    HStack {
-                        Text(viewModel.selectedChatTheme)
-                            .foregroundStyle(.primary)
-                            .font(.subheadline)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.secondary)
-                    }
-                    .contentShape(Rectangle())
-                    .frame(maxWidth: .infinity)
-                    .onTapGesture {
-                        showChatThemeSelectionSheet.toggle()
-                    }
+                    chatThemeSection
                 } header: {
-                    Text("APPEARANCE")
+                    Text(Strings.SettingsTab.appearanceSectionTitle)
                 }
             }
             .task {
                 loadInitialData()
             }
             .sheet(isPresented: $showChatThemeSelectionSheet) {
-                chatThemeSection
+                chatThemeSelectionView
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
             }
-            .navigationTitle("Settings")
+            .sheet(isPresented: $showChatLevelSelectionSheet) {
+                chatLevelSelectionListView
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
+            }
+            .navigationTitle(Strings.SettingsTab.settingsTitle)
             .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(colorScheme == .dark ? .hidden : .visible)
             .background(Color(.systemBackground))
@@ -65,21 +61,110 @@ struct SettingsView: View {
         }
     }
     
-    private var userLevelSection: some View {
-        ForEach(viewModel.chatLevels) { level in
+    // MARK: - Profile view sub views.
+    private var profileSection: some View {
+        HStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .frame(width: 48, height: 48)
+                    .foregroundColor(.secondary)
+                Text("P")
+            }
             VStack(alignment: .leading) {
-                Text(level.title)
+                Text("Your name")
                     .foregroundStyle(.primary)
                     .font(.subheadline)
-                Text(level.description)
+                Text("Your e-mail")
                     .foregroundStyle(.secondary)
                     .font(.subheadline)
             }
-            .padding(.horizontal, 8)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
+    
+    // MARK: - Chat level sub views.
+    private var chatLevelSelection: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(viewModel.selectedChatLevel)
+                    .foregroundStyle(.primary)
+                    .font(.subheadline)
+                
+                Text(viewModel.selectedChatLevelDescription)
+                    .foregroundStyle(.secondary)
+                    .font(.subheadline)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 8)
+        .contentShape(Rectangle())
+        .frame(maxWidth: .infinity)
+        .onTapGesture {
+            showChatLevelSelectionSheet.toggle()
         }
     }
     
+    private var chatLevelSelectionListView: some View {
+        NavigationStack {
+            List {
+                ForEach(viewModel.chatLevels) { chatLevel in
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(chatLevel.title)
+                                .foregroundStyle(.primary)
+                                .font(.subheadline)
+                            Text(chatLevel.description)
+                                .foregroundStyle(.secondary)
+                                .font(.subheadline)
+                        }
+                        Spacer()
+                        if viewModel.selectedChatLevel == chatLevel.id {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        viewModel.selectedChatLevel = chatLevel.id
+                        showChatLevelSelectionSheet.toggle()
+                    }
+                }
+            }
+            .navigationTitle(Strings.SettingsTab.chatLevelSheetTitle)
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+    
+    // MARK: - Chat themes sub views.
     private var chatThemeSection: some View {
+        HStack {
+            Circle()
+                .frame(width: 16, height: 16)
+                .foregroundColor(viewModel.selectedChatThemeColor)
+            
+            VStack(alignment: .leading) {
+                Text(viewModel.selectedChatTheme)
+                    .foregroundStyle(.primary)
+                    .font(.subheadline)
+                
+                Text(viewModel.selectedChatThemeDesription)
+                    .foregroundStyle(.secondary)
+                    .font(.subheadline)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.secondary)
+        }
+        .contentShape(Rectangle())
+        .frame(maxWidth: .infinity)
+        .onTapGesture {
+            showChatThemeSelectionSheet.toggle()
+        }
+    }
+    
+    private var chatThemeSelectionView: some View {
         NavigationStack {
             List {
                 ForEach(viewModel.chatThemes) { chatTheme in
@@ -111,31 +196,12 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle("Select the theme")
+            .navigationTitle(Strings.SettingsTab.chatThemeSheetTitle)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
     
-    private var profileView: some View {
-        HStack(spacing: 16) {
-            ZStack {
-                Circle()
-                    .frame(width: 48, height: 48)
-                    .foregroundColor(.secondary)
-                Text("P")
-            }
-            VStack(alignment: .leading) {
-                Text("Your name")
-                    .foregroundStyle(.primary)
-                    .font(.subheadline)
-                Text("Your e-mail")
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-    }
-    
+    // MARK: - Helper functions
     private func loadInitialData()  {
         guard viewModel.chatLevels.isEmpty else { return }
         guard viewModel.chatThemes.isEmpty else { return }
@@ -146,5 +212,6 @@ struct SettingsView: View {
         
         // Set first theme by default.
         viewModel.selectedChatTheme = viewModel.chatThemes.first?.id ?? ""
+        viewModel.selectedChatLevel = viewModel.chatLevels.first?.id ?? ""
     }
 }

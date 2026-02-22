@@ -16,6 +16,7 @@ class SettingsViewModel: ObservableObject {
     
     // Store the ID of the selected level
     @AppStorage("selectedChatTheme") var selectedChatTheme: String = ""
+    @AppStorage("selectedChatLevel") var selectedChatLevel: String = ""
     
     func loadChatLevels() {
         let beginner = ChatLevel(title: "Beginner", description: "Simple explanations")
@@ -47,9 +48,33 @@ class SettingsViewModel: ObservableObject {
         chatThemes.append(noTheme)
     }
     
-    // Helper to get the actual Level object based on the ID
-    var selectedLevel: ChatTheme? {
-        chatThemes.first { $0.id == selectedChatTheme }
+    func getChatTheme(title: String) -> ChatTheme? {
+        return chatThemes.first(where: { $0.title.lowercased() == title.lowercased() })
+    }
+    
+    func getChatLevel(title: String) -> ChatLevel? {
+        return chatLevels.first(where: { $0.title.lowercased() == title.lowercased() })
+    }
+    
+    var selectedChatThemeDesription: String {
+        if let theme = getChatTheme(title: selectedChatTheme) {
+            return theme.description
+        }
+        return ""
+    }
+    
+    var selectedChatThemeColor: Color {
+        if let theme = getChatTheme(title: selectedChatTheme) {
+            return theme.color
+        }
+        return .primary
+    }
+    
+    var selectedChatLevelDescription: String {
+        if let level = getChatLevel(title: selectedChatLevel) {
+            return level.description
+        }
+        return ""
     }
 }
 
