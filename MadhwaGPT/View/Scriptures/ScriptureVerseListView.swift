@@ -14,7 +14,12 @@ struct ScriptureVerseListView: View {
     let scripture: Scripture
     
     @State private var scriptureChapterVerseList: [ScriptureChapterVerse] = []
+    
+    // View models.
     @ObservedObject private var viewModel = ScriptureChapterDetailsViewModel()
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    
+    @State private var backgroundColor: Color = Color(.systemBackground)
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -30,18 +35,38 @@ struct ScriptureVerseListView: View {
                 } label: {
                     ScriptureChapterVerseCard(verse: verse)
                 }
-                .listRowBackground(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+                .listRowBackground(backgroundColor)
                 .listRowSeparator(.hidden)
             }
             .padding(.horizontal, 12)
         }
+        .onAppear {
+            setBGColor()
+        }
         .navigationTitle(scriptureChapter.sanskritName ?? scriptureChapter.kannadaName ?? "Unknown")
         .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
-        .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+        .background(backgroundColor)
         .listStyle(.plain)
         .task {
             scriptureChapterVerseList = await viewModel.loadScriptureChapterVerseList(scripture: scripture, scriptureChapter: scriptureChapter)
+        }
+    }
+    
+    private func setBGColor() {
+        backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
+    }
+    
+    private func setBackgroundColor() {
+        switch settingsViewModel.selectedChatTheme {
+        case "Ancient Manuscript":
+            backgroundColor = Color("AncientManuscript")
+        case "Saffron Wisdom":
+            backgroundColor = Color("SaffronWisdom")
+        case "Sage Green":
+            backgroundColor = Color("SageGreen")
+        default:
+            backgroundColor = Color(uiColor: .secondarySystemBackground)
         }
     }
 }

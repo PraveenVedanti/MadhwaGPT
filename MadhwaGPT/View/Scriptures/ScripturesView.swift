@@ -12,11 +12,13 @@ import SwiftUI
 struct ScripturesView: View {
     // MARK: - Properties
     
-    @StateObject var viewModel = ScriptureViewModel()
     @State private var selectedScripture: Scripture?
     @State private var isLoading = true
-    
     @State private var showLibrary = false
+    
+    // View models.
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    @StateObject var viewModel = ScriptureViewModel()
     
     var body: some View {
         NavigationStack {

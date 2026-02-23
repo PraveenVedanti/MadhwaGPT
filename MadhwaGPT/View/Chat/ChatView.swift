@@ -12,8 +12,9 @@ struct ChatView: View {
     
     @State private var message = ""
     
-    // Chat view model.
+    // View models.
     @ObservedObject var viewModel = ChatViewModel()
+    @StateObject private var settingsViewModel = SettingsViewModel()
     
     @State private var messages: [ChatMessage] = []
     
@@ -26,6 +27,8 @@ struct ChatView: View {
     @FocusState private var isTextFieldFocused: Bool
     
     @Environment(\.colorScheme) var colorScheme
+    
+    @State private var backgroundColor: Color = Color(.systemBackground)
     
     var body: some View {
         
@@ -62,9 +65,10 @@ struct ChatView: View {
                 }
             }
             .onAppear {
+                setBGColor()
                 loadInitialData()
             }
-            .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+            .background(backgroundColor)
         }
     }
     
@@ -157,6 +161,10 @@ struct ChatView: View {
             }
         }
         .padding()
+    }
+    
+    private func setBGColor() {
+        backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
     }
 
     private func loadInitialData() {
