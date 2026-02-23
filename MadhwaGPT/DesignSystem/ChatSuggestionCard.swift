@@ -8,42 +8,34 @@
 import Foundation
 import SwiftUI
 
-struct ChatSuggestionCard: View {
-    let text: String
-    let font: String
+struct SuggestionCard: View {
+    let question: String
     let onTap: () -> Void
     
-    @Environment(\.colorScheme) var colorScheme
-    
     var body: some View {
-        Button {
-            onTap()
-        } label: {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: "sparkles")
-                    .foregroundStyle(Color.blue)
-                    .padding(.top, 2)
-                
-                Text(text)
-                    .font(.custom(font, size: 16))
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.leading)
-                
+        VStack(alignment: .leading, spacing: 0) {
+            Text(question)
+                .font(.body)
+                .lineSpacing(4)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            
+            Spacer()
+            
+            HStack {
+                Spacer()
                 Image(systemName: "arrow.right")
-                    .foregroundStyle(Color.orange)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .buttonStyle(ScaleButtonStyle())
-    }
-}
-
-// Custom button style
-struct ScaleButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
+        .onTapGesture {
+            onTap()
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 12)
+        .frame(width: 300)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }

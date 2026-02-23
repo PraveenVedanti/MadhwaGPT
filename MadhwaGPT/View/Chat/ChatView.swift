@@ -23,8 +23,6 @@ struct ChatView: View {
     // State variable to show/hide initial suggestions.
     @State private var shouldHideInitialSuggestions = false
     
-    @State private var showChatSuggestionsSheet = false
-    
     @FocusState private var isTextFieldFocused: Bool
     
     @Environment(\.colorScheme) var colorScheme
@@ -40,10 +38,19 @@ struct ChatView: View {
                     typingIndicator
                 }
                 
-                VStack {
-                    if !shouldHideInitialSuggestions { chatSuggestionView }
-                    textEditorView
+                if !shouldHideInitialSuggestions {
+                    VStack(alignment: .leading) {
+                        Label {
+                            Text("Try asking:")
+                        } icon: {
+                            Image(systemName: "sparkles")
+                        }
+                        .padding()
+                       
+                        chatSuggestionView
+                    }
                 }
+                textEditorView
             }
             .navigationTitle("Chat")
             .navigationBarTitleDisplayMode(.inline)
@@ -61,11 +68,6 @@ struct ChatView: View {
                 loadInitialData()
             }
             .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
-            .sheet(isPresented: $showChatSuggestionsSheet) {
-                chatSuggestionListView
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
-            }
         }
     }
     
@@ -208,70 +210,23 @@ struct ChatView: View {
 extension ChatView {
     
     private var chatSuggestionView: some View {
-        VStack {
-            HStack {
-                Label("Try asking:", systemImage: "lightbulb")
-                    .font(.title3)
-                    .foregroundStyle(.orange)
-                Spacer()
-            }
-            .padding(.horizontal, 16)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                suggestionCarousel
-                    .padding(.horizontal, 16)
-            }
-        }
-    }
-    
-    private var suggestionCarousel: some View {
-        HStack(spacing: 16.0) {
-            ForEach(viewModel.initialChatSuggestions) { suggestion in
-                Chip(
-                    title: suggestion.suggestion,
-                    isSelected: false) {
-                        sendQuery(text: suggestion.suggestion)
-                    }
-            }
-            
-            // More suggestions button.
-            moreSuggestionButton
-        }
-    }
-    
-    private var moreSuggestionButton: some View {
-        Button {
-            showChatSuggestionsSheet = true
-        } label: {
-           HStack(spacing: 4) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 20))
-                    .foregroundStyle(.orange)
-                Text("More")
-                   .font(.footnote)
-                    .fontWeight(.medium)
-            }
-            .frame(width: 96, height: 48)
-            .background(
-                Capsule()
-                    .fill(Color.secondary.opacity(0.1))
-            )
-        }
-        .buttonStyle(.plain)
-    }
-    
-    private var chatSuggestionListView: some View {
-        NavigationStack {
-            List {
-                ForEach(viewModel.chatSuggestions) { suggestion in
-                    ChatSuggestionCard(text: suggestion.suggestion, font: suggestion.suggestionFont) {
-                        sendQuery(text: suggestion.suggestion)
-                    }
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHGrid(
+                rows: [
+                    GridItem(.flexible(), spacing: 16),
+                    GridItem(.flexible(), spacing: 16)
+                ],
+                spacing: 16
+            ) {
+                ForEach(viewModel.chatSuggestions) { question in
+                    SuggestionCard(
+                        question: question.suggestion) {
+                            sendQuery(text: question.suggestion)
+                        }
                 }
             }
-            .listStyle(.insetGrouped)
-            .navigationTitle("Try asking")
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.horizontal, 16)
         }
+        .frame(height: 240)
     }
 }

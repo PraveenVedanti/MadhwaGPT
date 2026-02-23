@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-import SwiftUI
 
 struct ScripturesView: View {
     // MARK: - Properties
