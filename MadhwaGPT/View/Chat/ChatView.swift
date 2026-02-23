@@ -38,21 +38,18 @@ struct ChatView: View {
                     typingIndicator
                 }
                 
-                if !shouldHideInitialSuggestions {
-                    VStack(alignment: .leading) {
-                        Label {
-                            Text("Try asking:")
-                        } icon: {
-                            Image(systemName: "sparkles")
-                        }
-                        .padding()
-                       
-                        chatSuggestionView
-                    }
+                // Hide chat suggestion when chat is in progress and
+                // Keyboard is focused.
+                if !shouldHideInitialSuggestions && !isTextFieldFocused {
+                    chatSuggestionView
                 }
                 textEditorView
             }
-            .navigationTitle("Chat")
+            .onTapGesture {
+                isTextFieldFocused = false
+                print("tapped")
+            }
+            .navigationTitle(MGPTStrings.ChatTab.chatNavigationBarTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 // Top Right Button
@@ -106,7 +103,7 @@ struct ChatView: View {
                                .stroke(Color.gray, lineWidth: 2)
                        )
 
-            Text(Strings.welcomeHeaderTitle)
+            Text(MGPTStrings.ChatTab.welcomeHeaderTitle)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
@@ -145,7 +142,10 @@ struct ChatView: View {
     
     private var textEditorView: some View {
         HStack(spacing: 8.0) {
-            ExpandingTextInput(text: $message)
+            ExpandingTextInput(
+                text: $message,
+                isFocused: $isTextFieldFocused
+            )
             Button {
                 sendQuery(text: message)
             } label: {
@@ -210,6 +210,19 @@ struct ChatView: View {
 extension ChatView {
     
     private var chatSuggestionView: some View {
+        VStack(alignment: .leading) {
+            Label {
+                Text(MGPTStrings.ChatTab.tryAsking)
+            } icon: {
+                Image(systemName: "sparkles")
+            }
+            .padding()
+           
+            chatSuggestionCarousel
+        }
+    }
+    
+    private var chatSuggestionCarousel: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(
                 rows: [

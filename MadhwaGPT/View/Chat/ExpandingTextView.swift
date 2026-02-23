@@ -10,9 +10,12 @@ import SwiftUI
 
 struct ExpandingTextInput: View {
     @Binding var text: String
-    let placeholder =  "Ask about Madhvacharya's philosophy.."
+   
+    // Text editor constraints.
     let minHeight: CGFloat = 60
     let maxHeight: CGFloat = 150
+    
+    @FocusState.Binding var isFocused: Bool
 
     @State private var textHeight: CGFloat = 48
     @Environment(\.colorScheme) var colorScheme
@@ -23,6 +26,7 @@ struct ExpandingTextInput: View {
                 
                 TextEditor(text: $text)
                     .scrollContentBackground(.hidden)
+                    .focused($isFocused)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 6)
                     .frame(height: min(textHeight, maxHeight))
@@ -42,7 +46,7 @@ struct ExpandingTextInput: View {
                     })
                 
                 if text.isEmpty {
-                    Text(placeholder)
+                    Text(MGPTStrings.ChatTab.textEditorPlaceHolder)
                         .foregroundColor(Color(.placeholderText))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 12)
