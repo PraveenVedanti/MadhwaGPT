@@ -12,8 +12,9 @@ struct ScriptureVerseDetailView: View {
     let verseList: [ScriptureChapterVerse]
     
     @State private var currentIndex: Int
-    @State private var showMeanings = false
     @State private var showAI = false
+    
+    @Environment(\.colorScheme) var colorScheme
     
     // Derived state for the currently visible verse
     private var selectedVerse: ScriptureChapterVerse {
@@ -23,7 +24,7 @@ struct ScriptureVerseDetailView: View {
     // Boundary check variables.
     private var isFirstVerse: Bool { currentIndex == 0 }
     private var isLastVerse: Bool { currentIndex == verseList.count - 1 }
-
+    
     init(verse: ScriptureChapterVerse, verseList: [ScriptureChapterVerse]) {
         self.verseList = verseList
         // Find initial index immediately or default to 0
@@ -33,79 +34,78 @@ struct ScriptureVerseDetailView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                
-                ScrollView {
-                    ScriptureChapterVerseView(verse: selectedVerse)
-                        .padding(.bottom, 120)
+            ScriptureChapterVerseView(verse: selectedVerse)
+                .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+                .navigationTitle(selectedVerse.canonicalId)
+                .navigationBarTitleDisplayMode(.inline)
+                .fullScreenCover(isPresented: $showAI) {
+                    AIInsightsView(verse: selectedVerse)
                 }
-            }
-            .background(Color(.systemBackground))
-            .navigationTitle(selectedVerse.canonicalId)
-            .navigationBarTitleDisplayMode(.large)
-            .fullScreenCover(isPresented: $showAI) {
-                AIInsightsView(verse: selectedVerse)
-            }
+                .safeAreaInset(edge: .bottom) {
+                    HStack {
+                        askAIButton
+                        navigationDock
+                    }
+                }
         }
-        .overlay(alignment: .bottomTrailing, content: {
-            Button {
-                showAI.toggle()
-            } label: {
+    }
+    
+    private var askAIButton: some View {
+        Button {
+            showAI.toggle()
+        } label: {
+            HStack(spacing: 8) {
                 Image(systemName: "sparkles")
-                    .font(.title2.bold())
-                    .foregroundColor(.orange)
-                    .frame(width: 52, height: 52)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(.white.opacity(0.2), lineWidth: 1)
-                    )
-                    .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+                    .foregroundStyle(Color.blue)
+                    .font(.system(size: 16, weight: .semibold))
+                
+                Text("Ask AI about this verse")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.primary)
             }
-            .padding()
-        })
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+            .background(.ultraThinMaterial, in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(.white.opacity(colorScheme == .dark ? 0.2 : 0.5), lineWidth: 0.5)
+            )
+            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+        }
+        .padding()
+        .buttonStyle(.plain)
     }
     
     private var navigationDock: some View {
-        HStack(spacing: 15) {
+        HStack(spacing: 20) {
             // Previous Button
-            //            Button(action: showPrevious) {
-            //                Image(systemName: "chevron.left")
-            //                    .font(.system(size: 18, weight: .bold))
-            //                    .foregroundColor(isFirstVerse ? .gray : .orange)
-            //                    .frame(width: 44, height: 44)
-            //                    .background(Circle().fill(.ultraThinMaterial))
-            //            }
-            //
-            //            .disabled(isFirstVerse)
+            Button(action: showPrevious) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(isFirstVerse ? .secondary.opacity(0.3) : .orange)
+            }
+            .disabled(isFirstVerse)
             
-            //            Spacer()
-            Spacer()
-            toolButton(title: "Ask AI", icon: "sparkles") { showAI.toggle() }
-                .padding(12)
-                .background(.ultraThinMaterial, in: Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(.white.opacity(0.3), lineWidth: 1)
-                )
-            
-            //  Spacer()
+            Divider().frame(height: 20)
             
             // Next Button
-            //            Button(action: showNext) {
-            //                Image(systemName: "chevron.right")
-            //                    .font(.system(size: 18, weight: .bold))
-            //                    .foregroundColor(isLastVerse ? .gray : .orange)
-            //                    .frame(width: 44, height: 44)
-            //                    .background(Circle().fill(.ultraThinMaterial))
-            //            }
-            //            .disabled(isLastVerse)
-            //        }
-            //        .padding(8)
-            //        .clipShape(Capsule())
-            //        .overlay(Capsule().stroke(.white.opacity(0.2), lineWidth: 0.5))
+            Button(action: showNext) {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(isLastVerse ? .secondary.opacity(0.3) : .orange)
+            }
+            .disabled(isLastVerse)
         }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+        .background(.ultraThinMaterial)
+        .clipShape(Capsule())
+        .overlay(
+            Capsule()
+                .stroke(.white.opacity(colorScheme == .dark ? 0.2 : 0.5), lineWidth: 0.5)
+        )
+        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
     }
     
     // MARK: - Helper View Builders
@@ -134,8 +134,8 @@ struct ScriptureVerseDetailView: View {
     }
 }
 
-// MARK: - Verse view
 
+// MARK: - Verse view
 struct ScriptureChapterVerseView: View {
     
     let verse: ScriptureChapterVerse
@@ -149,141 +149,158 @@ struct ScriptureChapterVerseView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            ScrollView(showsIndicators: false) {
-                VerseContentCard(verse: verse)
-                wordByWordCard
-                englishTranslationCard
+        
+        ZStack {
+            (colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+                .ignoresSafeArea()
+            
+            ScrollView {
+               
+                VStack(alignment: .leading, spacing: 24) {
+                    
+                    verseCard
+                    
+                    transliterationCard
+                    
+                    wordByWordCard
+                  
+                    englishTranslationCard
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 16)
             }
         }
-        .background(Color(.systemBackground))
+    }
+    
+    private var verseCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            
+            // Verse header view
+            if let _ = verse.sanskrit {
+                sectionHeader(title: "SANSKRIT (DEVANAGARI)", color: .secondary, font: "Iowan Old Style")
+            }
+            
+            if let _ = verse.kannada {
+                sectionHeader(title: "KANNADA", color: .secondary, font: "Iowan Old Style")
+            }
+            
+            verseContentView
+        }
+    }
+    
+    private var transliterationCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionHeader(title: "TRANSLITERATION", color: .secondary, font: "Iowan Old Style")
+            transliterationContentView
+        }
     }
     
     private var wordByWordCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("WORD-BY-WORD MEANINGS")
-                .font(.system(size: 12, weight: .black))
-                .kerning(1)
-                .foregroundColor(.orange)
-            
-            Spacer()
-                .frame(height: 8)
-            
-            ForEach(words) { word in
-                HStack(alignment: .top, spacing: 16) {
-                    // The Term
-                    Text(word.word)
-                        .font(.system(.body, design: .serif))
-                        .bold()
-                        .foregroundColor(.brown)
-                        .frame(width: 110, alignment: .leading)
-                    
-                    // The Meaning
-                    Text(word.meaning)
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
-                        .lineSpacing(4)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                
-                if word.id != words.last?.id {
-                    Divider()
-                        .padding(.leading, 126)
-                        .opacity(0.6)
-                }
-            }
+        VStack(alignment: .leading, spacing: 8) {
+            sectionHeader(title: "WORD-BY-WORD MEANINGS", color: .secondary, font: "Iowan Old Style")
+            wordByWordContent
         }
-        .padding(12)
-        .cardBackgroundStyle()
-        .padding()
     }
     
     private var englishTranslationCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            titleHeader(title: "ENGLISH TRANSLATION", color: .orange)
-            titleDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), design: .rounded)
+            sectionHeader(title: "ENGLISH TRANSLATION", color: .secondary, font: "Iowan Old Style")
+            englishTranslationContent
         }
-        .padding(12)
-        .cardBackgroundStyle()
-        .padding(.horizontal, 12)
-        .padding(.vertical)
     }
     
-    private func titleHeader(title: String, color: Color) -> some View {
-        Text(title)
-            .font(.system(size: 12, weight: .black))
-            .kerning(1)
-            .foregroundColor(color)
-    }
     
-    private func titleDescription(description: String, color: Color, design: Font.Design) -> some View {
-        Text(description)
-            .font(.system(size: 20, weight: .regular, design: design))
-            .lineSpacing(2)
-            .foregroundColor(color)
-    }
-}
-
-// MARK: - AI Insights view.
-
-struct ScriptureAIInsightView: View {
-    var body: some View {
-        Text("AI Tab")
-    }
-}
-
-// MARK: - Verse content card.
-
-struct VerseContentCard: View {
-    let verse: ScriptureChapterVerse
-    
-    @Environment(\.colorScheme) var colorScheme
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 32) {
+    private var verseContentView: some View {
+        VStack(alignment: .leading, spacing: 0) {
             
             if let sanskrit = verse.sanskrit {
-                // 1. Primary Verse
-                VStack(alignment: .leading, spacing: 8) {
-                    titleHeader(title: "SANSKRIT (DEVANAGARI)", color: .orange)
-                    titleDescription(description: sanskrit, color: .primary, design: .serif)
-                }
+                sectionDescription(description: sanskrit, color: .primary, font: "DevanagariSangamMN")
+                    .multilineTextAlignment(.leading)
             }
             
             if let kannada = verse.kannada {
-                VStack(alignment: .leading, spacing: 8) {
-                    titleHeader(title: "KANNADA", color: .orange)
-                    titleDescription(description: kannada, color: .primary, design: .serif)
-                }
-            }
-            
-            // 2. Transliteration
-            VStack(alignment: .leading, spacing: 8) {
-                titleHeader(title: "TRANSLITERATION", color: .secondary.opacity(0.6))
-                
-                Text(verse.transliteration)
-                    .font(.system(.body, design: .serif))
-                    .italic()
-                    .foregroundColor(.secondary)
+                sectionDescription(description: kannada, color: .primary, font: "KannadaSangamMN")
+                    .multilineTextAlignment(.leading)
             }
         }
-        .padding(16)
-        .cardBackgroundStyle()
-        .padding(.horizontal, 12)
-        .padding(.vertical)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+        )
     }
     
-    private func titleHeader(title: String, color: Color) -> some View {
+    private var transliterationContentView: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionDescription(description: verse.transliteration, color: .primary, font: "DevanagariSangamMN")
+                .multilineTextAlignment(.leading)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+        )
+    }
+    
+ 
+    var wordByWordContent: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 16) {
+               
+                ForEach(words) { word in
+                    GridRow(alignment: .top) {
+                        
+                        // Word
+                        Text(word.word)
+                            .font(.custom("DevanagariSangamMN", size: 16))
+                            .foregroundColor(.primary)
+                        
+                        // Meaning
+                        Text(word.meaning)
+                            .font(.system(.body, design: .serif))
+                            .foregroundColor(.primary.opacity(0.8))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    
+                    if word.id != words.last?.id {
+                        Divider().padding(.top, 8)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+        )
+    }
+    
+    private var englishTranslationContent: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionDescription(description: verse.translationEnglish, color: .primary.opacity(0.6), font: "Iowan Old Style")
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+        )
+    }
+    
+    private func sectionHeader(title: String, color: Color, font: String) -> some View {
         Text(title)
-            .font(.system(size: 12, weight: .black))
+            .font(.custom(font, size: 12))
             .kerning(1)
             .foregroundColor(color)
+            .padding(.horizontal, 4)
     }
     
-    private func titleDescription(description: String, color: Color, design: Font.Design) -> some View {
+    private func sectionDescription(description: String, color: Color, font: String) -> some View {
         Text(description)
-            .font(.system(size: 20, weight: .medium, design: design))
+            .font(.custom(font, size: 18))
+            .foregroundColor(.primary)
+            .multilineTextAlignment(.leading)
             .lineSpacing(2)
-            .foregroundColor(color)
     }
 }

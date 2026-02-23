@@ -14,27 +14,30 @@ struct ScriptureChaptersView: View {
     
     @State private var scriptureChapters: [ScriptureChapter] = []
     
-    @ObservedObject private var viewModel =  ScriptureChaptersViewModel()
+    @StateObject private var viewModel =  ScriptureChaptersViewModel()
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(scriptureChapters) { scriptureChapter in
-                        NavigationLink {
-                            ScriptureVerseListView(
-                                scriptureChapter: scriptureChapter,
-                                scripture: scripture
-                            )
-                        } label: {
-                            ScriptureChapterCard(scriptureChapter: scriptureChapter)
-                        }
-                    }
+        List {
+            ForEach(scriptureChapters) { chapter in
+                NavigationLink {
+                    ScriptureVerseListView(
+                        scriptureChapter: chapter,
+                        scripture: scripture
+                    )
+                    
+                } label: {
+                    ScriptureChapterCard(scriptureChapter: chapter)
                 }
+                .listRowBackground(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+                .listRowSeparator(.hidden)
             }
-            .background(Color(.systemBackground))
+            .padding(.horizontal, 12)
         }
-        .task {
+        .scrollContentBackground(colorScheme == .dark ? .hidden : .visible)
+        .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+        .listStyle(.plain)
+        .task(id: scripture.id) {
             scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
         }
     }
@@ -48,56 +51,47 @@ struct ScriptureChapterCard: View {
    
     var body: some View {
         
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 2) {
             
-            HStack {
-                mainTitleView
-                
-                Spacer()
-                
-                Image(systemName: "arrow.right")
-            }
+            mainTitleView
            
             transliteratedView
             
             descriptionView
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .cardBackgroundStyle()
-        .padding(.horizontal, 12)
+        .padding(.vertical, 2)
     }
     
     @ViewBuilder
     private var mainTitleView: some View {
         if let kannadaName = scriptureChapter.kannadaName {
             Text(kannadaName)
-                .font(.headline)
-                .foregroundColor(.primary)
+                .font(.custom("DevanagariSangamMN-Bold", size: 18))
+                .foregroundColor(.orange)
         }
         
         if let sanskritName = scriptureChapter.sanskritName {
             Text(sanskritName)
-                .font(.headline)
-                .foregroundColor(.primary)
+                .font(.custom("DevanagariSangamMN-Bold", size: 18))
+                .foregroundColor(.orange)
         }
     }
     
     private var transliteratedView: some View {
         Text(scriptureChapter.transliteratedName)
-            .font(.subheadline)
+            .font(.custom("Iowan Old Style", size: 18))
             .italic()
-            .foregroundColor(.secondary)
+            .foregroundColor(.primary)
     }
     
     private var descriptionView: some View {
         Text(scriptureChapter.englishName)
-            .font(.footnote)
-            .foregroundColor(.orange.opacity(0.8))
+            .font(.custom("Iowan Old Style", size: 16))
+            .foregroundColor(.secondary)
     }
 }
 
-struct ScriptureChapter: Identifiable, Decodable {
+struct ScriptureChapter: Identifiable, Decodable, Hashable {
     var id = UUID()
     let number: Int
     let sanskritName: String?

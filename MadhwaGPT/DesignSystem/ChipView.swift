@@ -21,15 +21,15 @@ struct Chip: View {
             .font(.subheadline)
             .fontWeight(.regular)
             .foregroundColor(isSelected ? .white : .primary)
-            .padding(.horizontal, 16)
-            .frame(height: height)
+            .lineLimit(2)
+            .multilineTextAlignment(.leading)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 8)
+            .frame(minHeight: 48)
+            .frame(width: 320)
             .background(
                 Capsule()
-                    .fill(isSelected ? Color.orange.opacity(0.7) : Color.clear)
-            )
-            .overlay(
-                Capsule()
-                    .stroke(Color.orange.opacity(0.7), lineWidth: 1)
+                    .fill(isSelected ? Color.blue : Color.secondary.opacity(0.1))
             )
             .onTapGesture {
                 onTap()

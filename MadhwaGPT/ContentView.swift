@@ -49,11 +49,6 @@ struct ContentView: View {
                 .tabItem {
                     Label(AppTab.scriptures.title, systemImage: AppTab.scriptures.icon)
                 }
-            
-//            PravachanaView()
-//                .tabItem {
-//                    Label(AppTab.pravachana.title, systemImage: AppTab.pravachana.icon)
-//                }
             FavouritesView()
                 .tabItem {
                     Label(AppTab.favourites.title, systemImage: AppTab.favourites.icon)
@@ -64,7 +59,6 @@ struct ContentView: View {
                     Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
                 }
         }
-        .tint(Color.orange)
     }
 }
 

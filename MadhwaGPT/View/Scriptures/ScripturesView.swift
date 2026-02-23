@@ -8,12 +8,9 @@
 import Foundation
 import SwiftUI
 
-import SwiftUI
 
 struct ScripturesView: View {
     // MARK: - Properties
-    
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
     
     @StateObject var viewModel = ScriptureViewModel()
     @State private var selectedScripture: Scripture?
@@ -23,36 +20,30 @@ struct ScripturesView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                contentSection
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showLibrary.toggle()
-                    } label: {
-                        Image(systemName: "book.closed.fill")
+            contentSection
+                .navigationTitle(selectedScripture?.title ?? "Scriptures")
+                .navigationBarTitleDisplayMode(.inline)
+                .sheet(isPresented: $showLibrary) {
+                    scriptureSelectionView
+                        .presentationDetents([.medium])
+                        .presentationDragIndicator(.visible)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showLibrary.toggle()
+                        } label: {
+                            Image(systemName: "books.vertical.fill")
+                        }
                     }
                 }
-            }
-            .sheet(isPresented: $showLibrary) {
-                ScriptureLibrarySheet(
-                    selectedScripture: $selectedScripture,
-                    allScriptures: viewModel.scriptures
-                )
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
-            }
-            .navigationTitle(selectedScripture?.title ?? "Scriptures")
-            .navigationBarTitleDisplayMode(.large)
-            .background(Color.clear)
-            .task {
-                await loadInitialData()
-            }
+        }
+        .task {
+            await loadInitialData()
         }
     }
     
-    // MARK: - View Components
+    // MARK: - Sub views
     @ViewBuilder
     private var contentSection: some View {
         if isLoading {
@@ -62,17 +53,30 @@ struct ScripturesView: View {
                 ProgressView()
             }
         } else if let scripture = selectedScripture {
-            ScrollView {
-                ScriptureChaptersView(scripture: scripture)
-                    .padding(.top)
-                    .id(scripture.id)
-            }
+            ScriptureChaptersView(scripture: scripture)
+                .background(Color("SaffronCardBackround"))
+                .id(scripture.id)
         } else {
             ContentUnavailableView(
                 "No Selection",
                 systemImage: "book.closed",
                 description: Text("Please select a scripture to begin reading.")
             )
+        }
+    }
+    
+    private var scriptureSelectionView: some View {
+        NavigationStack {
+            List(viewModel.scriptures) { scripture in
+                ScriptureSelectionCard(
+                    scripture: scripture,
+                    isSelected: selectedScripture == scripture) {
+                        selectedScripture = scripture
+                        showLibrary.toggle()
+                    }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Explore sacred texts")
         }
     }
     
@@ -93,144 +97,7 @@ struct ScripturesView: View {
     }
 }
 
-struct ScriptureLibrarySheet: View {
-   
-    let backgroundColor = Color(red: 1.0, green: 0.976, blue: 0.961)
-    @Binding var selectedScripture: Scripture?
-    let allScriptures: [Scripture]
-    @Environment(\.dismiss) var dismiss
-    
-    var body: some View {
-        ZStack(alignment: .topLeading) {
-            
-            ScrollView {
-                VStack(spacing: 16) {
-                    Spacer()
-                        .frame(height: 60)
-                    headerView
-                    content
-                }
-                .frame(maxWidth: .infinity)
-            }
-            
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark")
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                    .padding(12)
-                    .background(.ultraThinMaterial, in: Circle())
-            }
-            .padding()
-        }
-    }
 
-    
-    private var content: some View {
-        VStack(spacing: 16) {
-            ForEach(allScriptures) { scripture in
-                ScriptureSelectionCard(
-                    scripture: scripture,
-                    isSelected: selectedScripture == scripture
-                ) {
-                    selectedScripture = scripture
-                    dismiss()
-                }
-                .padding()
-            }
-        }
-        .padding()
-    }
-    
-    private var headerView: some View {
-        VStack(alignment: .leading, spacing: 12.0) {
-            
-            Text(Strings.scripturesTitle)
-                .foregroundStyle(.primary)
-                .font(.title)
-            
-            Text(Strings.scripturesHeader)
-                .foregroundStyle(.secondary)
-                .font(.headline)
-        }
-        .padding(.leading, 8.0)
-        .frame(maxWidth: .infinity)
-    }
-}
-
-struct ScriptureCard: View {
-    
-    let scripture: Scripture
-    @Environment(\.dismiss) var dismiss
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            
-            titleView
-            
-            descriptionView
-            
-            Spacer()
-                .frame(height: 12)
-            
-            metadDataView
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemBackground))
-        )
-        .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
-        .padding(.horizontal, 12)
-    }
-    
-    private var titleView: some View {
-        HStack {
-            Text(scripture.title)
-                .font(.headline)
-            
-            Spacer()
-            
-            Text(scripture.language)
-                .font(.subheadline)
-                .foregroundColor(.orange)
-        }
-    }
-    
-    private var descriptionView: some View {
-        Text(scripture.description)
-            .font(.subheadline)
-            .foregroundColor(.secondary)
-    }
-    
-    private var metadDataView: some View {
-        HStack {
-            Text(scripture.firstMetaDataKey)
-                .fontWeight(.semibold)
-                .font(.system(size: 18))
-                
-            Text(scripture.firstMetaDataValue)
-                .foregroundColor(.gray)
-                .font(.subheadline)
-            
-            Divider()
-                .frame(height: 20)
-                .background(Color.gray)
-            
-            Text(scripture.secondMetaDataKey)
-                .fontWeight(.semibold)
-                .font(.system(size: 18))
-
-            Text(scripture.secondMetaDataValue)
-                .foregroundColor(.gray)
-                .font(.subheadline)
-        }
-    }
-}
-
-// Helper to make the UI look cleaner
 extension View {
     func divider() -> some View {
         Rectangle()

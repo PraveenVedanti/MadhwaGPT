@@ -15,7 +15,7 @@ struct ScriptureSelectionCard: View {
     let onTap: () -> Void
     
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 12) {
             
             checkMarkView
             
@@ -25,35 +25,35 @@ struct ScriptureSelectionCard: View {
                         .font(.headline)
                         .lineLimit(1)
                     Spacer()
-                    languageView
+                    
                 }
                 
                 Text(scripture.description)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 
-                HStack(spacing: 16) {
+                HStack(spacing: 8) {
                     MetadataUnit(label: scripture.firstMetaDataValue, value: scripture.firstMetaDataKey)
+                    
+                    Divider()
+                        .frame(height: 20)
+                        .background(Color.gray)
                     MetadataUnit(label: scripture.secondMetaDataKey, value: scripture.secondMetaDataValue)
+                    
+                    Divider()
+                        .frame(height: 20)
+                        .background(Color.gray)
+                    
+                    languageView
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Spacer()
         }
         .padding()
+        .contentShape(Rectangle())
         .onTapGesture {
             onTap()
         }
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill( isSelected ? .orange.opacity(0.3) : Color(.secondarySystemBackground))
-        )
-        .shadow(
-            color: .black.opacity(isSelected ? 0.08 : 0.03),
-            radius: 10,
-            y: 4
-        )
     }
     
     private var checkMarkView: some View {
