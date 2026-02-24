@@ -30,14 +30,14 @@ struct SettingsView: View {
                 Section {
                     chatLevelSelection
                 } header: {
-                    Text(Strings.SettingsTab.userLevelSectionTitle)
+                    Text(MGPTStrings.SettingsTab.userLevelSectionTitle)
                 }
                 
                 // Themes
                 Section {
                     chatThemeSection
                 } header: {
-                    Text(Strings.SettingsTab.appearanceSectionTitle)
+                    Text(MGPTStrings.SettingsTab.appearanceSectionTitle)
                 }
             }
             .task {
@@ -53,7 +53,7 @@ struct SettingsView: View {
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.visible)
             }
-            .navigationTitle(Strings.SettingsTab.settingsTitle)
+            .navigationTitle(MGPTStrings.SettingsTab.settingsTitle)
             .navigationBarTitleDisplayMode(.inline)
             .scrollContentBackground(colorScheme == .dark ? .hidden : .visible)
             .background(Color(.systemBackground))
@@ -132,7 +132,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle(Strings.SettingsTab.chatLevelSheetTitle)
+            .navigationTitle(MGPTStrings.SettingsTab.chatLevelSheetTitle)
             .navigationBarTitleDisplayMode(.inline)
         }
     }
@@ -196,7 +196,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle(Strings.SettingsTab.chatThemeSheetTitle)
+            .navigationTitle(MGPTStrings.SettingsTab.chatThemeSheetTitle)
             .navigationBarTitleDisplayMode(.inline)
         }
     }

@@ -13,15 +13,15 @@ struct CardBackgroundModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                    
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color.orange.opacity(colorScheme == .dark ? 0.05 : 0.08))
-                }
-            )
+//            .background(
+//                ZStack {
+//                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+//                        .fill(.ultraThinMaterial)
+//                    
+//                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+//                        .fill(Color.orange.opacity(colorScheme == .dark ? 0.05 : 0.08))
+//                }
+//            )
             .overlay {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .stroke(

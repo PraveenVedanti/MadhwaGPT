@@ -9,60 +9,58 @@ import Foundation
 import SwiftUI
 
 struct ExpandingTextInput: View {
+    
+    // Binding variable for text field input.
     @Binding var text: String
-    let placeholder =  "Ask about Madhvacharya's philosophy.."
-    let minHeight: CGFloat = 60
-    let maxHeight: CGFloat = 150
-
-    @State private var textHeight: CGFloat = 48
-    @Environment(\.colorScheme) var colorScheme
-
+    
+    // Binding variable to show/dismiss keyboard.
+    @FocusState.Binding var isFocused: Bool
+    
+    // Back ground color
+    let backgroundColor: Color
+    
+    // Font color
+    let fontColor: Color
+    
+    // On tap of send button action.
+    let onTap: () -> Void
+    
     var body: some View {
-        VStack(spacing: 8) {
-            ZStack(alignment: .topLeading) {
-                
-                TextEditor(text: $text)
-                    .scrollContentBackground(.hidden)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 6)
-                    .frame(height: min(textHeight, maxHeight))
-                    .background(
-                        RoundedRectangle(cornerRadius: 24)
-                            // Adaptive: White in Light, Elegant Charcoal in Dark
-                            .fill(Color(.secondarySystemGroupedBackground))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 24)
-                            // Adaptive: Subtle hairline that only "pops" in Dark Mode
-                            .stroke(Color.primary.opacity(0.6), lineWidth: 0.5)
-                    )
-                    .cornerRadius(24)
-                    .onChange(of: text, { oldValue, newValue in
-                        recalculateHeight()
-                    })
-                
-                if text.isEmpty {
-                    Text(placeholder)
-                        .foregroundColor(Color(.placeholderText))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 12)
-                        .allowsHitTesting(false)
-                }
-            }
+        ZStack(alignment: .bottomTrailing) {
+            textFieldView
+            
+            sendButton
         }
-        .animation(.easeInOut, value: textHeight)
+        .padding()
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: text)
     }
-
-    private func recalculateHeight() {
-        let size = CGSize(width: UIScreen.main.bounds.width - 60, height: .infinity)
-        let estimatedHeight = text.boundingRect(
-            with: size,
-            options: .usesLineFragmentOrigin,
-            attributes: [.font: UIFont.systemFont(ofSize: 17)],
-            context: nil
-        ).height + 24
-
-        textHeight = max(minHeight, estimatedHeight)
+    
+    private var textFieldView: some View {
+        TextField(MGPTStrings.ChatTab.textEditorPlaceHolder, text: $text, axis: .vertical)
+            .padding(.vertical, 8)
+            .padding(.leading, 12)
+            .padding(.trailing, 48)
+            .padding(.bottom, 32)
+            .lineLimit(1...6)
+            .focused($isFocused)
+            .background(backgroundColor, in: RoundedRectangle(cornerRadius: 24))
+            .overlay(
+                RoundedRectangle(cornerRadius: 24)
+                    .stroke(.primary.opacity(0.5), lineWidth: 0.5)
+            )
+    }
+    
+    private var sendButton: some View {
+        Button {
+            onTap()
+            isFocused = false
+        } label: {
+            Image(systemName: "arrow.up.circle.fill")
+                .resizable()
+                .frame(width: 32, height: 32)
+                .foregroundStyle(fontColor.opacity(0.75))
+        }
+        .padding(.trailing, 8)
+        .padding(.bottom, 8)
     }
 }
-

@@ -11,29 +11,40 @@ import SwiftUI
 // MARK: - Chip View
 struct Chip: View {
     
-    let title: String
+    // Text inside the chip.
+    let text: String
+    
     let isSelected: Bool
-    var height: CGFloat = 36
+    
+    // Background color of the chip.
+    let backgroundColor: Color
+    
+    // Font color of the text inside chip.
+    let fontColor: Color
+    
+    // On tap of chip action.
     let onTap: () -> Void
     
     var body: some View {
-        Text(title)
+        Text(text)
             .font(.subheadline)
             .fontWeight(.regular)
-            .foregroundColor(isSelected ? .white : .primary)
-            .lineLimit(2)
+            .lineLimit(3)
             .multilineTextAlignment(.leading)
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .frame(minHeight: 48)
-            .frame(width: 320)
+            .frame(width: 300, alignment: .leading)
             .background(
-                Capsule()
-                    .fill(isSelected ? Color.blue : Color.secondary.opacity(0.1))
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .fill(fontColor)
             )
+            .overlay(
+                RoundedRectangle(cornerRadius: 28)
+                    .stroke(Color.primary, lineWidth: 0.4)
+            )
+            .shadow(color: Color.gray.opacity(0.2), radius: 4, x: 0, y: 2)
             .onTapGesture {
                 onTap()
             }
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isSelected)
     }
 }

@@ -14,8 +14,14 @@ struct ScriptureChaptersView: View {
     
     @State private var scriptureChapters: [ScriptureChapter] = []
     
+    // View models.
     @StateObject private var viewModel =  ScriptureChaptersViewModel()
+    @StateObject private var settingsViewModel = SettingsViewModel()
+   
     @Environment(\.colorScheme) var colorScheme
+    
+    // Background color of the view.
+    @State private var backgroundColor: Color = Color(.systemBackground)
     
     var body: some View {
         List {
@@ -29,17 +35,24 @@ struct ScriptureChaptersView: View {
                 } label: {
                     ScriptureChapterCard(scriptureChapter: chapter)
                 }
-                .listRowBackground(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+                .listRowBackground(backgroundColor)
                 .listRowSeparator(.hidden)
             }
             .padding(.horizontal, 12)
         }
-        .scrollContentBackground(colorScheme == .dark ? .hidden : .visible)
-        .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+        .onAppear {
+            setBGColor()
+        }
+        .scrollContentBackground(.hidden)
+        .background(backgroundColor)
         .listStyle(.plain)
         .task(id: scripture.id) {
             scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
         }
+    }
+    
+    private func setBGColor() {
+        backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
     }
 }
 
@@ -48,6 +61,10 @@ struct ScriptureChapterCard: View {
     let scriptureChapter: ScriptureChapter
     
     @Environment(\.colorScheme) var colorScheme
+    
+    @State private var textColor: Color = .primary
+    
+    @StateObject private var settingsViewModel = SettingsViewModel()
    
     var body: some View {
         
@@ -59,7 +76,14 @@ struct ScriptureChapterCard: View {
             
             descriptionView
         }
+        .onAppear {
+            setTextColor()
+        }
         .padding(.vertical, 2)
+    }
+    
+    private func setTextColor() {
+        textColor =  ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
     
     @ViewBuilder
@@ -67,13 +91,13 @@ struct ScriptureChapterCard: View {
         if let kannadaName = scriptureChapter.kannadaName {
             Text(kannadaName)
                 .font(.custom("DevanagariSangamMN-Bold", size: 18))
-                .foregroundColor(.orange)
+                .foregroundColor(.primary)
         }
         
         if let sanskritName = scriptureChapter.sanskritName {
             Text(sanskritName)
                 .font(.custom("DevanagariSangamMN-Bold", size: 18))
-                .foregroundColor(.orange)
+                .foregroundColor(.primary)
         }
     }
     
@@ -81,13 +105,14 @@ struct ScriptureChapterCard: View {
         Text(scriptureChapter.transliteratedName)
             .font(.custom("Iowan Old Style", size: 18))
             .italic()
-            .foregroundColor(.primary)
+            .foregroundColor(.secondary)
     }
     
     private var descriptionView: some View {
         Text(scriptureChapter.englishName)
             .font(.custom("Iowan Old Style", size: 16))
-            .foregroundColor(.secondary)
+            .fontWeight(colorScheme == .light ? .semibold : .regular)
+            .foregroundColor(textColor)
     }
 }
 

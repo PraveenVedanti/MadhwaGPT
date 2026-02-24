@@ -29,23 +29,21 @@ class SettingsViewModel: ObservableObject {
     }
     
     func loadChatThemes() {
-        let purple = ChatTheme(title: "NotebookLM Purple", description: "Modern purple theme", color: Color.purple)
+        let purple = ChatTheme(title: "NotebookLM Purple", description: "Modern purple theme", color: Color.notebookLMPurpleText)
         let saffron = ChatTheme(title: "Saffron Wisdom", description: "Traditional Indian spiritual theme", color: Color.orange)
-        let templeGold = ChatTheme(title: "Temple Gold", description: "Rich traditional temple palette", color: Color.brown.opacity(0.6))
-        let roseGold = ChatTheme(title: "Ancient Rose Gold", description: "Premium rose-gold with parchment warmth", color: Color.pink.opacity(0.4))
+        let templeGold = ChatTheme(title: "Temple Gold", description: "Rich traditional temple palette", color: Color.templeGoldText)
+        let roseGold = ChatTheme(title: "Ancient Rose Gold", description: "Premium rose-gold with parchment warmth", color: Color.ancientRoseGoldText)
         let teal = ChatTheme(title: "Scholarly Teal", description: "Calm academic theme", color: Color.teal.opacity(0.5))
         let manuscript = ChatTheme(title: "Ancient Manuscript", description: "Warm parchment theme", color: Color.brown)
         let green = ChatTheme(title: "Sage Green", description: "Natural wisdom theme", color: Color.green.opacity(0.5))
-        let noTheme = ChatTheme(title: "Default (No color theme)", description: "No theming applied", color: Color.primary)
         
+        chatThemes.append(templeGold)
         chatThemes.append(purple)
         chatThemes.append(saffron)
-        chatThemes.append(templeGold)
         chatThemes.append(roseGold)
         chatThemes.append(teal)
         chatThemes.append(manuscript)
         chatThemes.append(green)
-        chatThemes.append(noTheme)
     }
     
     func getChatTheme(title: String) -> ChatTheme? {

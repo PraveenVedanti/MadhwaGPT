@@ -27,6 +27,8 @@ struct AIInsightsView: View {
     
     @State private var message = ""
     
+    @FocusState private var isTextFieldFocused: Bool
+    
     init(verse: ScriptureChapterVerse) {
         self.verse = verse
     }
@@ -100,15 +102,13 @@ struct AIInsightsView: View {
     
     private var textEditorView: some View {
         HStack(spacing: 8.0) {
-            ExpandingTextInput(text: $message)
-            Button {
+            ExpandingTextInput(
+                text: $message,
+                isFocused: $isTextFieldFocused,
+                backgroundColor: .orange,
+                fontColor: .orange
+            ) {
                 sendQuery(text: message)
-            } label: {
-                Image(systemName: "paperplane")
-                    .font(.system(size: 16))
-                    .foregroundColor(.white)
-                    .padding(8)
-                    .background(Circle().fill(Color.orange.opacity(0.8)))
             }
         }
         .padding()

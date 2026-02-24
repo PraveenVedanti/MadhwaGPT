@@ -14,7 +14,13 @@ struct ScriptureVerseListView: View {
     let scripture: Scripture
     
     @State private var scriptureChapterVerseList: [ScriptureChapterVerse] = []
+    
+    // View models.
     @ObservedObject private var viewModel = ScriptureChapterDetailsViewModel()
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    
+    @State private var backgroundColor: Color = Color(.systemBackground)
+    @State private var textColor: Color = .primary
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -28,34 +34,43 @@ struct ScriptureVerseListView: View {
                         verseList: scriptureChapterVerseList
                     )
                 } label: {
-                    ScriptureChapterVerseCard(verse: verse)
+                    ScriptureChapterVerseCard(verse: verse, titleColor: textColor)
                 }
-                .listRowBackground(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+                .listRowBackground(backgroundColor)
                 .listRowSeparator(.hidden)
             }
             .padding(.horizontal, 12)
         }
+        .onAppear {
+            setThemes()
+        }
         .navigationTitle(scriptureChapter.sanskritName ?? scriptureChapter.kannadaName ?? "Unknown")
         .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
-        .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+        .background(backgroundColor)
         .listStyle(.plain)
         .task {
             scriptureChapterVerseList = await viewModel.loadScriptureChapterVerseList(scripture: scripture, scriptureChapter: scriptureChapter)
         }
+    }
+    
+    private func setThemes() {
+        backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
+        textColor = ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
 }
 
 
 struct ScriptureChapterVerseCard: View {
     let verse: ScriptureChapterVerse
+    let titleColor: Color
     
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(titleView())
                 .font(.system(.caption, design: .monospaced))
                 .fontWeight(.bold)
-                .foregroundColor(.secondary)
+                .foregroundColor(titleColor)
                
             
             if let kannadaVerse = verse.kannada {

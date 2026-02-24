@@ -19,15 +19,7 @@ struct SuggestionCard: View {
                 .lineSpacing(4)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
-            
             Spacer()
-            
-            HStack {
-                Spacer()
-                Image(systemName: "arrow.right")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
         }
         .onTapGesture {
             onTap()
@@ -37,5 +29,10 @@ struct SuggestionCard: View {
         .frame(width: 300)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(.primary.opacity(0.5), lineWidth: 0.5)
+        )
+        .shadow(color: .black.opacity(0.04), radius: 8, y: 4)
     }
 }

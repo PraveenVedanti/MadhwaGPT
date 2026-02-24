@@ -12,8 +12,9 @@ struct ChatView: View {
     
     @State private var message = ""
     
-    // Chat view model.
+    // View models.
     @ObservedObject var viewModel = ChatViewModel()
+    @StateObject private var settingsViewModel = SettingsViewModel()
     
     @State private var messages: [ChatMessage] = []
     
@@ -27,10 +28,18 @@ struct ChatView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @State private var backgroundColor: Color = Color(.systemBackground)
+    @State private var textFontColor: Color = Color(.label)
+    
     var body: some View {
         
         NavigationStack {
-            VStack(spacing: 12) {
+            VStack(spacing: 0) {
+                
+                // Show welcome header only when chat is not in progress.
+                if messages.isEmpty && !isTextFieldFocused  {
+                    welcomeHeader
+                }
                 
                 chatScrollView
                 
@@ -38,21 +47,17 @@ struct ChatView: View {
                     typingIndicator
                 }
                 
-                if !shouldHideInitialSuggestions {
-                    VStack(alignment: .leading) {
-                        Label {
-                            Text("Try asking:")
-                        } icon: {
-                            Image(systemName: "sparkles")
-                        }
-                        .padding()
-                       
-                        chatSuggestionView
-                    }
+                // Hide chat suggestion when chat is in progress and
+                // Keyboard is focused.
+                if !shouldHideInitialSuggestions && !isTextFieldFocused {
+                    chatSuggestionView
                 }
                 textEditorView
             }
-            .navigationTitle("Chat")
+            .onTapGesture {
+                isTextFieldFocused = false
+            }
+            .navigationTitle(MGPTStrings.ChatTab.chatNavigationBarTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 // Top Right Button
@@ -65,9 +70,10 @@ struct ChatView: View {
                 }
             }
             .onAppear {
+                setBGColor()
                 loadInitialData()
             }
-            .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+            .background(backgroundColor)
         }
     }
     
@@ -75,12 +81,7 @@ struct ChatView: View {
     private var chatScrollView: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(spacing: 16) {
-                   
-                    if messages.isEmpty {
-                        welcomeHeader
-                    }
-                    
+                LazyVStack(spacing: 8) {
                     ForEach(messages) { msg in
                         ChatBubbleView(message: msg)
                             .id(msg.id)
@@ -99,24 +100,24 @@ struct ChatView: View {
             Image("madhwaImage")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 64, height: 64)
+                .frame(width: 80, height: 80)
                 .clipShape(Circle())
-                       .overlay(
-                           Circle()
-                               .stroke(Color.gray, lineWidth: 2)
-                       )
-
-            Text(Strings.welcomeHeaderTitle)
+                .overlay(
+                    Circle()
+                        .stroke(textFontColor, lineWidth: 2)
+                )
+            Text(MGPTStrings.ChatTab.welcomeHeaderTitle)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
+        .padding()
     }
 
     private var typingIndicator: some View {
         HStack(spacing: 8) {
             ProgressView()
-                .tint(.orange)
-            Text("Consulting Shastras...")
+                .tint(textFontColor)
+            Text(MGPTStrings.ChatTab.textGenerationString)
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
@@ -144,19 +145,19 @@ struct ChatView: View {
     }
     
     private var textEditorView: some View {
-        HStack(spacing: 8.0) {
-            ExpandingTextInput(text: $message)
-            Button {
-                sendQuery(text: message)
-            } label: {
-                Image(systemName: "paperplane")
-                    .font(.system(size: 16))
-                    .foregroundColor(.white)
-                    .padding(8)
-                    .background(Circle().fill(Color.orange.opacity(0.8)))
-            }
+        ExpandingTextInput(
+            text: $message,
+            isFocused: $isTextFieldFocused,
+            backgroundColor: backgroundColor,
+            fontColor: textFontColor
+        ) {
+            sendQuery(text: message)
         }
-        .padding()
+    }
+    
+    private func setBGColor() {
+        backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
+        textFontColor = ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
 
     private func loadInitialData() {
@@ -211,22 +212,23 @@ extension ChatView {
     
     private var chatSuggestionView: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHGrid(
-                rows: [
-                    GridItem(.flexible(), spacing: 16),
-                    GridItem(.flexible(), spacing: 16)
-                ],
-                spacing: 16
-            ) {
-                ForEach(viewModel.chatSuggestions) { question in
-                    SuggestionCard(
-                        question: question.suggestion) {
-                            sendQuery(text: question.suggestion)
-                        }
+            chatSuggestionChip
+        }
+    }
+    
+    private var chatSuggestionChip: some View {
+        HStack(spacing: 16.0) {
+            ForEach(viewModel.chatSuggestions) { suggestion in
+                Chip(
+                    text: suggestion.suggestion,
+                    isSelected: false,
+                    backgroundColor: backgroundColor,
+                    fontColor: textFontColor.opacity(0.05)
+                ) {
+                    sendQuery(text: suggestion.suggestion)
                 }
             }
-            .padding(.horizontal, 16)
         }
-        .frame(height: 240)
+        .padding(.horizontal, 16)
     }
 }
