@@ -36,12 +36,10 @@ class SettingsViewModel: ObservableObject {
         let teal = ChatTheme(title: "Scholarly Teal", description: "Calm academic theme", color: Color.teal.opacity(0.5))
         let manuscript = ChatTheme(title: "Ancient Manuscript", description: "Warm parchment theme", color: Color.brown)
         let green = ChatTheme(title: "Sage Green", description: "Natural wisdom theme", color: Color.green.opacity(0.5))
-        let noTheme = ChatTheme(title: "Default (No color theme)", description: "No theming applied", color: Color.primary)
         
-        chatThemes.append(noTheme)
+        chatThemes.append(templeGold)
         chatThemes.append(purple)
         chatThemes.append(saffron)
-        chatThemes.append(templeGold)
         chatThemes.append(roseGold)
         chatThemes.append(teal)
         chatThemes.append(manuscript)

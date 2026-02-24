@@ -29,11 +29,18 @@ struct ChatView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @State private var backgroundColor: Color = Color(.systemBackground)
+    @State private var textFontColor: Color = Color(.label)
     
     var body: some View {
         
         NavigationStack {
-            VStack(spacing: 12) {
+            VStack(spacing: 0) {
+                
+                if messages.isEmpty && !isTextFieldFocused  {
+                    Spacer()
+                    welcomeHeader
+                    Spacer()
+                }
                 
                 chatScrollView
                 
@@ -50,7 +57,6 @@ struct ChatView: View {
             }
             .onTapGesture {
                 isTextFieldFocused = false
-                print("tapped")
             }
             .navigationTitle(MGPTStrings.ChatTab.chatNavigationBarTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -76,12 +82,7 @@ struct ChatView: View {
     private var chatScrollView: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVStack(spacing: 16) {
-                   
-                    if messages.isEmpty {
-                        welcomeHeader
-                    }
-                    
+                LazyVStack(spacing: 8) {
                     ForEach(messages) { msg in
                         ChatBubbleView(message: msg)
                             .id(msg.id)
@@ -145,26 +146,19 @@ struct ChatView: View {
     }
     
     private var textEditorView: some View {
-        HStack(spacing: 8.0) {
-            ExpandingTextInput(
-                text: $message,
-                isFocused: $isTextFieldFocused
-            )
-            Button {
-                sendQuery(text: message)
-            } label: {
-                Image(systemName: "paperplane")
-                    .font(.system(size: 16))
-                    .foregroundColor(.white)
-                    .padding(8)
-                    .background(Circle().fill(Color.orange.opacity(0.8)))
-            }
+        ExpandingTextInput(
+            text: $message,
+            isFocused: $isTextFieldFocused,
+            backgroundColor: backgroundColor,
+            fontColor: textFontColor
+        ) {
+            sendQuery(text: message)
         }
-        .padding()
     }
     
     private func setBGColor() {
         backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
+        textFontColor = ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
 
     private func loadInitialData() {
@@ -218,16 +212,25 @@ struct ChatView: View {
 extension ChatView {
     
     private var chatSuggestionView: some View {
-        VStack(alignment: .leading) {
-            Label {
-                Text(MGPTStrings.ChatTab.tryAsking)
-            } icon: {
-                Image(systemName: "sparkles")
-            }
-            .padding()
-           
-            chatSuggestionCarousel
+        ScrollView(.horizontal, showsIndicators: false) {
+            chatSuggestionChip
         }
+    }
+    
+    private var chatSuggestionChip: some View {
+        HStack(spacing: 16.0) {
+            ForEach(viewModel.chatSuggestions) { suggestion in
+                Chip(
+                    text: suggestion.suggestion,
+                    isSelected: false,
+                    backgroundColor: backgroundColor,
+                    fontColor: textFontColor.opacity(0.05)
+                ) {
+                    sendQuery(text: suggestion.suggestion)
+                }
+            }
+        }
+        .padding(.horizontal, 16)
     }
     
     private var chatSuggestionCarousel: some View {

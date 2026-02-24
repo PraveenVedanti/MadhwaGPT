@@ -56,7 +56,6 @@ struct ScripturesView: View {
             }
         } else if let scripture = selectedScripture {
             ScriptureChaptersView(scripture: scripture)
-                .background(Color("SaffronCardBackround"))
                 .id(scripture.id)
         } else {
             ContentUnavailableView(
