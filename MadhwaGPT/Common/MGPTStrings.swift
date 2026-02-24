@@ -15,6 +15,7 @@ struct MGPTStrings {
         static let welcomeHeaderTitle = NSLocalizedString("Your guide to Madhvacharya's Dvaita Vedanta philosophy", comment: "welcome header title")
         static let chatNavigationBarTitle = NSLocalizedString("Chat", comment: "Chat navigation bar title")
         static let textEditorPlaceHolder = NSLocalizedString("Ask about Madhvacharya's philosophy..", comment: "Text editor placeholder")
+        static let textGenerationString = NSLocalizedString("Consulting Shastras...", comment: "Text generation string")
     }
     
     struct SettingsTab {

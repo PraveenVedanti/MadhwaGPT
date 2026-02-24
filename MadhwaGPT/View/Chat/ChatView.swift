@@ -117,7 +117,7 @@ struct ChatView: View {
         HStack(spacing: 8) {
             ProgressView()
                 .tint(textFontColor)
-            Text("Consulting Shastras...")
+            Text(MGPTStrings.ChatTab.textGenerationString)
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
@@ -230,26 +230,5 @@ extension ChatView {
             }
         }
         .padding(.horizontal, 16)
-    }
-    
-    private var chatSuggestionCarousel: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            LazyHGrid(
-                rows: [
-                    GridItem(.flexible(), spacing: 16),
-                    GridItem(.flexible(), spacing: 16)
-                ],
-                spacing: 16
-            ) {
-                ForEach(viewModel.chatSuggestions) { question in
-                    SuggestionCard(
-                        question: question.suggestion) {
-                            sendQuery(text: question.suggestion)
-                        }
-                }
-            }
-            .padding(.horizontal, 16)
-        }
-        .frame(height: 240)
     }
 }

@@ -20,6 +20,7 @@ struct ScriptureVerseListView: View {
     @StateObject private var settingsViewModel = SettingsViewModel()
     
     @State private var backgroundColor: Color = Color(.systemBackground)
+    @State private var textColor: Color = .primary
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -33,7 +34,7 @@ struct ScriptureVerseListView: View {
                         verseList: scriptureChapterVerseList
                     )
                 } label: {
-                    ScriptureChapterVerseCard(verse: verse)
+                    ScriptureChapterVerseCard(verse: verse, titleColor: textColor)
                 }
                 .listRowBackground(backgroundColor)
                 .listRowSeparator(.hidden)
@@ -55,32 +56,21 @@ struct ScriptureVerseListView: View {
     
     private func setThemes() {
         backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
-    }
-    
-    private func setBackgroundColor() {
-        switch settingsViewModel.selectedChatTheme {
-        case "Ancient Manuscript":
-            backgroundColor = Color("AncientManuscript")
-        case "Saffron Wisdom":
-            backgroundColor = Color("SaffronWisdom")
-        case "Sage Green":
-            backgroundColor = Color("SageGreen")
-        default:
-            backgroundColor = Color(uiColor: .secondarySystemBackground)
-        }
+        textColor = ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
 }
 
 
 struct ScriptureChapterVerseCard: View {
     let verse: ScriptureChapterVerse
+    let titleColor: Color
     
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(titleView())
                 .font(.system(.caption, design: .monospaced))
                 .fontWeight(.bold)
-                .foregroundColor(.secondary)
+                .foregroundColor(titleColor)
                
             
             if let kannadaVerse = verse.kannada {
