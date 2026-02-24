@@ -14,6 +14,9 @@ struct ScriptureSelectionCard: View {
     let isSelected: Bool
     let onTap: () -> Void
     
+    @State private var textColor: Color = .primary
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    
     var body: some View {
         HStack(spacing: 12) {
             
@@ -25,29 +28,31 @@ struct ScriptureSelectionCard: View {
                         .font(.headline)
                         .lineLimit(1)
                     Spacer()
-                    
                 }
                 
                 Text(scripture.description)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 
-                HStack(spacing: 8) {
-                    MetadataUnit(label: scripture.firstMetaDataValue, value: scripture.firstMetaDataKey)
+                HStack(spacing: 24) {
                     
-                    Divider()
-                        .frame(height: 20)
-                        .background(Color.gray)
-                    MetadataUnit(label: scripture.secondMetaDataKey, value: scripture.secondMetaDataValue)
-                    
-                    Divider()
-                        .frame(height: 20)
-                        .background(Color.gray)
+                    HStack(spacing: 8) {
+                        MetadataUnit(label: scripture.firstMetaDataValue, value: scripture.firstMetaDataKey)
+                        
+                        Circle()
+                            .fill(Color.secondary.opacity(0.8))
+                            .frame(width: 8, height: 8)
+                       
+                        MetadataUnit(label: scripture.secondMetaDataKey, value: scripture.secondMetaDataValue)
+                    }
                     
                     languageView
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .onAppear {
+            setThemes()
         }
         .padding()
         .contentShape(Rectangle())
@@ -59,13 +64,13 @@ struct ScriptureSelectionCard: View {
     private var checkMarkView: some View {
         ZStack {
             Circle()
-                .stroke(isSelected ? Color.orange : Color.secondary.opacity(0.3), lineWidth: 1)
+                .stroke(isSelected ? textColor : Color.secondary.opacity(0.3), lineWidth: 1)
                 .frame(width: 16, height: 16)
             
             if isSelected {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.system(size: 16))
-                    .foregroundStyle(Color.orange)
+                    .foregroundStyle(textColor)
             }
         }
     }
@@ -74,16 +79,16 @@ struct ScriptureSelectionCard: View {
         Text(scripture.language)
             .font(.system(size: 10, weight: .black))
             .textCase(.uppercase)
-            .foregroundStyle(.orange)
+            .foregroundStyle(textColor)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(
                 Capsule()
-                    .fill(Color.orange.opacity(0.12))
+                    .fill(textColor.opacity(0.12))
             )
             .overlay(
                 Capsule()
-                    .stroke(Color.orange.opacity(0.25), lineWidth: 1)
+                    .stroke(textColor.opacity(0.25), lineWidth: 1)
             )
     }
     
@@ -95,8 +100,6 @@ struct ScriptureSelectionCard: View {
             }
             .font(.subheadline)
             
-            Divider()
-                .frame(height: 14)
             
             Group {
                 Text(scripture.secondMetaDataValue).bold() +
@@ -104,6 +107,10 @@ struct ScriptureSelectionCard: View {
             }
             .font(.subheadline)
         }
+    }
+    
+    private func setThemes() {
+        textColor = ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
 }
 

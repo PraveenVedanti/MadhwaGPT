@@ -36,10 +36,9 @@ struct ChatView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 
+                // Show welcome header only when chat is not in progress.
                 if messages.isEmpty && !isTextFieldFocused  {
-                    Spacer()
                     welcomeHeader
-                    Spacer()
                 }
                 
                 chatScrollView
@@ -101,23 +100,23 @@ struct ChatView: View {
             Image("madhwaImage")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 64, height: 64)
+                .frame(width: 80, height: 80)
                 .clipShape(Circle())
-                       .overlay(
-                           Circle()
-                               .stroke(Color.gray, lineWidth: 2)
-                       )
-
+                .overlay(
+                    Circle()
+                        .stroke(textFontColor, lineWidth: 2)
+                )
             Text(MGPTStrings.ChatTab.welcomeHeaderTitle)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
+        .padding()
     }
 
     private var typingIndicator: some View {
         HStack(spacing: 8) {
             ProgressView()
-                .tint(.orange)
+                .tint(textFontColor)
             Text("Consulting Shastras...")
                 .font(.caption)
                 .foregroundColor(.secondary)

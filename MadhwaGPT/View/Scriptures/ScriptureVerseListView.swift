@@ -41,7 +41,7 @@ struct ScriptureVerseListView: View {
             .padding(.horizontal, 12)
         }
         .onAppear {
-            setBGColor()
+            setThemes()
         }
         .navigationTitle(scriptureChapter.sanskritName ?? scriptureChapter.kannadaName ?? "Unknown")
         .navigationBarTitleDisplayMode(.inline)
@@ -53,7 +53,7 @@ struct ScriptureVerseListView: View {
         }
     }
     
-    private func setBGColor() {
+    private func setThemes() {
         backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
     }
     

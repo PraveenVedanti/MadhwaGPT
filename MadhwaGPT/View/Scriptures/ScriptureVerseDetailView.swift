@@ -16,6 +16,11 @@ struct ScriptureVerseDetailView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    
+    @State private var backgroundColor: Color = Color(.systemBackground)
+    @State private var textFontColor: Color = .primary
+    
     // Derived state for the currently visible verse
     private var selectedVerse: ScriptureChapterVerse {
         verseList[currentIndex]
@@ -35,7 +40,7 @@ struct ScriptureVerseDetailView: View {
     var body: some View {
         NavigationStack {
             ScriptureChapterVerseView(verse: selectedVerse)
-                .background(colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+                .background(backgroundColor)
                 .navigationTitle(selectedVerse.canonicalId)
                 .navigationBarTitleDisplayMode(.inline)
                 .fullScreenCover(isPresented: $showAI) {
@@ -47,7 +52,15 @@ struct ScriptureVerseDetailView: View {
                         navigationDock
                     }
                 }
+                .onAppear {
+                    setThemes()
+                }
         }
+    }
+    
+    private func setThemes() {
+        backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
+        textFontColor = ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
     
     private var askAIButton: some View {
@@ -61,12 +74,12 @@ struct ScriptureVerseDetailView: View {
                 
                 Text("Ask AI about this verse")
                     .font(.subheadline)
-                    .fontWeight(.medium)
+                    .fontWeight(.regular)
                     .foregroundStyle(.primary)
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 12)
-            .background(.ultraThinMaterial, in: Capsule())
+            .background(backgroundColor, in: Capsule())
             .overlay(
                 Capsule()
                     .stroke(.white.opacity(colorScheme == .dark ? 0.2 : 0.5), lineWidth: 0.5)
@@ -83,7 +96,7 @@ struct ScriptureVerseDetailView: View {
             Button(action: showPrevious) {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(isFirstVerse ? .secondary.opacity(0.3) : .orange)
+                    .foregroundColor(isFirstVerse ? .secondary.opacity(0.3) : textFontColor)
             }
             .disabled(isFirstVerse)
             
@@ -93,7 +106,7 @@ struct ScriptureVerseDetailView: View {
             Button(action: showNext) {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(isLastVerse ? .secondary.opacity(0.3) : .orange)
+                    .foregroundColor(isLastVerse ? .secondary.opacity(0.3) : textFontColor)
             }
             .disabled(isLastVerse)
         }
@@ -143,6 +156,12 @@ struct ScriptureChapterVerseView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    @State private var backgroundColor: Color = Color(.systemBackground)
+    
+    // Font color of the text inside chip.
+    @State private var fontColor: Color = .primary
+    
     init(verse: ScriptureChapterVerse) {
         self.verse = verse
         self.words = verse.wordByWord ?? []
@@ -151,7 +170,8 @@ struct ScriptureChapterVerseView: View {
     var body: some View {
         
         ZStack {
-            (colorScheme == .light ? Color(.systemBackground) : Color(uiColor: .secondarySystemBackground))
+            
+            backgroundColor
                 .ignoresSafeArea()
             
             ScrollView {
@@ -162,7 +182,11 @@ struct ScriptureChapterVerseView: View {
                     
                     transliterationCard
                     
+                    Divider()
+                    
                     wordByWordCard
+                    
+                    Divider()
                   
                     englishTranslationCard
                 }
@@ -170,6 +194,14 @@ struct ScriptureChapterVerseView: View {
                 .padding(.vertical, 16)
             }
         }
+        .onAppear {
+            setThemes()
+        }
+    }
+    
+    private func setThemes() {
+        backgroundColor =  ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
+        fontColor = ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
     
     private var verseCard: some View {
@@ -227,7 +259,7 @@ struct ScriptureChapterVerseView: View {
         .padding(12)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+                .fill(backgroundColor)
         )
     }
     
@@ -240,7 +272,7 @@ struct ScriptureChapterVerseView: View {
         .padding(12)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+                .fill(backgroundColor)
         )
     }
     
@@ -273,7 +305,7 @@ struct ScriptureChapterVerseView: View {
         .padding(12)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+                .fill(backgroundColor)
         )
     }
     
@@ -284,15 +316,16 @@ struct ScriptureChapterVerseView: View {
         .padding(12)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(colorScheme == .light ? Color(uiColor: .secondarySystemBackground) : Color(uiColor: .tertiarySystemBackground))
+                .fill(backgroundColor)
         )
     }
     
     private func sectionHeader(title: String, color: Color, font: String) -> some View {
         Text(title)
-            .font(.custom(font, size: 12))
+            .font(.custom(font, size: 14))
+            .fontWeight(.bold)
             .kerning(1)
-            .foregroundColor(color)
+            .foregroundColor(fontColor)
             .padding(.horizontal, 4)
     }
     
