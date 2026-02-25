@@ -36,7 +36,7 @@ struct ColorTokens {
         case "Ancient Manuscript":
             return Color.brown
         case "Saffron Wisdom":
-            return Color.orange
+            return Color.orange.opacity(0.8)
         case "Sage Green":
             return Color.green
         case "Scholarly Teal":

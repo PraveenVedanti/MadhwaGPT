@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var showChatThemeSelectionSheet = false
     @State private var showChatLevelSelectionSheet = false
     
+    
     var body: some View {
         NavigationStack {
             List {
@@ -38,6 +39,10 @@ struct SettingsView: View {
                     chatThemeSection
                 } header: {
                     Text(MGPTStrings.SettingsTab.appearanceSectionTitle)
+                }
+                
+                Section {
+                    Toggle(MGPTStrings.SettingsTab.hideChatSuggestions, isOn: $viewModel.hideChatSuggestions)
                 }
             }
             .task {
@@ -85,15 +90,7 @@ struct SettingsView: View {
     // MARK: - Chat level sub views.
     private var chatLevelSelection: some View {
         HStack {
-            VStack(alignment: .leading) {
-                Text(viewModel.selectedChatLevel)
-                    .foregroundStyle(.primary)
-                    .font(.subheadline)
-                
-                Text(viewModel.selectedChatLevelDescription)
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
-            }
+            Text(viewModel.selectedChatLevel)
             Spacer()
             Image(systemName: "chevron.right")
                 .foregroundStyle(.secondary)
@@ -144,15 +141,8 @@ struct SettingsView: View {
                 .frame(width: 16, height: 16)
                 .foregroundColor(viewModel.selectedChatThemeColor)
             
-            VStack(alignment: .leading) {
-                Text(viewModel.selectedChatTheme)
-                    .foregroundStyle(.primary)
-                    .font(.subheadline)
-                
-                Text(viewModel.selectedChatThemeDesription)
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
-            }
+            Text(viewModel.selectedChatTheme)
+            
             Spacer()
             Image(systemName: "chevron.right")
                 .foregroundStyle(.secondary)

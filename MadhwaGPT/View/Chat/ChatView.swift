@@ -31,6 +31,8 @@ struct ChatView: View {
     @State private var backgroundColor: Color = Color(.systemBackground)
     @State private var textFontColor: Color = Color(.label)
     
+    @AppStorage("hideChatSuggestions") var hideChatSuggestions: Bool = false
+    
     var body: some View {
         
         NavigationStack {
@@ -49,7 +51,7 @@ struct ChatView: View {
                 
                 // Hide chat suggestion when chat is in progress and
                 // Keyboard is focused.
-                if !shouldHideInitialSuggestions && !isTextFieldFocused {
+                if !shouldHideInitialSuggestions && !isTextFieldFocused && !hideChatSuggestions {
                     chatSuggestionView
                 }
                 textEditorView

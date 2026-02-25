@@ -63,7 +63,7 @@ class ScriptureViewModel: ObservableObject {
     }
 }
 
-
+@MainActor
 class ScriptureChaptersViewModel: ObservableObject {
     
     func loadScriptureChapters(scripture: Scripture) async -> [ScriptureChapter] {

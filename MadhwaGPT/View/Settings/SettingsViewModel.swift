@@ -14,9 +14,10 @@ class SettingsViewModel: ObservableObject {
     @Published var chatLevels: [ChatLevel] = []
     @Published var chatThemes: [ChatTheme] = []
     
-    // Store the ID of the selected level
+    // User defaults.
     @AppStorage("selectedChatTheme") var selectedChatTheme: String = ""
     @AppStorage("selectedChatLevel") var selectedChatLevel: String = ""
+    @AppStorage("hideChatSuggestions") var hideChatSuggestions: Bool = false
     
     func loadChatLevels() {
         let beginner = ChatLevel(title: "Beginner", description: "Simple explanations")
@@ -30,7 +31,7 @@ class SettingsViewModel: ObservableObject {
     
     func loadChatThemes() {
         let purple = ChatTheme(title: "NotebookLM Purple", description: "Modern purple theme", color: Color.notebookLMPurpleText)
-        let saffron = ChatTheme(title: "Saffron Wisdom", description: "Traditional Indian spiritual theme", color: Color.orange)
+        let saffron = ChatTheme(title: "Saffron Wisdom", description: "Traditional Indian spiritual theme", color: Color.orange.opacity(0.5))
         let templeGold = ChatTheme(title: "Temple Gold", description: "Rich traditional temple palette", color: Color.templeGoldText)
         let roseGold = ChatTheme(title: "Ancient Rose Gold", description: "Premium rose-gold with parchment warmth", color: Color.ancientRoseGoldText)
         let teal = ChatTheme(title: "Scholarly Teal", description: "Calm academic theme", color: Color.teal.opacity(0.5))

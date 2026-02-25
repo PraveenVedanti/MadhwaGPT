@@ -40,7 +40,7 @@ struct ExpandingTextInput: View {
             .padding(.vertical, 8)
             .padding(.leading, 12)
             .padding(.trailing, 48)
-            .padding(.bottom, 32)
+            .padding(.bottom, 24)
             .lineLimit(1...6)
             .focused($isFocused)
             .background(backgroundColor, in: RoundedRectangle(cornerRadius: 24))
@@ -61,6 +61,6 @@ struct ExpandingTextInput: View {
                 .foregroundStyle(fontColor.opacity(0.75))
         }
         .padding(.trailing, 8)
-        .padding(.bottom, 8)
+        .padding(.bottom, 16)
     }
 }

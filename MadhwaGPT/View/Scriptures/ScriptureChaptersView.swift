@@ -24,28 +24,27 @@ struct ScriptureChaptersView: View {
     @State private var backgroundColor: Color = Color(.systemBackground)
     
     var body: some View {
-        List {
-            ForEach(scriptureChapters) { chapter in
-                NavigationLink {
-                    ScriptureVerseListView(
-                        scriptureChapter: chapter,
-                        scripture: scripture
-                    )
-                    
-                } label: {
-                    ScriptureChapterCard(scriptureChapter: chapter)
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    ForEach(scriptureChapters) { chapter in
+                        NavigationLink {
+                            ScriptureVerseListView(
+                                scriptureChapter: chapter,
+                                scripture: scripture
+                            )
+                            
+                        } label: {
+                            ScriptureChapterCard(scriptureChapter: chapter)
+                        }
+                    }
                 }
-                .listRowBackground(backgroundColor)
-                .listRowSeparator(.hidden)
             }
-            .padding(.horizontal, 12)
         }
         .onAppear {
             setBGColor()
         }
-        .scrollContentBackground(.hidden)
         .background(backgroundColor)
-        .listStyle(.plain)
         .task(id: scripture.id) {
             scriptureChapters = await viewModel.loadScriptureChapters(scripture: scripture)
         }
@@ -63,6 +62,7 @@ struct ScriptureChapterCard: View {
     @Environment(\.colorScheme) var colorScheme
     
     @State private var textColor: Color = .primary
+    @State private var backgroundColor: Color = .primary
     
     @StateObject private var settingsViewModel = SettingsViewModel()
    
@@ -70,20 +70,50 @@ struct ScriptureChapterCard: View {
         
         VStack(alignment: .leading, spacing: 2) {
             
-            mainTitleView
-           
+            HStack {
+                mainTitleView
+                
+                Spacer()
+                
+                Image(systemName: "arrow.right")
+                    .foregroundStyle(textColor)
+            }
+
             transliteratedView
             
             descriptionView
+            
+            Spacer()
+            Spacer()
+            testView
+            
+            Spacer()
+            Spacer()
+            
+            HStack {
+                Spacer()
+                
+                Button {
+                    
+                } label: {
+                    Text("Continue reading")
+                }
+                .buttonStyle(.bordered)
+                
+            }
         }
         .onAppear {
-            setTextColor()
+            setThemes()
         }
-        .padding(.vertical, 2)
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardBackgroundStyle(backroundColor: backgroundColor, textColor: textColor)
+        .padding(.horizontal, 12)
     }
     
-    private func setTextColor() {
+    private func setThemes() {
         textColor =  ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
+        backgroundColor = ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
     }
     
     @ViewBuilder
@@ -113,6 +143,25 @@ struct ScriptureChapterCard: View {
             .font(.custom("Iowan Old Style", size: 16))
             .fontWeight(colorScheme == .light ? .semibold : .regular)
             .foregroundColor(textColor)
+    }
+    
+    private var testView: some View {
+        HStack {
+            
+            Label {
+                Text("verses")
+            } icon: {
+                Image(systemName: "book")
+            }
+            
+            Spacer()
+            
+            Label {
+                Text("~28 min")
+            } icon: {
+                Image(systemName: "clock")
+            }
+        }
     }
 }
 

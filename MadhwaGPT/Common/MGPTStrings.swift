@@ -24,6 +24,7 @@ struct MGPTStrings {
         static let userLevelSectionTitle = NSLocalizedString("User Level", comment: "User level section title")
         static let appearanceSectionTitle = NSLocalizedString("Appearance", comment: "Appearance section title")
         static let settingsTitle = NSLocalizedString("Settings", comment: "Settings page title")
+        static let hideChatSuggestions = NSLocalizedString("Hide chat suggestions", comment: "Hide chat suggestions text")
     }
     
     struct ScripturesTab {
