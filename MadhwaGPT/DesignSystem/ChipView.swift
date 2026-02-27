@@ -28,7 +28,7 @@ struct Chip: View {
     var body: some View {
         Text(text)
             .font(.subheadline)
-            .fontWeight(.regular)
+            .fontWeight(.light)
             .lineLimit(3)
             .multilineTextAlignment(.leading)
             .padding(.horizontal, 12)
@@ -38,11 +38,7 @@ struct Chip: View {
                 RoundedRectangle(cornerRadius: 28, style: .continuous)
                     .fill(fontColor)
             )
-            .overlay(
-                RoundedRectangle(cornerRadius: 28)
-                    .stroke(Color.primary, lineWidth: 0.4)
-            )
-            .shadow(color: Color.gray.opacity(0.2), radius: 4, x: 0, y: 2)
+            .shadow(color: fontColor, radius: 4, x: 0, y: 2)
             .onTapGesture {
                 onTap()
             }

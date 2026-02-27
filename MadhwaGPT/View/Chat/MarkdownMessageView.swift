@@ -24,7 +24,7 @@ struct MarkdownMessageView: View {
             
             Text(styleMarkdown(attributed))
                 .font(.system(size: 18, weight: .regular))
-                .foregroundColor(.primary.opacity(0.9))
+                .foregroundColor(.primary.opacity(0.6))
                 .lineSpacing(6)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
@@ -117,7 +117,6 @@ struct ChatBubbleView: View {
             if !message.isUser { Spacer(minLength: 20) }
         }
         .padding(.vertical, 4)
-        .padding(.horizontal)
     }
 }
 

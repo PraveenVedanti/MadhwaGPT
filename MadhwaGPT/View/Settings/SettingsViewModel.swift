@@ -39,9 +39,9 @@ class SettingsViewModel: ObservableObject {
         let green = ChatTheme(title: "Sage Green", description: "Natural wisdom theme", color: Color.green.opacity(0.5))
         
         chatThemes.append(templeGold)
-        chatThemes.append(purple)
+       // chatThemes.append(purple)
         chatThemes.append(saffron)
-        chatThemes.append(roseGold)
+       // chatThemes.append(roseGold)
         chatThemes.append(teal)
         chatThemes.append(manuscript)
         chatThemes.append(green)

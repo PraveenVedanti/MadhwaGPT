@@ -40,7 +40,7 @@ struct ColorTokens {
         case "Sage Green":
             return Color.green
         case "Scholarly Teal":
-            return Color.teal
+            return Color.teal.opacity(0.5)
         case "Ancient Rose Gold":
             return Color.ancientRoseGoldText
         case "NotebookLM Purple":

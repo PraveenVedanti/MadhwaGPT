@@ -31,7 +31,7 @@ struct SuggestionCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(.primary.opacity(0.5), lineWidth: 0.5)
+                .stroke(.primary.opacity(0.5), lineWidth: 0.0)
         )
         .shadow(color: .black.opacity(0.04), radius: 8, y: 4)
     }

@@ -50,7 +50,7 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showChatThemeSelectionSheet) {
                 chatThemeSelectionView
-                    .presentationDetents([.large])
+                    .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $showChatLevelSelectionSheet) {

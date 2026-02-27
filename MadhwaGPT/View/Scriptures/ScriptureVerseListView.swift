@@ -75,7 +75,7 @@ struct ScriptureChapterVerseCard: View {
             
             if let kannadaVerse = verse.kannada {
                 Text(kannadaVerse)
-                    .font(.custom("KannadaSangamMN", size: 20))
+                    .font(.system(size: 20, weight: .regular))
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.leading)
                     .lineSpacing(4)
@@ -83,7 +83,7 @@ struct ScriptureChapterVerseCard: View {
             
             if let sanskritVerse = verse.sanskrit {
                 Text(sanskritVerse)
-                    .font(.custom("DevanagariSangamMN", size: 20))
+                    .font(.system(size: 20, weight: .regular))
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.leading)
                     .lineSpacing(2)

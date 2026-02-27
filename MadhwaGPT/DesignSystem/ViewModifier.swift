@@ -16,15 +16,17 @@ struct CardBackgroundModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
+            .padding(16)
             .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(backgroundColor)
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(Color(backgroundColor))
             )
-            .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(textColor ,lineWidth: 0.25)
-            }
-            .shadow(color: textColor.opacity(0.05), radius: 8, y: 4)
+            .shadow(
+                color: colorScheme == .dark ? .white.opacity(0.06) : .black.opacity(0.12),
+                radius: 20,
+                x: 0,
+                y: 8
+            )
     }
 }
 

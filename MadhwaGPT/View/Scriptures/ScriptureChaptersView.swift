@@ -26,7 +26,7 @@ struct ScriptureChaptersView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
                     ForEach(scriptureChapters) { chapter in
                         NavigationLink {
                             ScriptureVerseListView(
@@ -68,47 +68,18 @@ struct ScriptureChapterCard: View {
    
     var body: some View {
         
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 4) {
+            mainTitleView
             
-            HStack {
-                mainTitleView
-                
-                Spacer()
-                
-                Image(systemName: "arrow.right")
-                    .foregroundStyle(textColor)
-            }
-
             transliteratedView
             
             descriptionView
-            
-            Spacer()
-            Spacer()
-            testView
-            
-            Spacer()
-            Spacer()
-            
-            HStack {
-                Spacer()
-                
-                Button {
-                    
-                } label: {
-                    Text("Continue reading")
-                }
-                .buttonStyle(.bordered)
-                
-            }
         }
         .onAppear {
             setThemes()
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardBackgroundStyle(backroundColor: backgroundColor, textColor: textColor)
-        .padding(.horizontal, 12)
     }
     
     private func setThemes() {
@@ -120,48 +91,40 @@ struct ScriptureChapterCard: View {
     private var mainTitleView: some View {
         if let kannadaName = scriptureChapter.kannadaName {
             Text(kannadaName)
-                .font(.custom("DevanagariSangamMN-Bold", size: 18))
-                .foregroundColor(.primary)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(textColor)
         }
         
         if let sanskritName = scriptureChapter.sanskritName {
             Text(sanskritName)
-                .font(.custom("DevanagariSangamMN-Bold", size: 18))
-                .foregroundColor(.primary)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(textColor)
         }
     }
     
     private var transliteratedView: some View {
         Text(scriptureChapter.transliteratedName)
-            .font(.custom("Iowan Old Style", size: 18))
+            .font(.system(size: 16, weight: .bold, design: .serif))
+            .font(.headline)
             .italic()
-            .foregroundColor(.secondary)
+            .foregroundColor(.primary)
     }
     
     private var descriptionView: some View {
         Text(scriptureChapter.englishName)
-            .font(.custom("Iowan Old Style", size: 16))
-            .fontWeight(colorScheme == .light ? .semibold : .regular)
-            .foregroundColor(textColor)
+            .font(.system(size: 14, weight: .regular))
+            .foregroundColor(.primary.opacity(0.4))
+            .padding(.bottom, 4)
     }
     
     private var testView: some View {
-        HStack {
-            
-            Label {
-                Text("verses")
-            } icon: {
-                Image(systemName: "book")
-            }
-            
-            Spacer()
-            
-            Label {
-                Text("~28 min")
-            } icon: {
-                Image(systemName: "clock")
-            }
+        Label {
+            Text("6/30")
+                .font(.footnote)
+        } icon: {
+            Image(systemName: "book")
         }
+        .foregroundColor(.secondary)
     }
 }
 
