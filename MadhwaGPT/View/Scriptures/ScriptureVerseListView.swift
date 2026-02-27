@@ -36,6 +36,9 @@ struct ScriptureVerseListView: View {
                 } label: {
                     ScriptureChapterVerseCard(verse: verse, titleColor: textColor)
                 }
+                .overlay(alignment: .bottomTrailing) {
+                    favouritesView
+                }
                 .listRowBackground(backgroundColor)
                 .listRowSeparator(.hidden)
             }
@@ -52,6 +55,17 @@ struct ScriptureVerseListView: View {
         .task {
             scriptureChapterVerseList = await viewModel.loadScriptureChapterVerseList(scripture: scripture, scriptureChapter: scriptureChapter)
         }
+    }
+    
+    private var favouritesView: some View {
+        Button {
+            print("FAV")
+        } label: {
+            Image(systemName: "heart")
+                .foregroundStyle(textColor)
+                .font(.system(size: 16, weight: .regular))
+        }
+        .buttonStyle(.borderless)
     }
     
     private func setThemes() {
@@ -90,6 +104,16 @@ struct ScriptureChapterVerseCard: View {
             }
         }
         .padding(.vertical, 2)
+    }
+    
+    private var favouritesView: some View {
+        Button {
+            print("FAViii")
+        } label: {
+            Image(systemName: "heart")
+                .foregroundStyle(.primary)
+                .font(.system(size: 24, weight: .regular))
+        }
     }
     
     private func titleView() -> String {

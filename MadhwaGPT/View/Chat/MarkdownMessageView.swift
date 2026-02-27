@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MarkdownMessageView: View {
     let content: String
+    let isUserMessage: Bool
     
     var body: some View {
         // 1. Pre-clean the API string
@@ -22,12 +23,23 @@ struct MarkdownMessageView: View {
         
         if let attributed = try? AttributedString(markdown: cleaned, options: options) {
             
-            Text(styleMarkdown(attributed))
-                .font(.system(size: 18, weight: .regular))
-                .foregroundColor(.primary.opacity(0.6))
-                .lineSpacing(6)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
+            if isUserMessage {
+                Text(styleMarkdown(attributed))
+                    .font(.system(size: 18, weight: .regular))
+                    .foregroundColor(.primary.opacity(0.6))
+                    .lineSpacing(6)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                let dynamicSpeed = styleMarkdown(attributed).characters.count < 50
+                    ? 8_000_000
+                    : 2_000_000
+                
+                TypewriterText(
+                    fullText: styleMarkdown(attributed),
+                    typingSpeed: UInt64(dynamicSpeed)
+                )
+            }
         } else {
             Text(cleaned)
         }
@@ -84,6 +96,7 @@ struct MarkdownMessageView: View {
                 }
             }
         }
+        styled.inlinePresentationIntent = []
         return styled
     }
 }
@@ -96,6 +109,7 @@ struct ChatMessage: Identifiable {
 
 struct ChatBubbleView: View {
     let message: ChatMessage
+    @State var textColor: Color
     
     var body: some View {
         HStack {
@@ -103,10 +117,10 @@ struct ChatBubbleView: View {
             if message.isUser { Spacer(minLength: 20) }
             
             VStack(alignment: .leading, spacing: 0) {
-                MarkdownMessageView(content: message.text)
+                MarkdownMessageView(content: message.text, isUserMessage: message.isUser)
             }
             .padding(12)
-            .background(message.isUser ? Color.gray.opacity(0.2) : Color.clear)
+            .background(message.isUser ? textColor.opacity(0.2) : Color.clear)
             .foregroundColor(.primary)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .frame(

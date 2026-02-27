@@ -40,7 +40,7 @@ struct ExpandingTextInput: View {
             .padding(.vertical, 8)
             .padding(.leading, 12)
             .padding(.trailing, 48)
-            .padding(.bottom, 24)
+            .padding(.bottom, 12)
             .lineLimit(1...6)
             .focused($isFocused)
             .background(backgroundColor, in: RoundedRectangle(cornerRadius: 24))
@@ -57,10 +57,65 @@ struct ExpandingTextInput: View {
         } label: {
             Image(systemName: "arrow.up.circle.fill")
                 .resizable()
-                .frame(width: 32, height: 32)
+                .frame(width: 24, height: 24)
                 .foregroundStyle(fontColor.opacity(0.75))
         }
         .padding(.trailing, 8)
-        .padding(.bottom, 16)
+        .padding(.bottom, 12)
+    }
+}
+
+
+struct TypewriterText: View {
+    
+    let fullText: AttributedString
+    let typingSpeed: UInt64
+    
+    @State private var displayedText = AttributedString()
+    @State private var typingTask: Task<Void, Never>?
+    
+    var body: some View {
+        Text(displayedText)
+            .font(.system(size: 18, weight: .regular))
+            .foregroundColor(.primary.opacity(0.6))
+            .lineSpacing(6)
+            .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .onAppear {
+                startTyping()
+            }
+            .onDisappear {
+                typingTask?.cancel()
+            }
+    }
+    
+    private func startTyping() {
+        typingTask?.cancel()
+        displayedText = AttributedString()
+        
+        typingTask = Task {
+            await typeAttributedText()
+        }
+    }
+    
+    private func typeAttributedText() async {
+        for run in fullText.runs {
+            
+            if Task.isCancelled { return }
+            
+            let runText = fullText[run.range]
+            
+            for character in runText.characters {
+                
+                if Task.isCancelled { return }
+                
+                var charAttributed = AttributedString(String(character))
+                charAttributed.mergeAttributes(run.attributes)
+                
+                displayedText.append(charAttributed)
+                
+                try? await Task.sleep(nanoseconds: typingSpeed)
+            }
+        }
     }
 }

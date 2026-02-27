@@ -39,10 +39,6 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject private var settingsViewModel = SettingsViewModel()
-    @State private var textColor: Color = .primary
-    @State private var backgroundColor: Color = .primary
-    
     var body: some View {
         TabView {
             ChatView()
@@ -64,15 +60,6 @@ struct ContentView: View {
                     Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
                 }
         }
-        .onAppear {
-           setThemes()
-        }
-        //.tint(textColor)
-    }
-    
-    private func setThemes() {
-        textColor =  ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
-        backgroundColor = ColorTokens.setBackgroundColor(theme: settingsViewModel.selectedChatTheme)
     }
 }
 

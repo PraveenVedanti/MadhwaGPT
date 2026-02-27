@@ -77,7 +77,7 @@ struct AIInsightsView: View {
                     }
                     
                     ForEach(messages) { msg in
-                        ChatBubbleView(message: msg)
+                        ChatBubbleView(message: msg, textColor: Color.gray.opacity(0.2))
                             .id(msg.id)
                     }
                 }

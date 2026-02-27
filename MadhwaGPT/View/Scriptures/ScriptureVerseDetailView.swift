@@ -48,7 +48,7 @@ struct ScriptureVerseDetailView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        HStack(spacing: 12) {
+                        HStack(spacing: 16) {
                             previousVerseButton
                             nextVerseButton
                             askAIButton
