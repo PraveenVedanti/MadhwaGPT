@@ -80,14 +80,7 @@ struct ScriptureVerseDetailView: View {
                 .background(
                     Circle()
                         .fill(
-                            LinearGradient(
-                                colors: [
-                                    textFontColor,
-                                    textFontColor.opacity(0.2)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            textFontColor.opacity(0.8)
                         )
                 )
                 .shadow(color: textFontColor.opacity(0.4), radius: 10, y: 6)
