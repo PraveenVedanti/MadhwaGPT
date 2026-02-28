@@ -48,12 +48,15 @@ struct ScriptureVerseDetailView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        HStack(spacing: 16) {
+                        HStack(spacing: 24) {
                             previousVerseButton
                             nextVerseButton
-                            askAIButton
                         }
+                        .padding()
                     }
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    askAIButton
                 }
                 .onAppear {
                     setThemes()
@@ -71,16 +74,33 @@ struct ScriptureVerseDetailView: View {
             showAI.toggle()
         } label: {
             Image(systemName: "sparkles")
-                .foregroundStyle(.primary)
-                .font(.system(size: 16, weight: .regular))
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 56, height: 56)
+                .background(
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    textFontColor,
+                                    textFontColor.opacity(0.2)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                )
+                .shadow(color: textFontColor.opacity(0.4), radius: 10, y: 6)
         }
+        .padding()
+        .contentShape(Circle())
     }
     
     private var previousVerseButton: some View {
         Button {
             showPrevious()
         } label: {
-            Image(systemName: "arrow.left")
+            Image(systemName: "chevron.left")
                 .foregroundStyle(.primary)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundColor(isFirstVerse ? .secondary.opacity(0.3) : .primary)
@@ -92,7 +112,7 @@ struct ScriptureVerseDetailView: View {
         Button {
             showNext()
         } label: {
-            Image(systemName: "arrow.right")
+            Image(systemName: "chevron.right")
                 .foregroundStyle(.primary)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundColor(isLastVerse ? .secondary.opacity(0.3) : .primary)

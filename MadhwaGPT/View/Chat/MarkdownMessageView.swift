@@ -109,7 +109,7 @@ struct ChatMessage: Identifiable {
 
 struct ChatBubbleView: View {
     let message: ChatMessage
-    @State var textColor: Color
+    @Binding var textColor: Color
     
     var body: some View {
         HStack {

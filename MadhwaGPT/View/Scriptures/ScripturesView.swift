@@ -34,7 +34,7 @@ struct ScripturesView: View {
                         Button {
                             showLibrary.toggle()
                         } label: {
-                            Image(systemName: "books.vertical.fill")
+                            Image(systemName: "books.vertical")
                         }
                     }
                 }

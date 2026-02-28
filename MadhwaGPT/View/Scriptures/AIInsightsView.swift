@@ -76,10 +76,10 @@ struct AIInsightsView: View {
                         chatSuggestionView
                     }
                     
-                    ForEach(messages) { msg in
-                        ChatBubbleView(message: msg, textColor: Color.gray.opacity(0.2))
-                            .id(msg.id)
-                    }
+//                    ForEach(messages) { msg in
+//                        ChatBubbleView(message: msg, textColor: Color.gray.opacity(0.2))
+//                            .id(msg.id)
+//                    }
                 }
                 .padding()
             }

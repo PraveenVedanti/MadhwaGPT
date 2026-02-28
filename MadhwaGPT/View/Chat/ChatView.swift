@@ -85,7 +85,7 @@ struct ChatView: View {
             ScrollView {
                 LazyVStack(spacing: 8) {
                     ForEach(messages) { msg in
-                        ChatBubbleView(message: msg, textColor: textFontColor)
+                        ChatBubbleView(message: msg, textColor: $textFontColor)
                             .id(msg.id)
                     }
                 }

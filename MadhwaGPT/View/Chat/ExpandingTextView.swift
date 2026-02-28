@@ -74,6 +74,8 @@ struct TypewriterText: View {
     @State private var displayedText = AttributedString()
     @State private var typingTask: Task<Void, Never>?
     
+    @State private var responseDisplayed = false
+    
     var body: some View {
         Text(displayedText)
             .font(.system(size: 18, weight: .regular))
@@ -82,10 +84,14 @@ struct TypewriterText: View {
             .multilineTextAlignment(.leading)
             .fixedSize(horizontal: false, vertical: true)
             .onAppear {
-                startTyping()
+                if !responseDisplayed {
+                    startTyping()
+                }
+                responseDisplayed.toggle()
             }
             .onDisappear {
                 typingTask?.cancel()
+                responseDisplayed = true
             }
     }
     

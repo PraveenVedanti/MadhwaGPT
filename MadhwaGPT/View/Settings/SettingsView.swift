@@ -193,15 +193,24 @@ struct SettingsView: View {
     
     // MARK: - Helper functions
     private func loadInitialData()  {
-        guard viewModel.chatLevels.isEmpty else { return }
-        guard viewModel.chatThemes.isEmpty else { return }
+//        guard viewModel.chatLevels.isEmpty else { return }
+//        guard viewModel.chatThemes.isEmpty else { return }
        
         // Load initial chat settings.
-        viewModel.loadChatLevels()
-        viewModel.loadChatThemes()
+        if viewModel.chatLevels.isEmpty {
+            viewModel.loadChatLevels()
+        }
         
+        if viewModel.chatThemes.isEmpty {
+            viewModel.loadChatThemes()
+        }
+       
         // Set first theme by default.
-        viewModel.selectedChatTheme = viewModel.chatThemes.first?.id ?? ""
-        viewModel.selectedChatLevel = viewModel.chatLevels.first?.id ?? ""
+        if viewModel.selectedChatTheme.isEmpty {
+            viewModel.selectedChatTheme = viewModel.chatThemes.first?.id ?? ""
+        }
+        if viewModel.selectedChatLevel.isEmpty {
+            viewModel.selectedChatLevel = viewModel.chatLevels.first?.id ?? ""
+        }
     }
 }
