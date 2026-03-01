@@ -51,6 +51,10 @@ struct ScriptureVerseDetailView: View {
                         askAIButton
                     }
                 }
+                .overlay(alignment: .bottomTrailing) {
+                    navigationDock
+                        .padding()
+                }
                 .onAppear {
                     setThemes()
                 }
@@ -62,17 +66,6 @@ struct ScriptureVerseDetailView: View {
         textFontColor = ColorTokens.setTextColor(theme: settingsViewModel.selectedChatTheme)
     }
     
-    private var askAIButton: some View {
-        Button {
-            showAI.toggle()
-        } label: {
-            Image(systemName: MGPTIcons.sparkles)
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Color.blue)
-        }
-        .padding()
-    }
-    
     private var previousVerseButton: some View {
         Button {
             showPrevious()
@@ -81,6 +74,9 @@ struct ScriptureVerseDetailView: View {
                 .foregroundStyle(.primary)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundColor(isFirstVerse ? .secondary.opacity(0.3) : .primary)
+                .background(
+                    Circle()
+                )
         }
         .disabled(isFirstVerse)
     }
@@ -93,6 +89,9 @@ struct ScriptureVerseDetailView: View {
                 .foregroundStyle(.primary)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundColor(isLastVerse ? .secondary.opacity(0.3) : .primary)
+                .background(
+                    Circle()
+                )
         }
         .disabled(isLastVerse)
     }
@@ -110,6 +109,58 @@ struct ScriptureVerseDetailView: View {
         withAnimation(.easeInOut(duration: 0.05)) {
             currentIndex += 1
         }
+    }
+    
+    private var navigationDock: some View {
+        HStack(spacing: 20) {
+            // Previous Button
+            Button(action: showPrevious) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(isFirstVerse ? .secondary.opacity(0.3) : textFontColor)
+            }
+            .disabled(isFirstVerse)
+            
+            Divider().frame(height: 20)
+            
+            // Next Button
+            Button(action: showNext) {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(isLastVerse ? .secondary.opacity(0.3) : textFontColor)
+            }
+            .disabled(isLastVerse)
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+        .background(.ultraThinMaterial)
+        .clipShape(Capsule())
+        .overlay(
+            Capsule()
+                .stroke(.white.opacity(colorScheme == .dark ? 0.2 : 0.5), lineWidth: 0.5)
+        )
+        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+    }
+    
+    
+    private var askAIButton: some View {
+        Button {
+            showAI.toggle()
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "sparkles")
+                    .foregroundStyle(Color.blue)
+                    .font(.system(size: 16, weight: .semibold))
+                
+                Text("Ask AI")
+                    .font(.subheadline)
+                    .fontWeight(.regular)
+                    .foregroundStyle(.primary)
+            }
+            .padding(.vertical, 4)
+        }
+        .padding()
+        .buttonStyle(.plain)
     }
 }
 
