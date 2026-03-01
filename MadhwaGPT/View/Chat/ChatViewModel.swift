@@ -69,9 +69,9 @@ class ChatViewModel: ObservableObject {
         initialChatSuggestions.append(fourth)
     }
     
-    func queryQuestion(_ query: String) async throws -> String {
+    func queryQuestion(_ query: String, persona: String) async throws -> String {
         do {
-            let answer = try await NetworkManager.shared.askQuestion(question: query)
+            let answer = try await NetworkManager.shared.askQuestion(question: query, persona: persona)
             return answer
         } catch {
             print("Error:", error.localizedDescription)

@@ -48,15 +48,8 @@ struct ScriptureVerseDetailView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        HStack(spacing: 24) {
-                            previousVerseButton
-                            nextVerseButton
-                        }
-                        .padding()
+                        askAIButton
                     }
-                }
-                .overlay(alignment: .bottomTrailing) {
-                    askAIButton
                 }
                 .onAppear {
                     setThemes()
@@ -73,20 +66,11 @@ struct ScriptureVerseDetailView: View {
         Button {
             showAI.toggle()
         } label: {
-            Image(systemName: "sparkles")
+            Image(systemName: MGPTIcons.sparkles)
                 .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 56, height: 56)
-                .background(
-                    Circle()
-                        .fill(
-                            textFontColor.opacity(0.8)
-                        )
-                )
-                .shadow(color: textFontColor.opacity(0.4), radius: 10, y: 6)
+                .foregroundStyle(Color.blue)
         }
         .padding()
-        .contentShape(Circle())
     }
     
     private var previousVerseButton: some View {
@@ -191,11 +175,11 @@ struct ScriptureChapterVerseView: View {
             
             // Verse header view
             if let _ = verse.sanskrit {
-                sectionHeader(title: "SANSKRIT (DEVANAGARI)")
+                sectionHeader(title: MGPTStrings.ScripturesTab.sanskritVerseHeader)
             }
             
             if let _ = verse.kannada {
-                sectionHeader(title: "KANNADA")
+                sectionHeader(title: MGPTStrings.ScripturesTab.kannadaVerseHeader)
             }
             
             verseContentView
@@ -204,21 +188,21 @@ struct ScriptureChapterVerseView: View {
     
     private var transliterationCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionHeader(title: "TRANSLITERATION")
+            sectionHeader(title: MGPTStrings.ScripturesTab.transliterationHeader)
             transliterationContentView
         }
     }
     
     private var wordByWordCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionHeader(title: "WORD-BY-WORD MEANINGS")
+            sectionHeader(title: MGPTStrings.ScripturesTab.wordsByWordsMeaningsHeader)
             wordByWordContent
         }
     }
     
     private var englishTranslationCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionHeader(title: "ENGLISH TRANSLATION")
+            sectionHeader(title: MGPTStrings.ScripturesTab.englishTranslationHeader)
             englishTranslationContent
         }
     }

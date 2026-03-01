@@ -72,7 +72,7 @@ final class NetworkManager {
     
     func askQuestion(
         question: String,
-        persona: String = "intermediate"
+        persona: String,
     ) async throws -> String {
         
         guard let url = URL(string: "https://madhwagpt2.onrender.com/query") else {

@@ -30,7 +30,11 @@ struct MGPTStrings {
     struct ScripturesTab {
         static let scripturesTitle = NSLocalizedString("Explore Sacred Texts", comment: "Scriptures page title")
         static let scripturesHeader = NSLocalizedString("Explore sacred verses with detailed meanings and translations", comment: "Scriptures page header")
-        static let scripturesSubHeader = NSLocalizedString("AI-guided insights from the Madhva guru parampara tradition"
-                                                , comment: "Scriptures page header")
+        static let scripturesSubHeader = NSLocalizedString("AI-guided insights from the Madhva guru parampara tradition", comment: "Scriptures page header")
+        static let kannadaVerseHeader = NSLocalizedString("KANNADA", comment: "Kannada verse header")
+        static let sanskritVerseHeader = NSLocalizedString("SANSKRIT", comment: "SANSKRIT verse header")
+        static let transliterationHeader = NSLocalizedString("TRANSLITERATION", comment: "Transliteration header")
+        static let wordsByWordsMeaningsHeader = NSLocalizedString("WORD-BY-WORD MEANINGS", comment: "Words by words meanings header")
+        static let englishTranslationHeader =  NSLocalizedString("ENGLISH TRANSLATION", comment: "English translation header")
     }
 }

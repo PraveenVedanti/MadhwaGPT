@@ -61,7 +61,7 @@ struct ScriptureVerseListView: View {
         Button {
             print("FAV")
         } label: {
-            Image(systemName: "heart")
+            Image(systemName: MGPTIcons.favourites)
                 .foregroundStyle(textColor)
                 .font(.system(size: 16, weight: .regular))
         }
@@ -110,7 +110,7 @@ struct ScriptureChapterVerseCard: View {
         Button {
             print("FAViii")
         } label: {
-            Image(systemName: "heart")
+            Image(systemName: MGPTIcons.favourites)
                 .foregroundStyle(.primary)
                 .font(.system(size: 24, weight: .regular))
         }

@@ -155,7 +155,7 @@ struct AIInsightsView: View {
     
     func queryQuestion(_ query: String) async throws -> String {
         do {
-            let answer = try await NetworkManager.shared.askQuestion(question: query)
+            let answer = try await NetworkManager.shared.askQuestion(question: query, persona: "beginner")
             return answer
         } catch {
             print("Error:", error.localizedDescription)

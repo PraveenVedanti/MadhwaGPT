@@ -133,7 +133,7 @@ struct ChatView: View {
                 messages.removeAll()
             }
         } label: {
-            Image(systemName: "bubble.and.pencil")
+            Image(systemName: MGPTIcons.newChat)
                 .font(.system(size: 14))
        }
     }
@@ -170,7 +170,7 @@ struct ChatView: View {
 
     // Scroll to bottom when results are generated.
     private func scrollToBottom(proxy: ScrollViewProxy) {
-        guard let lastID = messages.first?.id else { return }
+        guard let lastID = messages.last?.id else { return }
         
         withAnimation(.easeOut(duration: 0.3)) {
             proxy.scrollTo(lastID, anchor: .bottom)
@@ -186,7 +186,7 @@ struct ChatView: View {
         
         Task {
             isSending = true
-            await executeQuery(query: currentMessage.text)
+            await executeQuery(query: currentMessage.text, persona: settingsViewModel.selectedChatLevel.lowercased())
             isSending = false
         }
         
@@ -195,9 +195,9 @@ struct ChatView: View {
     }
     
     @MainActor
-    private func executeQuery(query: String) async {
+    private func executeQuery(query: String, persona: String) async {
         do {
-            let answer = try await viewModel.queryQuestion(query)
+            let answer = try await viewModel.queryQuestion(query, persona: persona)
             messages.append(ChatMessage(text: answer, isUser: false))
         } catch {
             print("Failed to get answer: \(error.localizedDescription)")
