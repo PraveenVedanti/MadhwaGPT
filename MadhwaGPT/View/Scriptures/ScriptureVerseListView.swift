@@ -36,9 +36,9 @@ struct ScriptureVerseListView: View {
                 } label: {
                     ScriptureChapterVerseCard(verse: verse, titleColor: textColor)
                 }
-                .overlay(alignment: .bottomTrailing) {
-                    favouritesView
-                }
+//                .overlay(alignment: .topTrailing) {
+//                    favouritesView
+//                }
                 .listRowBackground(backgroundColor)
                 .listRowSeparator(.hidden)
             }
@@ -55,17 +55,6 @@ struct ScriptureVerseListView: View {
         .task {
             scriptureChapterVerseList = await viewModel.loadScriptureChapterVerseList(scripture: scripture, scriptureChapter: scriptureChapter)
         }
-    }
-    
-    private var favouritesView: some View {
-        Button {
-            print("FAV")
-        } label: {
-            Image(systemName: MGPTIcons.favourites)
-                .foregroundStyle(textColor)
-                .font(.system(size: 16, weight: .regular))
-        }
-        .buttonStyle(.borderless)
     }
     
     private func setThemes() {
@@ -102,18 +91,32 @@ struct ScriptureChapterVerseCard: View {
                     .multilineTextAlignment(.leading)
                     .lineSpacing(2)
             }
+            
+            Spacer()
+                .frame(height: 4)
+            
+            HStack {
+                Spacer()
+                favouritesView
+            }
+            
+            Spacer()
+                .frame(height: 4)
+            
+            Divider()
         }
         .padding(.vertical, 2)
     }
     
     private var favouritesView: some View {
         Button {
-            print("FAViii")
+            print("FAV")
         } label: {
             Image(systemName: MGPTIcons.favourites)
-                .foregroundStyle(.primary)
-                .font(.system(size: 24, weight: .regular))
+                .foregroundStyle(titleColor)
+                .font(.system(size: 18, weight: .regular))
         }
+        .buttonStyle(.borderless)
     }
     
     private func titleView() -> String {

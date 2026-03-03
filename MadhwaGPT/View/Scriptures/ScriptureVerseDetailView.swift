@@ -149,7 +149,7 @@ struct ScriptureVerseDetailView: View {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "sparkles")
-                    .foregroundStyle(Color.blue)
+                    .foregroundStyle(textFontColor)
                     .font(.system(size: 16, weight: .semibold))
                 
                 Text("Ask AI")

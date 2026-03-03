@@ -68,13 +68,24 @@ struct ScriptureChapterCard: View {
    
     var body: some View {
         
-        VStack(alignment: .leading, spacing: 4) {
-            mainTitleView
+        HStack(spacing: 20) {
             
-            transliteratedView
+            CircularProgressRing(progress: 0.8)
             
-            descriptionView
+            VStack(alignment: .leading, spacing: 4) {
+                mainTitleView
+                
+                transliteratedView
+                
+                descriptionView
+                
+                Spacer()
+                    .frame(height: 4)
+                
+                Divider()
+            }
         }
+        
         .onAppear {
             setThemes()
         }
